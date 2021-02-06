@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="https://marcosps.github.io/images/favicon.ico" />
+<title>NO_NEW_PRIVS: avoiding privilege escalation | Marcos&#39; Blog</title>
+<meta name="title" content="NO_NEW_PRIVS: avoiding privilege escalation" />
+<meta name="description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements." />
+<meta name="keywords" content="no_new_privs,execve,linux," />
+
+
+<meta property="og:title" content="NO_NEW_PRIVS: avoiding privilege escalation" />
+<meta property="og:description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marcosps.github.io/no_new_privs-avoiding-privilege-escalation/" />
+<meta property="og:image" content="https://marcosps.github.io/images/share.png"/>
+<meta property="article:published_time" content="2018-05-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-05-22T00:00:00+00:00" /><meta property="og:site_name" content="Marcos&#39; Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://marcosps.github.io/images/share.png"/>
+
+<meta name="twitter:title" content="NO_NEW_PRIVS: avoiding privilege escalation"/>
+<meta name="twitter:description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements."/>
+
+
+
+<meta itemprop="name" content="NO_NEW_PRIVS: avoiding privilege escalation">
+<meta itemprop="description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements.">
+<meta itemprop="datePublished" content="2018-05-22T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2018-05-22T00:00:00+00:00" />
+<meta itemprop="wordCount" content="529">
+<meta itemprop="image" content="https://marcosps.github.io/images/share.png"/>
+
+
+
+<meta itemprop="keywords" content="no_new_privs,execve,linux," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  <style>
+  body {
+    font-family: Verdana, sans-serif;
+    margin: auto;
+    padding: 20px;
+    max-width: 720px;
+    text-align: left;
+    background-color: #fff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: #444;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong,
+  b {
+    color: #222;
+  }
+
+  a {
+    color: #3273dc;
+     
+  }
+
+  .title {
+    text-decoration: none;
+    border: 0;
+  }
+
+  .title span {
+    font-weight: 400;
+  }
+
+  nav a {
+    margin-right: 10px;
+  }
+
+  textarea {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  input {
+    font-size: 16px;
+  }
+
+  content {
+    line-height: 1.6;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  code {
+    padding: 2px 5px;
+    background-color: #f2f2f2;
+  }
+
+  pre code {
+    color: #222;
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 14px;
+  }
+
+  blockquote {
+    border-left: 1px solid #999;
+    color: #222;
+    padding-left: 20px;
+    font-style: italic;
+  }
+
+  footer {
+    padding: 25px;
+    text-align: center;
+  }
+
+  .helptext {
+    color: #777;
+    font-size: small;
+  }
+
+  .errorlist {
+    color: #eba613;
+    font-size: small;
+  }
+
+   
+  ul.blog-posts {
+    list-style-type: none;
+    padding: unset;
+  }
+
+  ul.blog-posts li {
+    display: flex;
+  }
+
+  ul.blog-posts li span {
+    flex: 0 0 130px;
+  }
+
+  ul.blog-posts li a:visited {
+    color: #8b6fcb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #333;
+      color: #ddd;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    strong,
+    b {
+      color: #eee;
+    }
+
+    a {
+      color: #8cc2dd;
+    }
+
+    code {
+      background-color: #777;
+    }
+
+    pre code {
+      color: #ddd;
+    }
+
+    blockquote {
+      color: #ccc;
+    }
+
+    textarea,
+    input {
+      background-color: #252525;
+      color: #ddd;
+    }
+
+    .helptext {
+      color: #aaa;
+    }
+  }
+
+</style>
+
+</head>
+
+<body>
+  <header><a href="/" class="title">
+  <h2>Marcos&#39; Blog</h2>
+</a>
+<nav><a href="/">Home</a>
+
+
+<a href="/blog">Blog</a>
+
+</nav>
+</header>
+  <main>
+
+<h1>NO_NEW_PRIVS: avoiding privilege escalation</h1>
+<p>
+  <i>
+    <time datetime='2018-05-22' pubdate>
+      22 May, 2018
+    </time>
+  </i>
+</p>
+
+<content>
+  <p>Proposed in <a href="https://lwn.net/Articles/475362">2012</a>, the <a href="https://www.kernel.org/doc/Documentation/prctl/no_new_privs.txt"><em>NO_NEW_PRIVS</em></a> flag made possible to any process to avoid privilege escalation when this behavior is not desired. After the flag is set, it persists across <a href="http://man7.org/linux/man-pages/man2/execve.2.html">execve</a>, <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a> and <a href="http://man7.org/linux/man-pages/man2/fork.2.html">fork</a> syscalls, and cannot be cleared. This can help you to avoid exploitation of vulnerable software, since the attacker will be running as an ordinary user.</p>
+<p>The <em>NO_NEW_PRIVS</em> flag is already beeng used by some projects that try to make the running environment more secure, specially container engines and sandbox applications. Some examples are <a href="https://www.projectatomic.io/blog/2016/03/no-new-privs-docker">Docker</a>, <a href="https://github.com/projectatomic/bubblewrap">Bullewrap</a>, and <a href="https://github.com/netblue30/firejail">Firejail</a>.</p>
+<p>There are cases where privilege escalation is necessary, for example, to execute a small task that can’t be done by an unprivileged user. This can be achieved by creating a new binary, that only do a very specific task, and have the <a href="https://en.wikipedia.org/wiki/Setuid">setuid</a> bit set (which change the current uid by the owner of the binary) or file <a href="http://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities</a>(which can hold <em>CAP_SYS_ADMIN</em> for example, and so the current uid becomes practically root).</p>
+<p>Another important note for <em>NO_NEW_PRIVS</em> is, after this flag is set, an unprivileged process can install <a href="https://www.kernel.org/doc/Documentation/prctl/seccomp_filter.txt">seccomp_filters</a>.</p>
+<p>As described by the official kernel documentation about <em>NO_NEW_PRIVS</em>, this flag is set by using <a href="http://man7.org/linux/man-pages/man2/prctl.2.html">prctl</a>, as exemplified below:</p>
+<p><code>prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);</code></p>
+<p>Let’s check how this works. First, we create a new binary called <em>caller</em>, which will be responsible for executing another binary, simply called <em>getuid</em>. The second binary will just print the current <a href="https://en.wikipedia.org/wiki/User_identifier#Effective_user_ID">effective user</a>. Let’s take a look in both binaries, starting from <em>caller</em>:</p>
+<pre><code>#include &lt;string.h&gt;
+#include &lt;sys/prctl.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(int argc, char **argv)
+{
+	if (argc != 3)
+		errx(0, &quot;Usage: %s &lt;0|1&gt; &lt;path to binary&gt;&quot;, argv[0]);
+	if (!strncmp(argv[1], &quot;1&quot;, 1) &amp;&amp;
+	    prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) == -1)
+		errx(1, &quot;no_new_privs failed&quot;);
+
+	execlp(argv[2], argv[2], NULL);
+	err(1, &quot;execlp&quot;);
+}
+</code></pre><p>The first binary, <em>caller</em>, will receive two parameters, the first one specifies if the user wants to set the <em>NO_NEW_PRIVS</em> flag, and the second one receives a path to the binary we want to execute. After compiling getuid, we need to change the owner, and turn on the <a href="https://en.wikipedia.org/wiki/Setuid">setuid</a> bit of the resulting binary:</p>
+<pre><code>$ gcc getuid.c -o getuid
+$ sudo chown root:root getuid
+$ sudo chmod +s getuid
+</code></pre><p>Now, let’s make use of both binaries. Let’s assume you have them in the same directory. First, without setting <em>NO_NEW_PRIVS</em>:</p>
+<pre><code>$ ./caller 0 ./getuid
+euid: 0
+</code></pre><p>As expected, the printed effective user id is 0, meaning that we are root, thanks to the setuid bit being set and the owner of the binary being root. What happens when we turn on the <em>NO_NEW_PRIVS</em> flag in <em>caller</em>?</p>
+<pre><code>$ ./caller 1 ./getuid
+euid: 1000
+</code></pre><p>As expected, the effective user id is the one who executes <em>caller</em>, so, no privileges were escalated.</p>
+<p>We can also exemplify this behavior using <a href="http://man7.org/linux/man-pages/man1/setpriv.1.html">setpriv</a>, which is part of <a href="https://en.wikipedia.org/wiki/Util-linux">util-linux</a>, to test the <em>NO_NEW_PRIVS</em> flag. Take a look below:</p>
+<pre><code>$ setpriv ./getuid 
+euid: 0
+$ setpriv --no-new-privs ./getuid 
+euid: 1000
+</code></pre><p>As you can see, the output is the same from the <em>caller</em>, as it uses the same feature to avoid privilege escalation.</p>
+<p>So, the general suggestion is: always set <em>NO_NEW_PRIVS</em> whenever you don’t need “new privileges” to be added to your process.</p>
+<p>See you next time!</p>
+
+</content>
+<p>
+  
+  <a href="https://marcosps.github.io/blog/no_new_privs/">#no_new_privs</a>
+  
+  <a href="https://marcosps.github.io/blog/execve/">#execve</a>
+  
+  <a href="https://marcosps.github.io/blog/linux/">#linux</a>
+  
+</p>
+
+  </main>
+  <footer>Made with <a href="https://github.com/janraasch/hugo-bearblog/">Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer>
+
+    
+</body>
+
+</html>

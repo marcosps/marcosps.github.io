@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Marcos&#39; Blog</title>
+    <link>https://marcosps.github.io/tags/</link>
+    <description>Recent content in Tags on Marcos&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
+    <lastBuildDate>Tue, 22 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://marcosps.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>execve</title>
+      <link>https://marcosps.github.io/blog/execve/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://marcosps.github.io/blog/execve/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>https://marcosps.github.io/blog/linux/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://marcosps.github.io/blog/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>no_new_privs</title>
+      <link>https://marcosps.github.io/blog/no_new_privs/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://marcosps.github.io/blog/no_new_privs/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
