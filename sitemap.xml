@@ -4,22 +4,52 @@
   
   <url>
     <loc>https://marcosps.github.io/</loc>
-    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://marcosps.github.io/blog/</loc>
-    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://marcosps.github.io/blog/execve/</loc>
-    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <loc>https://marcosps.github.io/blog/kernel/</loc>
+    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://marcosps.github.io/kernel-adventures-are-usb-sticks-rotational-devices/</loc>
+    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://marcosps.github.io/blog/linux/</loc>
+    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://marcosps.github.io/blog/storage/</loc>
+    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://marcosps.github.io/tags/</loc>
+    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://marcosps.github.io/blog/usb/</loc>
+    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://marcosps.github.io/blog/vpd/</loc>
+    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://marcosps.github.io/blog/execve/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
   </url>
   
@@ -30,11 +60,6 @@
   
   <url>
     <loc>https://marcosps.github.io/no_new_privs-avoiding-privilege-escalation/</loc>
-    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://marcosps.github.io/tags/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
   </url>
   

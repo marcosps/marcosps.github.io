@@ -7,22 +7,58 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
-    <lastBuildDate>Tue, 22 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://marcosps.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 07 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://marcosps.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>execve</title>
-      <link>https://marcosps.github.io/blog/execve/</link>
-      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      <title>kernel</title>
+      <link>https://marcosps.github.io/blog/kernel/</link>
+      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://marcosps.github.io/blog/execve/</guid>
+      <guid>https://marcosps.github.io/blog/kernel/</guid>
       <description></description>
     </item>
     
     <item>
       <title>linux</title>
       <link>https://marcosps.github.io/blog/linux/</link>
-      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://marcosps.github.io/blog/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>storage</title>
+      <link>https://marcosps.github.io/blog/storage/</link>
+      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://marcosps.github.io/blog/storage/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>usb</title>
+      <link>https://marcosps.github.io/blog/usb/</link>
+      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://marcosps.github.io/blog/usb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>vpd</title>
+      <link>https://marcosps.github.io/blog/vpd/</link>
+      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://marcosps.github.io/blog/vpd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>execve</title>
+      <link>https://marcosps.github.io/blog/execve/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://marcosps.github.io/blog/execve/</guid>
       <description></description>
     </item>
     

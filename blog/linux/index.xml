@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
-    <lastBuildDate>Tue, 22 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://marcosps.github.io/blog/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 07 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://marcosps.github.io/blog/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kernel Adventures Are USB Sticks Rotational Devices?</title>
+      <link>https://marcosps.github.io/kernel-adventures-are-usb-sticks-rotational-devices/</link>
+      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://marcosps.github.io/kernel-adventures-are-usb-sticks-rotational-devices/</guid>
+      <description>A while ago I’ve found this kernel bug entry about USB mass storage being shown as a rotational device. This is wrong because a USB stick is a flash device, and does not rotate.
+About rotational devices Let’s take a minute to discuss about the evolution from disk to flash storage.
+Older storage devices, HDD in this example, were called Disk Storage because these devices recorded data into one or more rotating disks.</description>
+    </item>
+    
     <item>
       <title>NO_NEW_PRIVS: avoiding privilege escalation</title>
       <link>https://marcosps.github.io/no_new_privs-avoiding-privilege-escalation/</link>
