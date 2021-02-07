@@ -138,8 +138,8 @@ I’ve tested more than 10 USB sticks and USB SATA adapters, and neither of them
 ```
 $ sg_inq -s /dev/sdc
   standard INQUIRY:
-    PQual=0  Device_type=0  RMB=1  LU_CONG=0  version=0x04  [SPC-2]</pre>
-  <pre>sg_vpd --page 0x0 /dev/sdc 
+    PQual=0  Device_type=0  RMB=1  LU_CONG=0  version=0x04  [SPC-2]
+$ sg_vpd --page 0x0 /dev/sdc
   Supported VPD pages VPD page:
     Supported VPD pages [sv]
     Unit serial number [sn]
@@ -152,7 +152,7 @@ $ sg_inq /dev/sdc
   invalid VPD response; probably a STANDARD INQUIRY response
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=1  LU_CONG=0  version=0x02  [SCSI-2]
-  sg_vpd --page 0x0 /dev/sdc
+$ sg_vpd --page 0x0 /dev/sdc
   Supported VPD pages VPD page:
   invalid VPD response; probably a STANDARD INQUIRY response
   fetching VPD page failed: Malformed SCSI command
@@ -167,7 +167,7 @@ $ sg_inq /dev/sdc
   invalid VPD response; probably a STANDARD INQUIRY response
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=1  LU_CONG=0  version=0x00  [no conformance claimed]
-  sg_vpd /dev/sdc
+$ sg_vpd /dev/sdc
   Supported VPD pages VPD page:
   invalid VPD response; probably a STANDARD INQUIRY response
   fetching VPD page failed: Malformed SCSI command
@@ -181,7 +181,7 @@ This one is even worse, does not even comply with any specification.
 $ sg_inq /dev/sdc
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=1  LU_CONG=0  version=0x06  [SPC-4]
-  sg_vpd --page 0x0 /dev/sdc
+$ sg_vpd --page 0x0 /dev/sdc
   Supported VPD pages VPD page:
     Supported VPD pages [sv]
     Unit serial number [sn]
@@ -195,7 +195,7 @@ This one from SanDisk complies with SPC-4, but no BDC supported either.
 $ sg_inq /dev/sdc
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=0  LU_CONG=0  version=0x00  [no conformance claimed]
-  sg_vpd --page 0x0 /dev/sdc
+$ sg_vpd --page 0x0 /dev/sdc
   Supported VPD pages VPD page:
 ```
 
@@ -206,7 +206,7 @@ It doesn’t show any VPD, but apprently understands the SCSI INQ command.
 $ sg_inq /dev/sdc           
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=0  LU_CONG=0  version=0x06  [SPC-4]
-  sg_vpd --page 0x0 /dev/sdc
+$ sg_vpd --page 0x0 /dev/sdc
   Supported VPD pages VPD page:
     Supported VPD pages [sv]
     Unit serial number [sn]
