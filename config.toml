@@ -1,5 +1,4 @@
-#baseURL = "https://mpdesouza.com"
-baseURL = "https://marcosps.github.io"
+baseURL = "https://mpdesouza.com"
 
 # The name of this wonderful theme ;-).
 theme = 'hugo-bearblog'
