@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
-    <lastBuildDate>Wed, 07 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 16 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs</title>
+      <link>https://mpdesouza.com/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</link>
+      <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</guid>
+      <description>After chasing the problem of rotational sysfs property of USB flash drives, I started to check another sysfs attributes of USB storage devices, and I noted two missing attributes: vpd_pg80 and vpd_pg83.
+As explained here, VPD pages contain data related to the device. In special, page 80 is Unit Serial Number (sn) and page 83 is Device Information (di), which are present in any SCSI device that complies with SPC-2 or later.</description>
+    </item>
+    
     <item>
       <title>Kernel Adventures: Are USB Sticks Rotational Devices?</title>
       <link>https://mpdesouza.com/kernel-adventures-are-usb-sticks-rotational-devices/</link>

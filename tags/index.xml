@@ -7,11 +7,11 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
-    <lastBuildDate>Wed, 07 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 16 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>kernel</title>
       <link>https://mpdesouza.com/blog/kernel/</link>
-      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/kernel/</guid>
       <description></description>
@@ -20,9 +20,36 @@
     <item>
       <title>linux</title>
       <link>https://mpdesouza.com/blog/linux/</link>
-      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sysfs</title>
+      <link>https://mpdesouza.com/blog/sysfs/</link>
+      <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/sysfs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>usb</title>
+      <link>https://mpdesouza.com/blog/usb/</link>
+      <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/usb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>vpd</title>
+      <link>https://mpdesouza.com/blog/vpd/</link>
+      <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/vpd/</guid>
       <description></description>
     </item>
     
@@ -32,24 +59,6 @@
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/storage/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>usb</title>
-      <link>https://mpdesouza.com/blog/usb/</link>
-      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://mpdesouza.com/blog/usb/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>vpd</title>
-      <link>https://mpdesouza.com/blog/vpd/</link>
-      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://mpdesouza.com/blog/vpd/</guid>
       <description></description>
     </item>
     

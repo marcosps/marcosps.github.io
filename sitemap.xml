@@ -4,18 +4,48 @@
   
   <url>
     <loc>https://mpdesouza.com/</loc>
-    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
+    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://mpdesouza.com/blog/</loc>
-    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
+    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://mpdesouza.com/blog/kernel/</loc>
-    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
+    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</loc>
+    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/linux/</loc>
+    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/sysfs/</loc>
+    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/tags/</loc>
+    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/usb/</loc>
+    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/vpd/</loc>
+    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -24,27 +54,7 @@
   </url>
   
   <url>
-    <loc>https://mpdesouza.com/blog/linux/</loc>
-    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://mpdesouza.com/blog/storage/</loc>
-    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/tags/</loc>
-    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/usb/</loc>
-    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/vpd/</loc>
     <lastmod>2019-08-07T00:00:00+00:00</lastmod>
   </url>
   

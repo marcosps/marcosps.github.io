@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="https://mpdesouza.com/images/favicon.ico" />
+<title>Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs | Marcos&#39; Blog</title>
+<meta name="title" content="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs" />
+<meta name="description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements." />
+<meta name="keywords" content="usb,sysfs,linux,kernel,vpd," />
+
+
+<meta property="og:title" content="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs" />
+<meta property="og:description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mpdesouza.com/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/" />
+<meta property="og:image" content="https://mpdesouza.com/images/share.png"/>
+<meta property="article:published_time" content="2019-08-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-08-16T00:00:00+00:00" /><meta property="og:site_name" content="Marcos&#39; Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://mpdesouza.com/images/share.png"/>
+
+<meta name="twitter:title" content="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs"/>
+<meta name="twitter:description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements."/>
+
+
+
+<meta itemprop="name" content="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs">
+<meta itemprop="description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements.">
+<meta itemprop="datePublished" content="2019-08-16T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2019-08-16T00:00:00+00:00" />
+<meta itemprop="wordCount" content="963">
+<meta itemprop="image" content="https://mpdesouza.com/images/share.png"/>
+
+
+
+<meta itemprop="keywords" content="usb,sysfs,linux,kernel,vpd," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  <style>
+  body {
+    font-family: Verdana, sans-serif;
+    margin: auto;
+    padding: 20px;
+    max-width: 720px;
+    text-align: left;
+    background-color: #fff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: #444;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong,
+  b {
+    color: #222;
+  }
+
+  a {
+    color: #3273dc;
+     
+  }
+
+  .title {
+    text-decoration: none;
+    border: 0;
+  }
+
+  .title span {
+    font-weight: 400;
+  }
+
+  nav a {
+    margin-right: 10px;
+  }
+
+  textarea {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  input {
+    font-size: 16px;
+  }
+
+  content {
+    line-height: 1.6;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  code {
+    padding: 2px 5px;
+    background-color: #f2f2f2;
+  }
+
+  pre code {
+    color: #222;
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 14px;
+  }
+
+  blockquote {
+    border-left: 1px solid #999;
+    color: #222;
+    padding-left: 20px;
+    font-style: italic;
+  }
+
+  footer {
+    padding: 25px;
+    text-align: center;
+  }
+
+  .helptext {
+    color: #777;
+    font-size: small;
+  }
+
+  .errorlist {
+    color: #eba613;
+    font-size: small;
+  }
+
+   
+  ul.blog-posts {
+    list-style-type: none;
+    padding: unset;
+  }
+
+  ul.blog-posts li {
+    display: flex;
+  }
+
+  ul.blog-posts li span {
+    flex: 0 0 130px;
+  }
+
+  ul.blog-posts li a:visited {
+    color: #8b6fcb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #333;
+      color: #ddd;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    strong,
+    b {
+      color: #eee;
+    }
+
+    a {
+      color: #8cc2dd;
+    }
+
+    code {
+      background-color: #777;
+    }
+
+    pre code {
+      color: #ddd;
+    }
+
+    blockquote {
+      color: #ccc;
+    }
+
+    textarea,
+    input {
+      background-color: #252525;
+      color: #ddd;
+    }
+
+    .helptext {
+      color: #aaa;
+    }
+  }
+
+</style>
+
+</head>
+
+<body>
+  <header><a href="/" class="title">
+  <h2>Marcos&#39; Blog</h2>
+</a>
+<nav><a href="/">Home</a>
+
+
+<a href="/blog">Blog</a>
+
+</nav>
+</header>
+  <main>
+
+<h1>Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs</h1>
+<p>
+  <i>
+    <time datetime='2019-08-16' pubdate>
+      16 Aug, 2019
+    </time>
+  </i>
+</p>
+
+<content>
+  <p>After chasing the problem of <a href="/kernel-adventures-are-usb-sticks-rotational-devices">rotational sysfs property of USB flash drives</a>, I started to check another <em>sysfs</em> attributes of USB storage devices, and I noted two missing attributes: <em>vpd_pg80</em> and <em>vpd_pg83</em>.</p>
+<p>As explained <a href="/kernel-adventures-are-usb-sticks-rotational-devices">here</a>, VPD pages contain data related to the device. In special, page 80 is <em>Unit Serial Number</em> (sn) and page 83 is <em>Device Information</em> (di), which are present in any SCSI device that complies with <em>SPC-2</em> or later.</p>
+<p>Check an example of my <em>sn</em> and <em>di</em> of my <em>SSD</em> using <strong>sg_vpd</strong> from sg3_utils package:</p>
+<pre><code>$ sg_vpd --page 0x80 /dev/sda
+  Unit serial number VPD page:
+    Unit serial number: FS71N654610101U37
+$ sg_vpd --page 0x83 /dev/sda                                                                                        
+  Device Identification VPD page:
+    Addressed logical unit:
+      designator type: vendor specific [0x0],  code set: ASCII
+        vendor specific: FS71N654610101U37   
+      designator type: T10 vendor identification,  code set: ASCII
+        vendor id: ATA     
+        vendor specific: SK hynix SC300 SATA 512GB               FS71N654610101U37
+</code></pre><p>This information is exported as attributes of storage devices in <em>sysfs</em>, like my HDD and SSD devices below:</p>
+<pre><code>$ ls /sys/block/sd[ab]/device/vpd*
+  /sys/block/sda/device/vpd_pg80
+  /sys/block/sda/device/vpd_pg83
+  /sys/block/sdb/device/vpd_pg80
+  /sys/block/sdb/device/vpd_pg83
+</code></pre><p>This is true for the majority of storage devices, but not for USB flash drives. Most USB storage devices don’t have these attributes in <em>sysfs</em>, even when sg_vpd clearly shows them, like below:</p>
+<pre><code>$ sg_vpd --page 0x80 /dev/sdc
+  Unit serial number VPD page:
+    Unit serial number: 4C530001300722111594
+$ sg_vpd --page 0x83 /dev/sdc
+  Device Identification VPD page:
+    Addressed logical unit:
+      designator type: T10 vendor identification,  code set: ASCII
+        vendor id: SanDisk
+        vendor specific: Cruzer Blade
+$ ls /sys/block/sdc/device/vpd*    
+  zsh: no matches found: /sys/block/sdc/device/vpd*
+</code></pre><p>I’ve tested a bunch of different USB flash devices and USB to SATA adapters <a href="/kernel-adventures-are-usb-sticks-rotational-devices">in my previous post</a>, and neither of them had <em>vpd_pg80</em> and <em>vpd_pg83</em> in <em>sysfs</em>, although all <em>SanDisk Cruzer Blade</em> devices tested expose these VPD pages (thanks to my friend <a href="https://twitter.com/alxvicenzi">Alexandre Vicenzi</a> who also had a <em>Cruzer Blades</em> to test).</p>
+<p>In order to understand the problem, I decided to look at the kernel code. By using <em>grep</em>, I found a couple of interesting files:</p>
+<pre><code>$ git grep -l pg80       
+drivers/scsi/scsi.c
+drivers/scsi/scsi_sysfs.c
+include/scsi/scsi_device.h
+</code></pre><p>At first glance, <em>scsi_sysfs.c</em> seems the best place to start. This file describes the <em>sysfs</em> attributes of SCSI devices, like <em>vpd_pg80</em> and how the values of this properly is presented. So far, no information from where it is assigned.</p>
+<p>File <em>scsi.c</em> had some answers. Looking at function <em>scsi_attach_vpd</em>, we can clearly see where the SCSI layer checks for <em>Device Information</em> and <em>Serial Number</em>.</p>
+<p>But, let’s look at the first function that <a href="https://elixir.bootlin.com/linux/v5.3-rc4/source/drivers/scsi/scsi.c#L454"><em>scsi_attach_vpd</em></a> calls:</p>
+<pre><code>/**
+ * scsi_device_supports_vpd - test if a device supports VPD pages
+ * @sdev: the &amp;amp;struct scsi_device to test
+ *
+ * If the 'try_vpd_pages' flag is set it takes precedence.
+ * Otherwise we will assume VPD pages are supported if the
+ * SCSI level is at least SPC-3 and 'skip_vpd_pages' is not set.
+ */
+
+static inline int scsi_device_supports_vpd(struct scsi_device *sdev)
+{
+	/* Attempt VPD inquiry if the device blacklist explicitly calls
+	 * for it.
+	 */
+	if (sdev-&gt;try_vpd_pages)
+		return 1;
+	/*
+	 * Although VPD inquiries can go to SCSI-2 type devices,
+	 * some USB ones crash on receiving them, and the pages
+	 * we currently ask for are mandatory for SPC-2 and beyond
+	 */
+	if (sdev-&gt;scsi_level &gt;= SCSI_SPC_2 &amp;&amp; !sdev-&gt;skip_vpd_pages)
+		return 1;
+	return 0;
+}
+</code></pre><p>By looking at this function we can presume that <strong>try_vpd_pages</strong> flag is not set and <strong>skip_vpd_pages</strong> is. We can discard checking <strong>scsi_level</strong> because <em>Cruzer Blade</em> is <em>SPC-4</em> compliant:</p>
+<pre><code>$ sg_inq /dev/sdc | head -2
+  standard INQUIRY:
+    PQual=0  Device_type=0  RMB=1  LU_CONG=0  version=0x06  [SPC-4]
+</code></pre><p>By looking at the comment of <em>scsi_device_supports_vpd</em>, some USB devices crash after checking their VPD pages, in this case, it makes sense to not enable VPD for all devices. Although, our <em>SanDisk Cruzer Blade</em> device clearly supports VPD and does not crash.</p>
+<p><em>scsi_device_supports_vpd</em> is called in two places: <em>scsi_add_lun</em> and <em>scsi_rescan_device</em>. These callers are common path of device setup, so fixing <em>skip_vpd_pages</em> should be enough.</p>
+<p>Let’s <em>grep</em> again in the kernel source code to check where <strong>skip_vpd_pages</strong> is being set:</p>
+<pre><code>$ git grep -l skip_vpd_pages
+drivers/scsi/scsi.c
+drivers/scsi/scsi_scan.c
+drivers/usb/storage/scsiglue.c
+include/scsi/scsi_device.h
+</code></pre><p>Interesting to see that USB layer setting this flag. Let’s check <a href="https://elixir.bootlin.com/linux/v5.2.8/source/drivers/usb/storage/scsiglue.c#L210">drivers/usb/stoarge/scsiglue.c</a> file:</p>
+<pre><code>/* Some devices don't handle VPD pages correctly */
+sdev-&gt;skip_vpd_pages = 1;
+</code></pre><p>By the code above, which belongs to <em>slave_configure</em> function, USB layer disables VPD for all USB storage devices. Makes sense, since some devices are reported to crash when checking for VPD, as stated before.</p>
+<p>But, shouldn’t we add support for <em>SanDisk Cruzer Blade</em> at least? There is a per device mapping with specific flags in SCSI layer that should help to fix this situation, specially regarding <strong>try_vpd_pages</strong>. To add support for <em>SanDisk Cruzer Blade</em>* devices, I submited this <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bc022145c939dd3938771535a8074a884aec0f9">patch</a> to the kernel mailing list and it’s now merged:</p>
+<pre><code>  {&quot;LENOVO&quot;, &quot;Universal Xport&quot;, &quot;*&quot;, BLIST_NO_ULD_ATTACH},
+  + {&quot;SanDisk&quot;, &quot;Cruzer Blade&quot;, NULL, BLIST_TRY_VPD_PAGES |
+  +  BLIST_INQUIRY_36},
+  {&quot;SMSC&quot;, &quot;USB 2 HS-CF&quot;, NULL, BLIST_SPARSELUN | BLIST_INQUIRY_36},
+  ...
+</code></pre><p>The patch adds specific flags that will be checked in SCSI layer and will be applied once the <em>SanDisk Cruzer Blade</em>* device is found. This change alone does not fix the problem as the flag **skip_vpd_pages** is still enabled. So I submited a second <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=349148785b8cea9781af520fd53c29ee8087ee74">patch</a>, to only set **skip_vpd_pages** when **try_vpd_pages** is not set allowing the SCSI layer to process all VPD pages when **try_vpd_pages** is set.</p>
+<pre><code>-  /* Some devices don't handle VPD pages correctly */
+-  sdev-&gt;skip_vpd_pages = 1;
++  /*
++   * Some devices don't handle VPD pages correctly, so skip vpd
++   * pages if not forced by SCSI layer.
++   */
++  sdev-&gt;skip_vpd_pages = !sdev-&gt;try_vpd_pages;
+</code></pre><p>With these two patches applied <em>SanDisk Cruzer Blade</em> USB flash device is able to properly show the VPD pages in <em>sysfs</em>:</p>
+<pre><code>$ cat /sys/block/sda/device/vendor
+SanDisk
+
+$ cat /sys/block/sda/device/model
+Cruzer Blade
+
+$ cat /sys/block/sda/device/vpd_pg80
+4C530001300722111594
+
+$ cat /sys/block/sda/device/vpd_pg83 
+0,SanDiskCruzer Blade4C530001300722111594
+</code></pre><p>That’s all for today. Stay tuned for more posts about Kernel and whatnot, see ya!</p>
+
+</content>
+<p>
+  
+  <a href="https://mpdesouza.com/blog/usb/">#usb</a>
+  
+  <a href="https://mpdesouza.com/blog/sysfs/">#sysfs</a>
+  
+  <a href="https://mpdesouza.com/blog/linux/">#linux</a>
+  
+  <a href="https://mpdesouza.com/blog/kernel/">#kernel</a>
+  
+  <a href="https://mpdesouza.com/blog/vpd/">#vpd</a>
+  
+</p>
+
+  </main>
+  <footer>Made with <a href="https://github.com/janraasch/hugo-bearblog/">Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer>
+
+    
+</body>
+
+</html>
