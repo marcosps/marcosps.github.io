@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>no_new_privs on Marcos&#39; Blog</title>
-    <link>https://marcosps.github.io/blog/no_new_privs/</link>
+    <link>https://mpdesouza.com/blog/no_new_privs/</link>
     <description>Recent content in no_new_privs on Marcos&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
-    <lastBuildDate>Tue, 22 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://marcosps.github.io/blog/no_new_privs/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 22 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/blog/no_new_privs/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>NO_NEW_PRIVS: avoiding privilege escalation</title>
-      <link>https://marcosps.github.io/no_new_privs-avoiding-privilege-escalation/</link>
+      <link>https://mpdesouza.com/no_new_privs-avoiding-privilege-escalation/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://marcosps.github.io/no_new_privs-avoiding-privilege-escalation/</guid>
+      <guid>https://mpdesouza.com/no_new_privs-avoiding-privilege-escalation/</guid>
       <description>Proposed in 2012, the NO_NEW_PRIVS flag made possible to any process to avoid privilege escalation when this behavior is not desired. After the flag is set, it persists across execve, clone and fork syscalls, and cannot be cleared. This can help you to avoid exploitation of vulnerable software, since the attacker will be running as an ordinary user.
 The NO_NEW_PRIVS flag is already beeng used by some projects that try to make the running environment more secure, specially container engines and sandbox applications.</description>
     </item>

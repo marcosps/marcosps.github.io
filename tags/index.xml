@@ -2,72 +2,72 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Marcos&#39; Blog</title>
-    <link>https://marcosps.github.io/tags/</link>
+    <link>https://mpdesouza.com/tags/</link>
     <description>Recent content in Tags on Marcos&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
-    <lastBuildDate>Wed, 07 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://marcosps.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 07 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>kernel</title>
-      <link>https://marcosps.github.io/blog/kernel/</link>
+      <link>https://mpdesouza.com/blog/kernel/</link>
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://marcosps.github.io/blog/kernel/</guid>
+      <guid>https://mpdesouza.com/blog/kernel/</guid>
       <description></description>
     </item>
     
     <item>
       <title>linux</title>
-      <link>https://marcosps.github.io/blog/linux/</link>
+      <link>https://mpdesouza.com/blog/linux/</link>
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://marcosps.github.io/blog/linux/</guid>
+      <guid>https://mpdesouza.com/blog/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>storage</title>
-      <link>https://marcosps.github.io/blog/storage/</link>
+      <link>https://mpdesouza.com/blog/storage/</link>
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://marcosps.github.io/blog/storage/</guid>
+      <guid>https://mpdesouza.com/blog/storage/</guid>
       <description></description>
     </item>
     
     <item>
       <title>usb</title>
-      <link>https://marcosps.github.io/blog/usb/</link>
+      <link>https://mpdesouza.com/blog/usb/</link>
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://marcosps.github.io/blog/usb/</guid>
+      <guid>https://mpdesouza.com/blog/usb/</guid>
       <description></description>
     </item>
     
     <item>
       <title>vpd</title>
-      <link>https://marcosps.github.io/blog/vpd/</link>
+      <link>https://mpdesouza.com/blog/vpd/</link>
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://marcosps.github.io/blog/vpd/</guid>
+      <guid>https://mpdesouza.com/blog/vpd/</guid>
       <description></description>
     </item>
     
     <item>
       <title>execve</title>
-      <link>https://marcosps.github.io/blog/execve/</link>
+      <link>https://mpdesouza.com/blog/execve/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://marcosps.github.io/blog/execve/</guid>
+      <guid>https://mpdesouza.com/blog/execve/</guid>
       <description></description>
     </item>
     
     <item>
       <title>no_new_privs</title>
-      <link>https://marcosps.github.io/blog/no_new_privs/</link>
+      <link>https://mpdesouza.com/blog/no_new_privs/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://marcosps.github.io/blog/no_new_privs/</guid>
+      <guid>https://mpdesouza.com/blog/no_new_privs/</guid>
       <description></description>
     </item>
     
