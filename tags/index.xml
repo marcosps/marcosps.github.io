@@ -7,11 +7,47 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
-    <lastBuildDate>Fri, 16 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 14 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>btrfs</title>
+      <link>https://mpdesouza.com/blog/btrfs/</link>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/btrfs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>capabilities</title>
+      <link>https://mpdesouza.com/blog/capabilities/</link>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/capabilities/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>filesystem</title>
+      <link>https://mpdesouza.com/blog/filesystem/</link>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/filesystem/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ioctl</title>
+      <link>https://mpdesouza.com/blog/ioctl/</link>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/ioctl/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>kernel</title>
       <link>https://mpdesouza.com/blog/kernel/</link>
-      <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/kernel/</guid>
       <description></description>
@@ -20,9 +56,36 @@
     <item>
       <title>linux</title>
       <link>https://mpdesouza.com/blog/linux/</link>
-      <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>receive</title>
+      <link>https://mpdesouza.com/blog/receive/</link>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/receive/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>send</title>
+      <link>https://mpdesouza.com/blog/send/</link>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/send/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>subvolume</title>
+      <link>https://mpdesouza.com/blog/subvolume/</link>
+      <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/subvolume/</guid>
       <description></description>
     </item>
     

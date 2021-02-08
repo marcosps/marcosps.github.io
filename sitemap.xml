@@ -4,18 +4,73 @@
   
   <url>
     <loc>https://mpdesouza.com/</loc>
-    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://mpdesouza.com/blog/</loc>
-    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/btrfs/</loc>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/btrfs-making-send-more-capable/</loc>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/capabilities/</loc>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/filesystem/</loc>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/ioctl/</loc>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://mpdesouza.com/blog/kernel/</loc>
-    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/linux/</loc>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/receive/</loc>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/send/</loc>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/tags/</loc>
+    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</loc>
+    <lastmod>2020-01-23T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mpdesouza.com/blog/subvolume/</loc>
+    <lastmod>2020-01-23T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -24,17 +79,7 @@
   </url>
   
   <url>
-    <loc>https://mpdesouza.com/blog/linux/</loc>
-    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://mpdesouza.com/blog/sysfs/</loc>
-    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/tags/</loc>
     <lastmod>2019-08-16T00:00:00+00:00</lastmod>
   </url>
   

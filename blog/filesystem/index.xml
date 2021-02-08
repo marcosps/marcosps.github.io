@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>filesystem on Marcos&#39; Blog</title>
+    <link>https://mpdesouza.com/blog/filesystem/</link>
+    <description>Recent content in filesystem on Marcos&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
+    <lastBuildDate>Thu, 14 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/blog/filesystem/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>btrfs: making &#34;send&#34; more &#34;capable&#34;</title>
+      <link>https://mpdesouza.com/btrfs-making-send-more-capable/</link>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/btrfs-making-send-more-capable/</guid>
+      <description>The send/receive is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.
+The receive feature receives a stream of data, applying the it in the filesystem. As the stream can be a file, it&amp;rsquo;s easy even to transfer the output of send over the network and receive in the other side.</description>
+    </item>
+    
+    <item>
+      <title>New btrfs feature: Delete subvolumes using subvolume ids</title>
+      <link>https://mpdesouza.com/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</link>
+      <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</guid>
+      <description>Note: The kernel changes mentioned here should appear in Linux 5.6 since it&amp;rsquo;s currently in linux-next, and the patches related to btrfs-progs and xfstests are still waiting to be merged
+btrfs is a very versatile filesystem, and it has a lot of features that don&amp;rsquo;t exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes. A subvolume can be compared to a disk partition since each subvolume can contain it&amp;rsquo;s own filesystem tree and size limits.</description>
+    </item>
+    
+  </channel>
+</rss>

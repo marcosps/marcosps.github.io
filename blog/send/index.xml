@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>send on Marcos&#39; Blog</title>
+    <link>https://mpdesouza.com/blog/send/</link>
+    <description>Recent content in send on Marcos&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
+    <lastBuildDate>Thu, 14 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/blog/send/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>btrfs: making &#34;send&#34; more &#34;capable&#34;</title>
+      <link>https://mpdesouza.com/btrfs-making-send-more-capable/</link>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/btrfs-making-send-more-capable/</guid>
+      <description>The send/receive is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.
+The receive feature receives a stream of data, applying the it in the filesystem. As the stream can be a file, it&amp;rsquo;s easy even to transfer the output of send over the network and receive in the other side.</description>
+    </item>
+    
+  </channel>
+</rss>

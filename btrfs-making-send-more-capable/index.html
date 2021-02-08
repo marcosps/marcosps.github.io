@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="https://mpdesouza.com/images/favicon.ico" />
+<title>btrfs: making &#34;send&#34; more &#34;capable&#34; | Marcos&#39; Blog</title>
+<meta name="title" content="btrfs: making &#34;send&#34; more &#34;capable&#34;" />
+<meta name="description" content="Post fixing an issue in btrfs send/receive." />
+<meta name="keywords" content="kernel,linux,filesystem,btrfs,ioctl,send,receive,capabilities," />
+
+
+<meta property="og:title" content="btrfs: making &#34;send&#34; more &#34;capable&#34;" />
+<meta property="og:description" content="Post fixing an issue in btrfs send/receive." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mpdesouza.com/btrfs-making-send-more-capable/" />
+<meta property="og:image" content="https://mpdesouza.com/images/share.png"/>
+<meta property="article:published_time" content="2020-05-14T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-05-14T00:00:00+00:00" /><meta property="og:site_name" content="Marcos&#39; Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://mpdesouza.com/images/share.png"/>
+
+<meta name="twitter:title" content="btrfs: making &#34;send&#34; more &#34;capable&#34;"/>
+<meta name="twitter:description" content="Post fixing an issue in btrfs send/receive."/>
+
+
+
+<meta itemprop="name" content="btrfs: making &#34;send&#34; more &#34;capable&#34;">
+<meta itemprop="description" content="Post fixing an issue in btrfs send/receive.">
+<meta itemprop="datePublished" content="2020-05-14T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-05-14T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1092">
+<meta itemprop="image" content="https://mpdesouza.com/images/share.png"/>
+
+
+
+<meta itemprop="keywords" content="kernel,linux,filesystem,btrfs,ioctl,send,receive,capabilities," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  <style>
+  body {
+    font-family: Verdana, sans-serif;
+    margin: auto;
+    padding: 20px;
+    max-width: 720px;
+    text-align: left;
+    background-color: #fff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: #444;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong,
+  b {
+    color: #222;
+  }
+
+  a {
+    color: #3273dc;
+     
+  }
+
+  .title {
+    text-decoration: none;
+    border: 0;
+  }
+
+  .title span {
+    font-weight: 400;
+  }
+
+  nav a {
+    margin-right: 10px;
+  }
+
+  textarea {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  input {
+    font-size: 16px;
+  }
+
+  content {
+    line-height: 1.6;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  code {
+    padding: 2px 5px;
+    background-color: #f2f2f2;
+  }
+
+  pre code {
+    color: #222;
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 14px;
+  }
+
+  blockquote {
+    border-left: 1px solid #999;
+    color: #222;
+    padding-left: 20px;
+    font-style: italic;
+  }
+
+  footer {
+    padding: 25px;
+    text-align: center;
+  }
+
+  .helptext {
+    color: #777;
+    font-size: small;
+  }
+
+  .errorlist {
+    color: #eba613;
+    font-size: small;
+  }
+
+   
+  ul.blog-posts {
+    list-style-type: none;
+    padding: unset;
+  }
+
+  ul.blog-posts li {
+    display: flex;
+  }
+
+  ul.blog-posts li span {
+    flex: 0 0 130px;
+  }
+
+  ul.blog-posts li a:visited {
+    color: #8b6fcb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #333;
+      color: #ddd;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    strong,
+    b {
+      color: #eee;
+    }
+
+    a {
+      color: #8cc2dd;
+    }
+
+    code {
+      background-color: #777;
+    }
+
+    pre code {
+      color: #ddd;
+    }
+
+    blockquote {
+      color: #ccc;
+    }
+
+    textarea,
+    input {
+      background-color: #252525;
+      color: #ddd;
+    }
+
+    .helptext {
+      color: #aaa;
+    }
+  }
+
+</style>
+
+</head>
+
+<body>
+  <header><a href="/" class="title">
+  <h2>Marcos&#39; Blog</h2>
+</a>
+<nav><a href="/">Home</a>
+
+
+<a href="/blog">Blog</a>
+
+</nav>
+</header>
+  <main>
+
+<h1>btrfs: making &#34;send&#34; more &#34;capable&#34;</h1>
+<p>
+  <i>
+    <time datetime='2020-05-14' pubdate>
+      14 May, 2020
+    </time>
+  </i>
+</p>
+
+<content>
+  <p>The <strong>send/receive</strong> is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.</p>
+<p>The receive feature <em>receives</em> a stream of data, applying the it in the filesystem. As the stream can be a file, it&rsquo;s easy even to transfer the output of <strong>send</strong> over the network and <strong>receive</strong> in the other side. Here is an example of how this works:</p>
+<p><code>$ btrfs send /mnt/my_snapshot | ssh user@host &quot;btrfs receive /mnt/my_backup&quot;</code></p>
+<p>In this example, we are doing what we call a <em>full send</em>, which sends all data to the remote side. We can see what is being processed by the receiving side by using <em>--dump</em> argument:</p>
+<pre><code># creating a &quot;disk&quot; and the btrfs filesystem
+$ truncate -s 10G btrfs.disk
+$ mkfs.btrfs -f btrfs.disk
+
+# creating a subvolume and a snapshot with one file
+$ mount btrfs.disk /mnt
+$ btrfs subvolume create /mnt/vol1
+Create subvolume '/mnt/vol1'
+
+$ touch /mnt/vol1/file.txt
+$ btrfs subvolume snapshot -r /mnt/vol1/ /mnt/snap1
+Create a readonly snapshot of '/mnt/vol1/' in '/mnt/snap1'
+
+# create a full send stream from snap1
+$ btrfs send /mnt/snap1 -f send.dump
+
+# dumping the contents of the stream
+$ btrfs receive -f send.dump --dump
+subvol          ./snap1                         uuid=50ce3050-4ff1-f441-8202-7e49f3ac9657 transid=7
+chown           ./snap1/                        gid=0 uid=0
+chmod           ./snap1/                        mode=755
+utimes          ./snap1/                        atime=2020-05-08T16:32:50-0300 mtime=2020-05-08T16:33:07-0300 ctime=2020-05-08T16:33:07-0300
+mkfile          ./snap1/o257-7-0
+rename          ./snap1/o257-7-0                dest=./snap1/file.txt
+utimes          ./snap1/                        atime=2020-05-08T16:32:50-0300 mtime=2020-05-08T16:33:07-0300 ctime=2020-05-08T16:33:07-0300
+chown           ./snap1/file.txt                gid=0 uid=0
+chmod           ./snap1/file.txt                mode=644
+utimes          ./snap1/file.txt                atime=2020-05-08T16:33:07-0300 mtime=2020-05-08T16:33:07-0300 ctime=2020-05-08T16:33:07-0300
+
+# creating a subvolume to store the backups (this coudld be done in a different disk)
+$ btrfs subvolume create /mnt/bkp
+Create subvolume '/mnt/bkp'
+
+# applying the receiving the stream
+$ btrfs receive -f send.dump /mnt/bkp
+$ ls /mnt/bkp/snap1/file.txt
+/mnt/bkp/snap1/file.txt
+</code></pre><p>As we could see by the outputs above, the full send really specifies all actions, from the first snapshot creation, creation of files, adding a owner/group/mode and access time.</p>
+<p>After we have a backup, we can send just incremental changes. We call this an <!-- raw HTML omitted -->incremental send<!-- raw HTML omitted -->. We use a parent snapshot (-p argument) and compare it with a new snapshot. Look at the example below, using the same snapshots created in the steps above:</p>
+<pre><code># changing user/group of file.txt
+$ ls -l /mnt/vol1/file.txt                    
+-rw-r--r-- 1 root root 0 May  8 16:33 /mnt/vol1/file.txt
+                                              
+$ chgrp 100 /mnt/vol1/file.txt                
+$ chown users /mnt/vol1/file.txt              
+$ ls -l /mnt/vol1/file.txt                    
+-rw-r--r-- 1 marcos users 0 May  8 16:33 /mnt/vol1/file.txt
+                                              
+# create a new snapshot based in the current version of vol1
+$ btrfs subvolume snapshot -r /mnt/vol1/ /mnt/snap2
+Create a readonly snapshot of '/mnt/vol1/' in '/mnt/snap2'
+                                              
+# create a new stream by comparing snap1 with snap2, and dumping the changes
+$ btrfs send -p /mnt/snap1/ /mnt/snap2 -f send.dump
+$ btrfs receive -f send.dump --dump           
+snapshot        ./snap2                         uuid=16343add-4e38-e343-9af2-f64ff7d4b61d transid=15 parent_uuid=50ce3050-4ff1-f441-8202-7e49f3ac9657 parent_transid=7
+utimes          ./snap2/                        atime=2020-05-08T16:41:26-0300 mtime=2020-05-08T16:33:07-0300 ctime=2020-05-08T16:33:07-0300
+chown           ./snap2/file.txt                gid=100 uid=1001
+utimes          ./snap2/file.txt                atime=2020-05-08T16:33:07-0300 mtime=2020-05-08T16:33:07-0300 ctime=2020-05-08T16:42:06-0300
+                                              
+# applying changes                            
+$ btrfs receive -f send.dump /mnt/bkp/        
+$ ls -l /mnt/bkp/snap2/file.txt               
+-rw-r--r-- 1 marcos users 0 May  8 16:33 /mnt/bkp/snap2/file.txt
+</code></pre><p>This is what we call an <em>incremental send</em>. In this case, if we have a file that exists in both snapshots, but in the most recent one it only changed the <em>owner/group</em>, the send stream will contain only the <strong>chown</strong> command, instead of copying the content of the file over the network again. The receive side will apply the <strong>chown</strong>, and then the filesystem on the remote/local host will have the content of the most recent version.</p>
+<p>This feature works nicely for all users, but there is a corner case when it comes to <a href="http://man7.org/linux/man-pages/man7/capabilities.7.html">file capabilities</a>.</p>
+<h2 id="what-is-the-problem-with-capabilities">What is the problem with capabilities?</h2>
+<p>Capabilities can be set per file, and they are meant to give part of the <strong>root powers</strong> to a common binary to be executed like it&rsquo;s <strong>root</strong>, but without the over permissive <a href="https://en.wikipedia.org/wiki/Setuid">setuid</a> bit.</p>
+<p>With the setuid, the application runs as root, but using capabilities the application still runs as your current user, but with a subset of the root powers, like CAP_KILL (the permission to kill other programs) or CAP_SYS_NICE (the permission to change the priority of other processes).</p>
+<p><em>If you change the user or group of a file with capabilities, the kernel drops the capability.</em></p>
+<p>The problem is: if you have a parent snapshot that contains a file with capabilities and the file changed the owner and later restored the capability, the current kernel code emits only the chown, making the receive side to drop the capability, even if the parent snapshot still has the same capability set.</p>
+<p><strong>This problem exists in all stable releases since v4.4.</strong></p>
+<p>It&rsquo;s easy to reproduce the problem:</p>
+<pre><code># create a new sparse file with 5G of size, and create a btrfs fs on it
+$ fallocate -l5G disk.btrfs                                     
+$ mkfs.btrfs disk.btrfs                                         
+
+# mount the fs and create subvolumes fs1 and fs2              
+$ mount disk.btrfs /mnt                                         
+$ btrfs subvolume create /mnt/fs1                               
+$ btrfs subvolume create /mnt/fs2                               
+
+# create a foo.bar file on fs1,and set a capabilities on it
+$ touch /mnt/fs1/foo.bar                                        
+$ setcap cap_sys_nice+ep /mnt/fs1/foo.bar                       
+# create a readonly snapshot and send to fs2 (full send)   
+$ btrfs subvol snap -r /mnt/fs1 /mnt/fs1/snap_init              
+$ btrfs send /mnt/fs1/snap_init | btrfs receive /mnt/fs2        
+
+# change the capability on foo.bar, and restore the capability
+$ chgrp adm /mnt/fs1/foo.bar                                    
+$ setcap cap_sys_nice+ep /mnt/fs1/foo.bar                       
+                                                              
+# create a new readonly snapshot containing foo.bar with different group
+$ btrfs subvol snap -r /mnt/fs1 /mnt/fs1/snap_inc               
+# executing an incremental send comparing the two snapshots
+$ btrfs send -p /mnt/fs1/snap_init /mnt/fs1/snap_inc | btrfs receive fs2
+</code></pre><p>At this point, the foo.bar sent to fs2 lost it&rsquo;s capability:</p>
+<pre><code>$ getcap /mnt/fs2/snap_init/foo.bar 
+$
+</code></pre><p>How to fix the issue? Simple: just emit the capabilities <strong>after</strong> the chown was emitted. The basic idea is:</p>
+<ul>
+<li>Emit <strong>chown</strong></li>
+<li>Check if there are capabilities for this file</li>
+<li>If yes, emit them</li>
+</ul>
+<p>Here is a portion of the fix:</p>
+<pre><code>if (need_chown) {
+        ret = send_chown(sctx, sctx-&gt;cur_ino, sctx-&gt;cur_inode_gen,
+                        left_uid, left_gid); 
+        if (ret &lt; 0)          
+                goto out;        
+}               
+if (need_chmod) {    
+        ret = send_chmod(sctx, sctx-&gt;cur_ino, sctx-&gt;cur_inode_gen,
+                        left_mode);
+        if (ret &lt; 0)          
+                goto out;        
+}               
+                
+ret = send_capabilities(sctx);   
+if (ret &lt; 0) 
+        goto out;
+</code></pre><p>The patch itself is somewhat bigger, and exposes how btrfs managed inodes and its attributes, and I plan to write about it in the future.</p>
+<p>For the most curious readers, here is the full <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=89efda52e6b6930f80f5adda9c3c9edfb1397191">path</a>. Along with the patch solving the problem, a <a href="https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=a1c25b75b456880f64ab30ced0892f7603e4bb3c">test</a> was created in xfstests to ensure this problem won&rsquo;t happen again in the future.</p>
+<p>The kernel patch was merged in v5.8 and backported to affected all stale kernels.</p>
+<p>Thanks for reading! See you in another post!</p>
+
+</content>
+<p>
+  
+  <a href="https://mpdesouza.com/blog/kernel/">#kernel</a>
+  
+  <a href="https://mpdesouza.com/blog/linux/">#linux</a>
+  
+  <a href="https://mpdesouza.com/blog/filesystem/">#filesystem</a>
+  
+  <a href="https://mpdesouza.com/blog/btrfs/">#btrfs</a>
+  
+  <a href="https://mpdesouza.com/blog/ioctl/">#ioctl</a>
+  
+  <a href="https://mpdesouza.com/blog/send/">#send</a>
+  
+  <a href="https://mpdesouza.com/blog/receive/">#receive</a>
+  
+  <a href="https://mpdesouza.com/blog/capabilities/">#capabilities</a>
+  
+</p>
+
+  </main>
+  <footer>Made with <a href="https://github.com/janraasch/hugo-bearblog/">Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer>
+
+    
+</body>
+
+</html>

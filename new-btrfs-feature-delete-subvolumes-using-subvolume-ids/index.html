@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="https://mpdesouza.com/images/favicon.ico" />
+<title>New btrfs feature: Delete subvolumes using subvolume ids | Marcos&#39; Blog</title>
+<meta name="title" content="New btrfs feature: Delete subvolumes using subvolume ids" />
+<meta name="description" content="Post about adding a new feature to btrfs to delete subvolumes based in their id." />
+<meta name="keywords" content="kernel,linux,filesystem,btrfs,ioctl,subvolume," />
+
+
+<meta property="og:title" content="New btrfs feature: Delete subvolumes using subvolume ids" />
+<meta property="og:description" content="Post about adding a new feature to btrfs to delete subvolumes based in their id." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mpdesouza.com/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/" />
+<meta property="og:image" content="https://mpdesouza.com/images/share.png"/>
+<meta property="article:published_time" content="2020-01-23T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-01-23T00:00:00+00:00" /><meta property="og:site_name" content="Marcos&#39; Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://mpdesouza.com/images/share.png"/>
+
+<meta name="twitter:title" content="New btrfs feature: Delete subvolumes using subvolume ids"/>
+<meta name="twitter:description" content="Post about adding a new feature to btrfs to delete subvolumes based in their id."/>
+
+
+
+<meta itemprop="name" content="New btrfs feature: Delete subvolumes using subvolume ids">
+<meta itemprop="description" content="Post about adding a new feature to btrfs to delete subvolumes based in their id.">
+<meta itemprop="datePublished" content="2020-01-23T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-01-23T00:00:00+00:00" />
+<meta itemprop="wordCount" content="596">
+<meta itemprop="image" content="https://mpdesouza.com/images/share.png"/>
+
+
+
+<meta itemprop="keywords" content="kernel,linux,filesystem,btrfs,ioctl,subvolume," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  <style>
+  body {
+    font-family: Verdana, sans-serif;
+    margin: auto;
+    padding: 20px;
+    max-width: 720px;
+    text-align: left;
+    background-color: #fff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: #444;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong,
+  b {
+    color: #222;
+  }
+
+  a {
+    color: #3273dc;
+     
+  }
+
+  .title {
+    text-decoration: none;
+    border: 0;
+  }
+
+  .title span {
+    font-weight: 400;
+  }
+
+  nav a {
+    margin-right: 10px;
+  }
+
+  textarea {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  input {
+    font-size: 16px;
+  }
+
+  content {
+    line-height: 1.6;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  code {
+    padding: 2px 5px;
+    background-color: #f2f2f2;
+  }
+
+  pre code {
+    color: #222;
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 14px;
+  }
+
+  blockquote {
+    border-left: 1px solid #999;
+    color: #222;
+    padding-left: 20px;
+    font-style: italic;
+  }
+
+  footer {
+    padding: 25px;
+    text-align: center;
+  }
+
+  .helptext {
+    color: #777;
+    font-size: small;
+  }
+
+  .errorlist {
+    color: #eba613;
+    font-size: small;
+  }
+
+   
+  ul.blog-posts {
+    list-style-type: none;
+    padding: unset;
+  }
+
+  ul.blog-posts li {
+    display: flex;
+  }
+
+  ul.blog-posts li span {
+    flex: 0 0 130px;
+  }
+
+  ul.blog-posts li a:visited {
+    color: #8b6fcb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #333;
+      color: #ddd;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    strong,
+    b {
+      color: #eee;
+    }
+
+    a {
+      color: #8cc2dd;
+    }
+
+    code {
+      background-color: #777;
+    }
+
+    pre code {
+      color: #ddd;
+    }
+
+    blockquote {
+      color: #ccc;
+    }
+
+    textarea,
+    input {
+      background-color: #252525;
+      color: #ddd;
+    }
+
+    .helptext {
+      color: #aaa;
+    }
+  }
+
+</style>
+
+</head>
+
+<body>
+  <header><a href="/" class="title">
+  <h2>Marcos&#39; Blog</h2>
+</a>
+<nav><a href="/">Home</a>
+
+
+<a href="/blog">Blog</a>
+
+</nav>
+</header>
+  <main>
+
+<h1>New btrfs feature: Delete subvolumes using subvolume ids</h1>
+<p>
+  <i>
+    <time datetime='2020-01-23' pubdate>
+      23 Jan, 2020
+    </time>
+  </i>
+</p>
+
+<content>
+  <p><em>Note: The kernel changes mentioned here should appear in Linux 5.6 since it&rsquo;s currently in linux-next, and the patches related to btrfs-progs and xfstests are still waiting to be merged</em></p>
+<p>btrfs is a very versatile filesystem, and it has a lot of features that don&rsquo;t exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes. A subvolume can be compared to a <em>disk partition</em> since each subvolume can contain it&rsquo;s own filesystem tree and size limits. When created, subvolumes are shown as directories in the directory they were created.</p>
+<p>Creating a subvolume is as easy as creating a directory:</p>
+<p><code>$ btrfs subvolume create &lt;mount point&gt;/volume_name</code></p>
+<p>The same can be said of deleting a subvolume:</p>
+<p><code>$ btrfs subvolume delete &lt;mount point&gt;/volume_name</code></p>
+<p>As each subvolume can contain a different filesystem, you can even mount a subvolume as it was a partition:</p>
+<p><code>$ mount /dev/sdX -o subvol=volume_name &lt;mount_point&gt;/</code></p>
+<p>But, if it has sibling subvolumes, let&rsquo;s say subvol1 and subvol2 created under &lt;mount_point&gt;, when mounting subvol2 especially the user can&rsquo;t reach subvol1 in the same <em>&lt;mount_point&gt;</em>. Let&rsquo;s see an example:</p>
+<pre><code># allocate a 1G file
+$ fallocate -l 1G btrfs_fs
+
+# create a btrfs filesystem on it
+$ mkfs.btrfs btrfs_fs
+
+# mount it on /mnt
+$ mount btrfs_fs /mnt
+
+# create two subvolumes
+$ btrfs subvolume create /mnt/subvol1
+$ btrfs subvolume create /mnt/subvol1
+
+# list the subvolumes
+$ btrfs subvolume list /mnt
+ID 256 gen 6 top level 5 path subvol1
+ID 257 gen 7 top level 5 path subvol2
+
+$ ls /mnt
+subvol1  subvol2
+
+# create a file unders each subvol directory
+$ touch /mnt/subvol1/file1
+$ touch /mnt/subvol2/file2
+
+$ ls -R /mnt
+/mnt:
+subvol1  subvol2
+/mnt/subvol1:
+file1
+/mnt/subvol2:
+file2
+</code></pre><p>As you can see, two files were created. But, if the user mounts a specific subvolume under /mnt it won&rsquo;t be able to reach the other subvolume by the same mount point.</p>
+<pre><code>$ umount /mntmount btrfs_fs -o subvol=subvol2 /mnt
+
+$ ls -R /mnt
+/mnt:
+file2
+
+$ btrfs subvolume list /mnt
+ID 256 gen 6 top level 5 path subvol1
+ID 257 gen 7 top level 5 path subvol2
+</code></pre><p>By the code above, subvol1 can&rsquo;t be reached anymore, but it&rsquo;s listed by subvolume list. Up until now, to remove a subvolume, the user should be able to reach it from the mount point. With the given example, the only way to delete the subvolume is to mount the filesystem in another mount point and delete subvol1:</p>
+<pre><code>$ mount btrfs_fs /tmp/test
+
+$ ls /tmp/test
+subvol1  subvol2
+
+$ btrfs subvolume delete /tmp/test/subvol1
+Delete subvolume (no-commit): '/tmp/test/subvol1'
+</code></pre><p>Recent commits in <strong>Linux kernel</strong> and <strong>btrfs-progs</strong> package changed this situation. By using the <strong>--subvolid</strong> argument a user can specify subvolume to be deleted:</p>
+<pre><code>$ btrfs subvolume list /mnt
+ID 256 gen 6 top level 5 path subvol1
+ID 258 gen 7 top level 5 path subvol2
+
+$ ls -R /mnt
+/mnt:
+file2
+
+$ btrfs subvolume delete --subvolid 256 /mnt
+Delete subvolume (no-commit): '/mnt/subvol1'
+
+$ btrfs subvolume list /mnt
+ID 256 gen 6 top level 5 path subvol1
+ID 258 gen 7 top level 5 path subvol2
+</code></pre><p>A new ioctl, BTRFS_IOC_SNAP_DESTROY_V2, was added in Linux kernel, and support for this ioctl was added in <strong>btrfs-progs</strong> and <strong>libbtrfsutil</strong> to make it possible. One possible user of this new feature is snapper, which has to deal with subvolume creation and deletion from time to time.</p>
+<p>If you want to dig deeper into the details of this feature, take a look at the <a href="https://github.com/kdave/btrfs-progs/issues/152">feature request</a> and in the commits in <a href="https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=4e40309dda975249cecb95deb337d47f1830e7b8">Linux Kernel</a>, <a href="https://github.com/kdave/btrfs-progs/commit/6e85994e8003266f036e55cbb14cb593f26c8c0a">btrfs-progs</a> and a test at <a href="https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=d116fe3774b9cc1c48723b6a710c55b2fa466799">xfstests</a>.</p>
+<p>Thanks for reading!</p>
+
+</content>
+<p>
+  
+  <a href="https://mpdesouza.com/blog/kernel/">#kernel</a>
+  
+  <a href="https://mpdesouza.com/blog/linux/">#linux</a>
+  
+  <a href="https://mpdesouza.com/blog/filesystem/">#filesystem</a>
+  
+  <a href="https://mpdesouza.com/blog/btrfs/">#btrfs</a>
+  
+  <a href="https://mpdesouza.com/blog/ioctl/">#ioctl</a>
+  
+  <a href="https://mpdesouza.com/blog/subvolume/">#subvolume</a>
+  
+</p>
+
+  </main>
+  <footer>Made with <a href="https://github.com/janraasch/hugo-bearblog/">Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer>
+
+    
+</body>
+
+</html>
