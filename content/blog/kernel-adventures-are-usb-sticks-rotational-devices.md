@@ -1,7 +1,7 @@
 +++
-title = "Kernel Adventures Are USB Sticks Rotational Devices?"
+title = "Kernel Adventures: Are USB Sticks Rotational Devices?"
 date = "2019-08-07"
-description = "Sample article showcasing basic Markdown syntax and formatting for HTML elements."
+description = "Post about understanding why USB devices are usually set as rotational devices on linux."
 tags = [
     "usb",
     "storage",
