@@ -19,7 +19,7 @@ btrfs inspect-internal logical-resolve 5085913088 /
 ERROR: cannot access '//@/home': No such file or directory 
 ```
 
-An openSUSE/SLE intallation would create a set of subvolumes, starting from */@*. These subvolumes are mounted on */*, but *@* is never mounted. For example, subvolume */@/home* is mounted at */home*. We can confirm this behavior by looking at the subvolume list:
+An openSUSE/SLE installation would create a set of subvolumes, starting from */@*. These subvolumes are mounted on */*, but *@* is never mounted. For example, subvolume */@/home* is mounted at */home*. We can confirm this behavior by looking at the subvolume list:
 
 ```
 $ btrfs subvolume list /
@@ -52,7 +52,7 @@ UUID=35b19e1f-efb2-49a5-ab93-03c04e6d0399  /home                   btrfs  subvol
 
 The code related to *logical-address* look at the full subvolume path (/@/home) and tries to follow it, but subvolume */@* isn't mounted, returning an error. To address it, we need to find the exact mountpoint of the subvolume where the file is mounted, and show the path starting from it.
 
-These two patches \([patch 1](https://github.com/kdave/btrfs-progs/commit/57cfe29e69369be1fd1cfe149ee3cecf37a91968), [path 2](https://github.com/kdave/btrfs-progs/commit/6b8fed9e798dbcad196e06384b03691ad6512fba)\) fixes the issue: finding the correct mountpoint of a subvolume and using it to show the path to the file related to the logical-address.
+These two patches \([patch 1](https://github.com/kdave/btrfs-progs/commit/57cfe29e69369be1fd1cfe149ee3cecf37a91968), [path 2](https://github.com/kdave/btrfs-progs/commit/6b8fed9e798dbcad196e06384b03691ad6512fba)\) fix the issue: finding the correct mountpoint of a subvolume and using it to show the path to the file related to the logical-address.
 
 In this post I'll discuss about the first patch: how to reliably find the correct mountpoint related to a subvolume and a subvolume id.
 
