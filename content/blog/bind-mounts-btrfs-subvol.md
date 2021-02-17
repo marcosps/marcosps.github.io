@@ -2,6 +2,7 @@
 title: "btrfs: Differentiating bind mounts on subvolumes"
 date: 2021-02-16
 description: "Explaining how to differentiate bind mounts on btrfs subvolumes"
+images: ["images/btrfs-logo.png"]
 tags: [
 	"linux",
 	"btrfs",
