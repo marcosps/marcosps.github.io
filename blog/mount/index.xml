@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mount on Marcos&#39; Blog</title>
+    <link>https://mpdesouza.com/blog/mount/</link>
+    <description>Recent content in mount on Marcos&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <copyright>Copyright © 2021, Marcos Paulo de Souza.</copyright>
+    <lastBuildDate>Tue, 16 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/blog/mount/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>btrfs: Differentiating bind mounts on subvolumes</title>
+      <link>https://mpdesouza.com/btrfs-differentiating-bind-mounts-on-subvolumes/</link>
+      <pubDate>Tue, 16 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/btrfs-differentiating-bind-mounts-on-subvolumes/</guid>
+      <description>The btrfs inspect-internal logical-resolve command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file. But, for all current users of openSUSE/SUSE Enterprise Linux, this command was failing as shown below:
+btrfs inspect-internal logical-resolve 5085913088 / ERROR: cannot access &#39;//@/home&#39;: No such file or directory An openSUSE/SLE intallation would create a set of subvolumes, starting from /@.</description>
+    </item>
+    
+  </channel>
+</rss>
