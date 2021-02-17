@@ -234,7 +234,7 @@
   <p>The <em>btrfs inspect-internal logical-resolve</em> command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file. But, for all current users of openSUSE/SUSE Enterprise Linux, this command was failing as shown below:</p>
 <pre><code>btrfs inspect-internal logical-resolve 5085913088 / 
 ERROR: cannot access '//@/home': No such file or directory 
-</code></pre><p>An openSUSE/SLE intallation would create a set of subvolumes, starting from <em>/@</em>. These subvolumes are mounted on <em>/</em>, but <em>@</em> is never mounted. For example, subvolume <em>/@/home</em> is mounted at <em>/home</em>. We can confirm this behavior by looking at the subvolume list:</p>
+</code></pre><p>An openSUSE/SLE installation would create a set of subvolumes, starting from <em>/@</em>. These subvolumes are mounted on <em>/</em>, but <em>@</em> is never mounted. For example, subvolume <em>/@/home</em> is mounted at <em>/home</em>. We can confirm this behavior by looking at the subvolume list:</p>
 <pre><code>$ btrfs subvolume list /
 ID 256 gen 32 top level 5 path @
 ID 257 gen 416148 top level 256 path @/var
@@ -258,7 +258,7 @@ UUID=35b19e1f-efb2-49a5-ab93-03c04e6d0399  /opt                    btrfs  subvol
 UUID=35b19e1f-efb2-49a5-ab93-03c04e6d0399  /home                   btrfs  subvol=/@/home                0  0
 ...
 </code></pre><p>The code related to <em>logical-address</em> look at the full subvolume path (/@/home) and tries to follow it, but subvolume <em>/@</em> isn&rsquo;t mounted, returning an error. To address it, we need to find the exact mountpoint of the subvolume where the file is mounted, and show the path starting from it.</p>
-<p>These two patches (<a href="https://github.com/kdave/btrfs-progs/commit/57cfe29e69369be1fd1cfe149ee3cecf37a91968">patch 1</a>, <a href="https://github.com/kdave/btrfs-progs/commit/6b8fed9e798dbcad196e06384b03691ad6512fba">path 2</a>) fixes the issue: finding the correct mountpoint of a subvolume and using it to show the path to the file related to the logical-address.</p>
+<p>These two patches (<a href="https://github.com/kdave/btrfs-progs/commit/57cfe29e69369be1fd1cfe149ee3cecf37a91968">patch 1</a>, <a href="https://github.com/kdave/btrfs-progs/commit/6b8fed9e798dbcad196e06384b03691ad6512fba">path 2</a>) fix the issue: finding the correct mountpoint of a subvolume and using it to show the path to the file related to the logical-address.</p>
 <p>In this post I&rsquo;ll discuss about the first patch: how to reliably find the correct mountpoint related to a subvolume and a subvolume id.</p>
 <h3 id="searching-for-mounted-subvolumes">Searching for mounted subvolumes</h3>
 <p>As btrfs mount options always show subvolume and subvolume id, it would be simple as:</p>
