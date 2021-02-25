@@ -2,13 +2,8 @@
 title: "Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs"
 date: 2019-08-16
 description: "Sample article showcasing basic Markdown syntax and formatting for HTML elements."
-tags: [
-    "usb",
-    "sysfs",
-    "linux",
-    "kernel",
-    "vpd",
-]
+slug: kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs
+aliases: ["/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs"]
 ---
 
 After chasing the problem of [rotational sysfs property of USB flash drives](/kernel-adventures-are-usb-sticks-rotational-devices), I started to check another *sysfs* attributes of USB storage devices, and I noted two missing attributes: *vpd_pg80* and *vpd_pg83*.
@@ -17,7 +12,7 @@ As explained [here](/kernel-adventures-are-usb-sticks-rotational-devices), VPD p
 
 Check an example of my *sn* and *di* of my *SSD* using **sg_vpd** from sg3_utils package:
 
-```
+```sh
 $ sg_vpd --page 0x80 /dev/sda
   Unit serial number VPD page:
     Unit serial number: FS71N654610101U37
@@ -33,7 +28,7 @@ $ sg_vpd --page 0x83 /dev/sda
 
 This information is exported as attributes of storage devices in *sysfs*, like my HDD and SSD devices below:
 
-```
+```sh
 $ ls /sys/block/sd[ab]/device/vpd*
   /sys/block/sda/device/vpd_pg80
   /sys/block/sda/device/vpd_pg83
@@ -43,7 +38,7 @@ $ ls /sys/block/sd[ab]/device/vpd*
 
 This is true for the majority of storage devices, but not for USB flash drives. Most USB storage devices don’t have these attributes in *sysfs*, even when sg_vpd clearly shows them, like below:
 
-```
+```sh
 $ sg_vpd --page 0x80 /dev/sdc
   Unit serial number VPD page:
     Unit serial number: 4C530001300722111594
@@ -61,7 +56,7 @@ I’ve tested a bunch of different USB flash devices and USB to SATA adapters [i
   
 In order to understand the problem, I decided to look at the kernel code. By using *grep*, I found a couple of interesting files:
 
-```
+```sh
 $ git grep -l pg80       
 drivers/scsi/scsi.c
 drivers/scsi/scsi_sysfs.c
@@ -74,7 +69,7 @@ File *scsi.c* had some answers. Looking at function *scsi_attach_vpd*, we can cl
   
 But, let’s look at the first function that [*scsi_attach_vpd*](https://elixir.bootlin.com/linux/v5.3-rc4/source/drivers/scsi/scsi.c#L454) calls:
 
-```
+```c
 /**
  * scsi_device_supports_vpd - test if a device supports VPD pages
  * @sdev: the &amp;struct scsi_device to test
@@ -104,7 +99,7 @@ static inline int scsi_device_supports_vpd(struct scsi_device *sdev)
 
 By looking at this function we can presume that **try_vpd_pages** flag is not set and **skip_vpd_pages** is. We can discard checking **scsi_level** because *Cruzer Blade* is *SPC-4* compliant:
 
-```
+```sh
 $ sg_inq /dev/sdc | head -2
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=1  LU_CONG=0  version=0x06  [SPC-4]
@@ -116,7 +111,7 @@ By looking at the comment of *scsi_device_supports_vpd*, some USB devices crash 
 
 Let’s *grep* again in the kernel source code to check where **skip_vpd_pages** is being set:
 
-```
+```sh
 $ git grep -l skip_vpd_pages
 drivers/scsi/scsi.c
 drivers/scsi/scsi_scan.c
@@ -126,7 +121,7 @@ include/scsi/scsi_device.h
 
 Interesting to see that USB layer setting this flag. Let’s check [drivers/usb/stoarge/scsiglue.c](https://elixir.bootlin.com/linux/v5.2.8/source/drivers/usb/storage/scsiglue.c#L210) file:
 
-```
+```c
 /* Some devices don't handle VPD pages correctly */
 sdev->skip_vpd_pages = 1;
 ```
@@ -135,17 +130,17 @@ By the code above, which belongs to *slave_configure* function, USB layer disabl
   
 But, shouldn’t we add support for *SanDisk Cruzer Blade* at least? There is a per device mapping with specific flags in SCSI layer that should help to fix this situation, specially regarding **try_vpd_pages**. To add support for *SanDisk Cruzer Blade** devices, I submited this [patch](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bc022145c939dd3938771535a8074a884aec0f9) to the kernel mailing list and it’s now merged:
 
-```
+```diff
   {"LENOVO", "Universal Xport", "*", BLIST_NO_ULD_ATTACH},
-  + {"SanDisk", "Cruzer Blade", NULL, BLIST_TRY_VPD_PAGES |
-  +  BLIST_INQUIRY_36},
++ {"SanDisk", "Cruzer Blade", NULL, BLIST_TRY_VPD_PAGES |
++  BLIST_INQUIRY_36},
   {"SMSC", "USB 2 HS-CF", NULL, BLIST_SPARSELUN | BLIST_INQUIRY_36},
   ...
 ```
 
 The patch adds specific flags that will be checked in SCSI layer and will be applied once the *SanDisk Cruzer Blade** device is found. This change alone does not fix the problem as the flag **skip_vpd_pages** is still enabled. So I submited a second [patch](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=349148785b8cea9781af520fd53c29ee8087ee74), to only set **skip_vpd_pages** when **try_vpd_pages** is not set allowing the SCSI layer to process all VPD pages when **try_vpd_pages** is set.
 
-```
+```diff
 -  /* Some devices don't handle VPD pages correctly */
 -  sdev->skip_vpd_pages = 1;
 +  /*
@@ -157,7 +152,7 @@ The patch adds specific flags that will be checked in SCSI layer and will be app
 
 With these two patches applied *SanDisk Cruzer Blade* USB flash device is able to properly show the VPD pages in *sysfs*:
 
-```
+```sh
 $ cat /sys/block/sda/device/vendor
 SanDisk
 

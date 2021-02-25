@@ -2,27 +2,21 @@
 title: "btrfs: making \"send\" more \"capable\""
 date: 2020-05-14
 description: "Post fixing an issue in btrfs send/receive."
-tags: [
-    "kernel",
-    "linux",
-    "filesystem",
-    "btrfs",
-    "ioctl",
-    "send",
-    "receive",
-    "capabilities",
-]
+slug: btrfs-making-send-more-capable
+aliases: ["/btrfs-making-send-more-capable"]
 ---
 
 The **send/receive** is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.
 
 The receive feature *receives* a stream of data, applying the it in the filesystem. As the stream can be a file, it's easy even to transfer the output of **send** over the network and **receive** in the other side. Here is an example of how this works:
 
-`$ btrfs send /mnt/my_snapshot | ssh user@host "btrfs receive /mnt/my_backup"`
+```sh
+$ btrfs send /mnt/my_snapshot | ssh user@host "btrfs receive /mnt/my_backup"
+```
 
 In this example, we are doing what we call a *full send*, which sends all data to the remote side. We can see what is being processed by the receiving side by using *\-\-dump* argument:
 
-```
+```sh
 # creating a "disk" and the btrfs filesystem
 $ truncate -s 10G btrfs.disk
 $ mkfs.btrfs -f btrfs.disk
@@ -66,7 +60,7 @@ As we could see by the outputs above, the full send really specifies all actions
 
 After we have a backup, we can send just incremental changes. We call this an <em>incremental send</em>. We use a parent snapshot (-p argument) and compare it with a new snapshot. Look at the example below, using the same snapshots created in the steps above:
 
-```
+```sh
 # changing user/group of file.txt
 $ ls -l /mnt/vol1/file.txt                    
 -rw-r--r-- 1 root root 0 May  8 16:33 /mnt/vol1/file.txt
@@ -112,7 +106,7 @@ The problem is: if you have a parent snapshot that contains a file with capabili
 
 It's easy to reproduce the problem:
 
-```
+```sh
 # create a new sparse file with 5G of size, and create a btrfs fs on it
 $ fallocate -l5G disk.btrfs                                     
 $ mkfs.btrfs disk.btrfs                                         
@@ -141,7 +135,7 @@ $ btrfs send -p /mnt/fs1/snap_init /mnt/fs1/snap_inc | btrfs receive fs2
 
 At this point, the foo.bar sent to fs2 lost it's capability:
 
-```
+```sh
 $ getcap /mnt/fs2/snap_init/foo.bar 
 $
 ```
@@ -153,7 +147,7 @@ How to fix the issue? Simple: just emit the capabilities **after** the chown was
 
 Here is a portion of the fix:
 
-```
+```c
 if (need_chown) {
         ret = send_chown(sctx, sctx->cur_ino, sctx->cur_inode_gen,
                         left_uid, left_gid); 
