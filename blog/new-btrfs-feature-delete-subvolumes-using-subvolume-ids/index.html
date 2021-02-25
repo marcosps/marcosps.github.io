@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Hugo 0.81.0" />
+
+  <title>New btrfs feature: Delete subvolumes using subvolume ids &middot; Marcos&#39; Blog</title>
+
+  <meta name="description" content="Post about adding a new feature to btrfs to delete subvolumes based in their id." />
+
+  
+
+<meta itemprop="name" content="New btrfs feature: Delete subvolumes using subvolume ids">
+<meta itemprop="description" content="Post about adding a new feature to btrfs to delete subvolumes based in their id."><meta itemprop="datePublished" content="2020-01-23T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-01-23T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="631">
+<meta itemprop="keywords" content="" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="New btrfs feature: Delete subvolumes using subvolume ids"/>
+<meta name="twitter:description" content="Post about adding a new feature to btrfs to delete subvolumes based in their id."/>
+
+
+<meta property="og:title" content="New btrfs feature: Delete subvolumes using subvolume ids" />
+<meta property="og:description" content="Post about adding a new feature to btrfs to delete subvolumes based in their id." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2020-01-23T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2020-01-23T00:00:00&#43;00:00" />
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type":"Person",
+      "@id": "https://mpdesouza.com#author",
+      "name": "Marcos Paulo de Souza",
+      "image": {
+        "@type":"ImageObject",
+        "url": "https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=400&d=mp"
+      },
+      "description": "Software Engineer"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://mpdesouza.com#website",
+      "url": "https://mpdesouza.com",
+      "name": "Marcos' Blog",
+      "description": "Software Engineer",
+      "publisher": {
+        "@id": "https://mpdesouza.com#author"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/#webpage",
+      "url": "https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/",
+      "name": "New btrfs feature: Delete subvolumes using subvolume ids",
+      "isPartOf": {
+        "@id": "https://mpdesouza.com#website"
+      },
+      "about": {
+         "@id": "https://mpdesouza.com#author"
+      },
+      "datePublished": "2020-01-23T00:00:00+00:00",
+      "dateModified": "2020-01-23T00:00:00+00:00",
+      "description": "Post about adding a new feature to btrfs to delete subvolumes based in their id.",
+      "inLanguage": "en",
+      "potentialAction": [
+        {
+          "@type": "ReadAction",
+          "target": [
+            "https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/"
+          ]
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "isPartOf": {
+        "@id": "https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/#webpage"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/#webpage"
+      },
+      "headline": "New btrfs feature: Delete subvolumes using subvolume ids",
+      "datePublished": "2020-01-23T00:00:00+00:00",
+      "dateModified": "2020-01-23T00:00:00+00:00",
+      "publisher": {
+        "@id": "https://mpdesouza.com#author"
+      },
+      "keywords": [
+      ],
+      "articleSection": [
+      ],
+      "inLanguage": "en",
+      "author": {
+        "@type": "Person",
+        "name":  null 
+      },
+      "potentialAction": [
+        {
+          "@type": "CommentAction",
+          "name": "Comment",
+          "target": [
+            "https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/#comments"
+          ]
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/print.css"
+        media="print">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/poole.css">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/hyde.css">
+
+  
+<style type="text/css">
+  .sidebar {
+    background-color: #000000;
+  }
+
+  .read-more-link a {
+    border-color: #000000;
+  }
+
+  .read-more-link a:hover {
+    background-color: #000000;
+  }
+
+  .pagination li a {
+    color: #000000;
+    border: 1px solid #000000;
+  }
+
+  .pagination li.active a {
+    background-color: #000000;
+  }
+
+  .pagination li a:hover {
+    background-color: #000000;
+    opacity: 0.75;
+  }
+
+  footer a,
+  .content a,
+  .related-posts li a:hover {
+    color: #000000;
+  }
+</style>
+
+
+
+  
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+        crossorigin="anonymous" />
+
+  <link rel="apple-touch-icon-precomposed"
+        sizes="144x144"
+        href="/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  </head>
+<body>
+  <aside class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      
+      <div class="author-image">
+        <a href="https://mpdesouza.com">
+          <img src="https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=200&d=mp" class="img-circle img-headshot center" alt="Gravatar">
+        </a>
+      </div>
+      
+
+      <h1>Marcos&#39; Blog</h1>
+
+      
+      <p class="lead">Software Engineer</p>
+      
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="https://mpdesouza.com">Home</a>
+        </li>
+        <li>
+          <a href="/about-me/">About Me</a>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="social-icons">
+      
+      <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" title="Linkedin" target="_blank">
+        <i class="fab fa-linkedin" aria-hidden="true"></i>
+      </a>
+      
+      <a href="https://github.com/marcosps" rel="me" title="GitHub" target="_blank">
+        <i class="fab fa-github" aria-hidden="true"></i>
+      </a>
+      
+      <a href="https://twitter.com/omarcossouza" rel="me" title="Twitter" target="_blank">
+        <i class="fab fa-twitter" aria-hidden="true"></i>
+      </a>
+      
+    </section>
+  </div>
+</aside>
+
+
+  <main class="content container">
+  <div class="post">
+  <h1 class="title">New btrfs feature: Delete subvolumes using subvolume ids</h1>
+  
+
+  <div class="post-date">
+    <time datetime="2020-01-23T00:00:00Z">Jan 23, 2020</time> <span class="readtime">&middot; 3 min read</span>
+  </div>
+
+  <div>
+  <p>Btrfs is a very versatile filesystem, and it has a lot of features that don&rsquo;t exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes. A subvolume can be compared to a <em>disk partition</em> since each subvolume can contain it&rsquo;s own filesystem tree and size limits. When created, subvolumes are shown as directories in the directory they were created.</p>
+<p>Creating a subvolume is as easy as creating a directory:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs subvolume create &lt;mount point&gt;/volume_name
+</code></pre></td></tr></table>
+</div>
+</div><p>The same can be said of deleting a subvolume:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs subvolume delete &lt;mount point&gt;/volume_name
+</code></pre></td></tr></table>
+</div>
+</div><p>As each subvolume can contain a different filesystem, you can even mount a subvolume as it was a partition:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mount /dev/sdX -o <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>volume_name &lt;mount_point&gt;/
+</code></pre></td></tr></table>
+</div>
+</div><p>But, if it has sibling subvolumes, let&rsquo;s say subvol1 and subvol2 created under &lt;mount_point&gt;, when mounting subvol2 especially the user can&rsquo;t reach subvol1 in the same <em>&lt;mount_point&gt;</em>. Let&rsquo;s see an example:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># allocate a 1G file</span>
+$ fallocate -l 1G btrfs_fs
+
+<span style="color:#6272a4"># create a btrfs filesystem on it</span>
+$ mkfs.btrfs btrfs_fs
+
+<span style="color:#6272a4"># mount it on /mnt</span>
+$ mount btrfs_fs /mnt
+
+<span style="color:#6272a4"># create two subvolumes</span>
+$ btrfs subvolume create /mnt/subvol1
+$ btrfs subvolume create /mnt/subvol1
+
+<span style="color:#6272a4"># list the subvolumes</span>
+$ btrfs subvolume list /mnt
+ID <span style="color:#bd93f9">256</span> gen <span style="color:#bd93f9">6</span> top level <span style="color:#bd93f9">5</span> path subvol1
+ID <span style="color:#bd93f9">257</span> gen <span style="color:#bd93f9">7</span> top level <span style="color:#bd93f9">5</span> path subvol2
+
+$ ls /mnt
+subvol1  subvol2
+
+<span style="color:#6272a4"># create a file unders each subvol directory</span>
+$ touch /mnt/subvol1/file1
+$ touch /mnt/subvol2/file2
+
+$ ls -R /mnt
+/mnt:
+subvol1  subvol2
+/mnt/subvol1:
+file1
+/mnt/subvol2:
+file2
+</code></pre></td></tr></table>
+</div>
+</div><p>As you can see, two files were created. But, if the user mounts a specific subvolume under /mnt it won&rsquo;t be able to reach the other subvolume by the same mount point.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ umount /mntmount btrfs_fs -o <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>subvol2 /mnt
+
+$ ls -R /mnt
+/mnt:
+file2
+
+$ btrfs subvolume list /mnt
+ID <span style="color:#bd93f9">256</span> gen <span style="color:#bd93f9">6</span> top level <span style="color:#bd93f9">5</span> path subvol1
+ID <span style="color:#bd93f9">257</span> gen <span style="color:#bd93f9">7</span> top level <span style="color:#bd93f9">5</span> path subvol2
+</code></pre></td></tr></table>
+</div>
+</div><p>By the code above, subvol1 can&rsquo;t be reached anymore, but it&rsquo;s listed by subvolume list. Up until now, to remove a subvolume, the user should be able to reach it from the mount point. With the given example, the only way to delete the subvolume is to mount the filesystem in another mount point and delete subvol1:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mount btrfs_fs /tmp/test
+
+$ ls /tmp/test
+subvol1  subvol2
+
+$ btrfs subvolume delete /tmp/test/subvol1
+Delete subvolume <span style="color:#ff79c6">(</span>no-commit<span style="color:#ff79c6">)</span>: <span style="color:#f1fa8c">&#39;/tmp/test/subvol1&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Recent commits in <strong>Linux kernel</strong> and <strong>btrfs-progs</strong> package changed this situation. By using the <strong>--subvolid</strong> argument a user can specify subvolume to be deleted:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs subvolume list /mnt
+ID <span style="color:#bd93f9">256</span> gen <span style="color:#bd93f9">6</span> top level <span style="color:#bd93f9">5</span> path subvol1
+ID <span style="color:#bd93f9">258</span> gen <span style="color:#bd93f9">7</span> top level <span style="color:#bd93f9">5</span> path subvol2
+
+$ ls -R /mnt
+/mnt:
+file2
+
+$ btrfs subvolume delete --subvolid <span style="color:#bd93f9">256</span> /mnt
+Delete subvolume <span style="color:#ff79c6">(</span>no-commit<span style="color:#ff79c6">)</span>: <span style="color:#f1fa8c">&#39;/mnt/subvol1&#39;</span>
+
+$ btrfs subvolume list /mnt
+ID <span style="color:#bd93f9">256</span> gen <span style="color:#bd93f9">6</span> top level <span style="color:#bd93f9">5</span> path subvol1
+ID <span style="color:#bd93f9">258</span> gen <span style="color:#bd93f9">7</span> top level <span style="color:#bd93f9">5</span> path subvol2
+</code></pre></td></tr></table>
+</div>
+</div><p>A new ioctl, BTRFS_IOC_SNAP_DESTROY_V2, was added in Linux kernel, and support for this ioctl was added in <strong>btrfs-progs</strong> and <strong>libbtrfsutil</strong> to make it possible. One possible user of this new feature is snapper, which has to deal with subvolume creation and deletion from time to time.</p>
+<p>If you want to dig deeper into the details of this feature, take a look at the <a href="https://github.com/kdave/btrfs-progs/issues/152">feature request</a> and in the commits in <a href="https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=4e40309dda975249cecb95deb337d47f1830e7b8">Linux Kernel</a>, <a href="https://github.com/kdave/btrfs-progs/commit/6e85994e8003266f036e55cbb14cb593f26c8c0a">btrfs-progs</a> and a test at <a href="https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=d116fe3774b9cc1c48723b6a710c55b2fa466799">xfstests</a>.</p>
+<p>Thanks for reading!</p>
+
+  </div>
+
+  
+
+
+  <div class="share-buttons">
+  <a class="twitter-share-button"
+     href="#"
+     title="Share on Twitter"
+     data-url="https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/"
+     data-text="New btrfs feature: Delete subvolumes using subvolume ids"><i class="fab fa-twitter"></i></a>
+
+  <a class="linkedin-share-button"
+     href="#"
+     title="Share on LinkedIn"
+     data-url="https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/"
+     data-text="New btrfs feature: Delete subvolumes using subvolume ids"><i class="fab fa-linkedin-in"></i></a>
+
+  <a class="facebook-share-button"
+     href="#"
+     title="Share on Facebook"
+     data-url="https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/"
+     data-text="New btrfs feature: Delete subvolumes using subvolume ids"><i class="fab fa-facebook"></i></a>
+
+  <a class="telegram-share-button"
+     href="#"
+     title="Share on Telegram"
+     data-url="https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/"
+     data-text="New btrfs feature: Delete subvolumes using subvolume ids"><i class="fab fa-telegram"></i></a>
+
+  <a class="pinterest-share-button"
+     href="#"
+     title="Share on Pinterest"
+     data-url="https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/"
+     data-text="New btrfs feature: Delete subvolumes using subvolume ids"><i class="fab fa-pinterest"></i></a>
+</div>
+
+
+  
+</div>
+  </main>
+
+  <footer>
+  <div>
+    <p>
+      &copy; Marcos Paulo de Souza 2021
+
+      &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
+
+      
+    </p>
+  </div>
+</footer>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
+          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
+          crossorigin="anonymous"></script>
+
+
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/soho.js"></script>
+
+  
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-114151448-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+</html>

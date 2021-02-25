@@ -1,140 +1,36 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <url>
-    <loc>https://mpdesouza.com/</loc>
-    <lastmod>2021-02-16T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/bind/</loc>
-    <lastmod>2021-02-16T00:00:00+00:00</lastmod>
-  </url>
-  
   <url>
     <loc>https://mpdesouza.com/blog/</loc>
     <lastmod>2021-02-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/btrfs/</loc>
+  </url><url>
+    <loc>https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/</loc>
     <lastmod>2021-02-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/btrfs-differentiating-bind-mounts-on-subvolumes/</loc>
+  </url><url>
+    <loc>https://mpdesouza.com/</loc>
     <lastmod>2021-02-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/linux/</loc>
-    <lastmod>2021-02-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/mount/</loc>
-    <lastmod>2021-02-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/subvolume/</loc>
-    <lastmod>2021-02-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/tags/</loc>
-    <lastmod>2021-02-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/btrfs-making-send-more-capable/</loc>
+  </url><url>
+    <loc>https://mpdesouza.com/blog/btrfs-making-send-more-capable/</loc>
     <lastmod>2020-05-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/capabilities/</loc>
-    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/filesystem/</loc>
-    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/ioctl/</loc>
-    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/kernel/</loc>
-    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/receive/</loc>
-    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/send/</loc>
-    <lastmod>2020-05-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</loc>
+  </url><url>
+    <loc>https://mpdesouza.com/about-me/</loc>
+    <lastmod>2020-02-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</loc>
     <lastmod>2020-01-23T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</loc>
+  </url><url>
+    <loc>https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</loc>
     <lastmod>2019-08-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/sysfs/</loc>
-    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/usb/</loc>
-    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/vpd/</loc>
-    <lastmod>2019-08-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/kernel-adventures-are-usb-sticks-rotational-devices/</loc>
+  </url><url>
+    <loc>https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/</loc>
     <lastmod>2019-08-07T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/storage/</loc>
-    <lastmod>2019-08-07T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/execve/</loc>
+  </url><url>
+    <loc>https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/blog/no_new_privs/</loc>
-    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mpdesouza.com/no_new_privs-avoiding-privilege-escalation/</loc>
-    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://mpdesouza.com/categories/</loc>
+  </url><url>
+    <loc>https://mpdesouza.com/tags/</loc>
   </url>
-  
 </urlset>

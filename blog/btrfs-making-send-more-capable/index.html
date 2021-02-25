@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Hugo 0.81.0" />
+
+  <title>btrfs: making &#34;send&#34; more &#34;capable&#34; &middot; Marcos&#39; Blog</title>
+
+  <meta name="description" content="Post fixing an issue in btrfs send/receive." />
+
+  
+
+<meta itemprop="name" content="btrfs: making &#34;send&#34; more &#34;capable&#34;">
+<meta itemprop="description" content="Post fixing an issue in btrfs send/receive."><meta itemprop="datePublished" content="2020-05-14T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-05-14T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1197">
+<meta itemprop="keywords" content="" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="btrfs: making &#34;send&#34; more &#34;capable&#34;"/>
+<meta name="twitter:description" content="Post fixing an issue in btrfs send/receive."/>
+
+
+<meta property="og:title" content="btrfs: making &#34;send&#34; more &#34;capable&#34;" />
+<meta property="og:description" content="Post fixing an issue in btrfs send/receive." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mpdesouza.com/blog/btrfs-making-send-more-capable/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2020-05-14T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2020-05-14T00:00:00&#43;00:00" />
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type":"Person",
+      "@id": "https://mpdesouza.com#author",
+      "name": "Marcos Paulo de Souza",
+      "image": {
+        "@type":"ImageObject",
+        "url": "https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=400&d=mp"
+      },
+      "description": "Software Engineer"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://mpdesouza.com#website",
+      "url": "https://mpdesouza.com",
+      "name": "Marcos' Blog",
+      "description": "Software Engineer",
+      "publisher": {
+        "@id": "https://mpdesouza.com#author"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://mpdesouza.com/blog/btrfs-making-send-more-capable/#webpage",
+      "url": "https://mpdesouza.com/blog/btrfs-making-send-more-capable/",
+      "name": "btrfs: making \"send\" more \"capable\"",
+      "isPartOf": {
+        "@id": "https://mpdesouza.com#website"
+      },
+      "about": {
+         "@id": "https://mpdesouza.com#author"
+      },
+      "datePublished": "2020-05-14T00:00:00+00:00",
+      "dateModified": "2020-05-14T00:00:00+00:00",
+      "description": "Post fixing an issue in btrfs send/receive.",
+      "inLanguage": "en",
+      "potentialAction": [
+        {
+          "@type": "ReadAction",
+          "target": [
+            "https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
+          ]
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "isPartOf": {
+        "@id": "https://mpdesouza.com/blog/btrfs-making-send-more-capable/#webpage"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://mpdesouza.com/blog/btrfs-making-send-more-capable/#webpage"
+      },
+      "headline": "btrfs: making \"send\" more \"capable\"",
+      "datePublished": "2020-05-14T00:00:00+00:00",
+      "dateModified": "2020-05-14T00:00:00+00:00",
+      "publisher": {
+        "@id": "https://mpdesouza.com#author"
+      },
+      "keywords": [
+      ],
+      "articleSection": [
+      ],
+      "inLanguage": "en",
+      "author": {
+        "@type": "Person",
+        "name":  null 
+      },
+      "potentialAction": [
+        {
+          "@type": "CommentAction",
+          "name": "Comment",
+          "target": [
+            "https://mpdesouza.com/blog/btrfs-making-send-more-capable/#comments"
+          ]
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/print.css"
+        media="print">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/poole.css">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/hyde.css">
+
+  
+<style type="text/css">
+  .sidebar {
+    background-color: #000000;
+  }
+
+  .read-more-link a {
+    border-color: #000000;
+  }
+
+  .read-more-link a:hover {
+    background-color: #000000;
+  }
+
+  .pagination li a {
+    color: #000000;
+    border: 1px solid #000000;
+  }
+
+  .pagination li.active a {
+    background-color: #000000;
+  }
+
+  .pagination li a:hover {
+    background-color: #000000;
+    opacity: 0.75;
+  }
+
+  footer a,
+  .content a,
+  .related-posts li a:hover {
+    color: #000000;
+  }
+</style>
+
+
+
+  
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+        crossorigin="anonymous" />
+
+  <link rel="apple-touch-icon-precomposed"
+        sizes="144x144"
+        href="/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  </head>
+<body>
+  <aside class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      
+      <div class="author-image">
+        <a href="https://mpdesouza.com">
+          <img src="https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=200&d=mp" class="img-circle img-headshot center" alt="Gravatar">
+        </a>
+      </div>
+      
+
+      <h1>Marcos&#39; Blog</h1>
+
+      
+      <p class="lead">Software Engineer</p>
+      
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="https://mpdesouza.com">Home</a>
+        </li>
+        <li>
+          <a href="/about-me/">About Me</a>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="social-icons">
+      
+      <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" title="Linkedin" target="_blank">
+        <i class="fab fa-linkedin" aria-hidden="true"></i>
+      </a>
+      
+      <a href="https://github.com/marcosps" rel="me" title="GitHub" target="_blank">
+        <i class="fab fa-github" aria-hidden="true"></i>
+      </a>
+      
+      <a href="https://twitter.com/omarcossouza" rel="me" title="Twitter" target="_blank">
+        <i class="fab fa-twitter" aria-hidden="true"></i>
+      </a>
+      
+    </section>
+  </div>
+</aside>
+
+
+  <main class="content container">
+  <div class="post">
+  <h1 class="title">btrfs: making &#34;send&#34; more &#34;capable&#34;</h1>
+  
+
+  <div class="post-date">
+    <time datetime="2020-05-14T00:00:00Z">May 14, 2020</time> <span class="readtime">&middot; 6 min read</span>
+  </div>
+
+  <div>
+  <p>The <strong>send/receive</strong> is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.</p>
+<p>The receive feature <em>receives</em> a stream of data, applying the it in the filesystem. As the stream can be a file, it&rsquo;s easy even to transfer the output of <strong>send</strong> over the network and <strong>receive</strong> in the other side. Here is an example of how this works:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs send /mnt/my_snapshot | ssh user@host <span style="color:#f1fa8c">&#34;btrfs receive /mnt/my_backup&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>In this example, we are doing what we call a <em>full send</em>, which sends all data to the remote side. We can see what is being processed by the receiving side by using <em>--dump</em> argument:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># creating a &#34;disk&#34; and the btrfs filesystem</span>
+$ truncate -s 10G btrfs.disk
+$ mkfs.btrfs -f btrfs.disk
+
+<span style="color:#6272a4"># creating a subvolume and a snapshot with one file</span>
+$ mount btrfs.disk /mnt
+$ btrfs subvolume create /mnt/vol1
+Create subvolume <span style="color:#f1fa8c">&#39;/mnt/vol1&#39;</span>
+
+$ touch /mnt/vol1/file.txt
+$ btrfs subvolume snapshot -r /mnt/vol1/ /mnt/snap1
+Create a <span style="color:#8be9fd;font-style:italic">readonly</span> snapshot of <span style="color:#f1fa8c">&#39;/mnt/vol1/&#39;</span> in <span style="color:#f1fa8c">&#39;/mnt/snap1&#39;</span>
+
+<span style="color:#6272a4"># create a full send stream from snap1</span>
+$ btrfs send /mnt/snap1 -f send.dump
+
+<span style="color:#6272a4"># dumping the contents of the stream</span>
+$ btrfs receive -f send.dump --dump
+subvol          ./snap1                         <span style="color:#8be9fd;font-style:italic">uuid</span><span style="color:#ff79c6">=</span>50ce3050-4ff1-f441-8202-7e49f3ac9657 <span style="color:#8be9fd;font-style:italic">transid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">7</span>
+chown           ./snap1/                        <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+chmod           ./snap1/                        <span style="color:#8be9fd;font-style:italic">mode</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">755</span>
+utimes          ./snap1/                        <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:32:50-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
+mkfile          ./snap1/o257-7-0
+rename          ./snap1/o257-7-0                <span style="color:#8be9fd;font-style:italic">dest</span><span style="color:#ff79c6">=</span>./snap1/file.txt
+utimes          ./snap1/                        <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:32:50-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
+chown           ./snap1/file.txt                <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+chmod           ./snap1/file.txt                <span style="color:#8be9fd;font-style:italic">mode</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">644</span>
+utimes          ./snap1/file.txt                <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
+
+<span style="color:#6272a4"># creating a subvolume to store the backups (this coudld be done in a different disk)</span>
+$ btrfs subvolume create /mnt/bkp
+Create subvolume <span style="color:#f1fa8c">&#39;/mnt/bkp&#39;</span>
+
+<span style="color:#6272a4"># applying the receiving the stream</span>
+$ btrfs receive -f send.dump /mnt/bkp
+$ ls /mnt/bkp/snap1/file.txt
+/mnt/bkp/snap1/file.txt
+</code></pre></td></tr></table>
+</div>
+</div><p>As we could see by the outputs above, the full send really specifies all actions, from the first snapshot creation, creation of files, adding a owner/group/mode and access time.</p>
+<p>After we have a backup, we can send just incremental changes. We call this an <!-- raw HTML omitted -->incremental send<!-- raw HTML omitted -->. We use a parent snapshot (-p argument) and compare it with a new snapshot. Look at the example below, using the same snapshots created in the steps above:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># changing user/group of file.txt</span>
+$ ls -l /mnt/vol1/file.txt                    
+-rw-r--r-- <span style="color:#bd93f9">1</span> root root <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/vol1/file.txt
+                                              
+$ chgrp <span style="color:#bd93f9">100</span> /mnt/vol1/file.txt                
+$ chown users /mnt/vol1/file.txt              
+$ ls -l /mnt/vol1/file.txt                    
+-rw-r--r-- <span style="color:#bd93f9">1</span> marcos users <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/vol1/file.txt
+                                              
+<span style="color:#6272a4"># create a new snapshot based in the current version of vol1</span>
+$ btrfs subvolume snapshot -r /mnt/vol1/ /mnt/snap2
+Create a <span style="color:#8be9fd;font-style:italic">readonly</span> snapshot of <span style="color:#f1fa8c">&#39;/mnt/vol1/&#39;</span> in <span style="color:#f1fa8c">&#39;/mnt/snap2&#39;</span>
+                                              
+<span style="color:#6272a4"># create a new stream by comparing snap1 with snap2, and dumping the changes</span>
+$ btrfs send -p /mnt/snap1/ /mnt/snap2 -f send.dump
+$ btrfs receive -f send.dump --dump           
+snapshot        ./snap2                         <span style="color:#8be9fd;font-style:italic">uuid</span><span style="color:#ff79c6">=</span>16343add-4e38-e343-9af2-f64ff7d4b61d <span style="color:#8be9fd;font-style:italic">transid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">15</span> <span style="color:#8be9fd;font-style:italic">parent_uuid</span><span style="color:#ff79c6">=</span>50ce3050-4ff1-f441-8202-7e49f3ac9657 <span style="color:#8be9fd;font-style:italic">parent_transid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">7</span>
+utimes          ./snap2/                        <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:41:26-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
+chown           ./snap2/file.txt                <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">100</span> <span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1001</span>
+utimes          ./snap2/file.txt                <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:42:06-0300
+                                              
+<span style="color:#6272a4"># applying changes                            </span>
+$ btrfs receive -f send.dump /mnt/bkp/        
+$ ls -l /mnt/bkp/snap2/file.txt               
+-rw-r--r-- <span style="color:#bd93f9">1</span> marcos users <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/bkp/snap2/file.txt
+</code></pre></td></tr></table>
+</div>
+</div><p>This is what we call an <em>incremental send</em>. In this case, if we have a file that exists in both snapshots, but in the most recent one it only changed the <em>owner/group</em>, the send stream will contain only the <strong>chown</strong> command, instead of copying the content of the file over the network again. The receive side will apply the <strong>chown</strong>, and then the filesystem on the remote/local host will have the content of the most recent version.</p>
+<p>This feature works nicely for all users, but there is a corner case when it comes to <a href="http://man7.org/linux/man-pages/man7/capabilities.7.html">file capabilities</a>.</p>
+<h2 id="what-is-the-problem-with-capabilities">What is the problem with capabilities?</h2>
+<p>Capabilities can be set per file, and they are meant to give part of the <strong>root powers</strong> to a common binary to be executed like it&rsquo;s <strong>root</strong>, but without the over permissive <a href="https://en.wikipedia.org/wiki/Setuid">setuid</a> bit.</p>
+<p>With the setuid, the application runs as root, but using capabilities the application still runs as your current user, but with a subset of the root powers, like CAP_KILL (the permission to kill other programs) or CAP_SYS_NICE (the permission to change the priority of other processes).</p>
+<p><em>If you change the user or group of a file with capabilities, the kernel drops the capability.</em></p>
+<p>The problem is: if you have a parent snapshot that contains a file with capabilities and the file changed the owner and later restored the capability, the current kernel code emits only the chown, making the receive side to drop the capability, even if the parent snapshot still has the same capability set.</p>
+<p><strong>This problem exists in all stable releases since v4.4.</strong></p>
+<p>It&rsquo;s easy to reproduce the problem:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># create a new sparse file with 5G of size, and create a btrfs fs on it</span>
+$ fallocate -l5G disk.btrfs                                     
+$ mkfs.btrfs disk.btrfs                                         
+
+<span style="color:#6272a4"># mount the fs and create subvolumes fs1 and fs2              </span>
+$ mount disk.btrfs /mnt                                         
+$ btrfs subvolume create /mnt/fs1                               
+$ btrfs subvolume create /mnt/fs2                               
+
+<span style="color:#6272a4"># create a foo.bar file on fs1,and set a capabilities on it</span>
+$ touch /mnt/fs1/foo.bar                                        
+$ setcap cap_sys_nice+ep /mnt/fs1/foo.bar                       
+<span style="color:#6272a4"># create a readonly snapshot and send to fs2 (full send)   </span>
+$ btrfs subvol snap -r /mnt/fs1 /mnt/fs1/snap_init              
+$ btrfs send /mnt/fs1/snap_init | btrfs receive /mnt/fs2        
+
+<span style="color:#6272a4"># change the capability on foo.bar, and restore the capability</span>
+$ chgrp adm /mnt/fs1/foo.bar                                    
+$ setcap cap_sys_nice+ep /mnt/fs1/foo.bar                       
+                                                              
+<span style="color:#6272a4"># create a new readonly snapshot containing foo.bar with different group</span>
+$ btrfs subvol snap -r /mnt/fs1 /mnt/fs1/snap_inc               
+<span style="color:#6272a4"># executing an incremental send comparing the two snapshots</span>
+$ btrfs send -p /mnt/fs1/snap_init /mnt/fs1/snap_inc | btrfs receive fs2
+</code></pre></td></tr></table>
+</div>
+</div><p>At this point, the foo.bar sent to fs2 lost it&rsquo;s capability:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ getcap /mnt/fs2/snap_init/foo.bar 
+$
+</code></pre></td></tr></table>
+</div>
+</div><p>How to fix the issue? Simple: just emit the capabilities <strong>after</strong> the chown was emitted. The basic idea is:</p>
+<ul>
+<li>Emit <strong>chown</strong></li>
+<li>Check if there are capabilities for this file</li>
+<li>If yes, emit them</li>
+</ul>
+<p>Here is a portion of the fix:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (need_chown) {
+        ret <span style="color:#ff79c6">=</span> send_chown(sctx, sctx<span style="color:#ff79c6">-&gt;</span>cur_ino, sctx<span style="color:#ff79c6">-&gt;</span>cur_inode_gen,
+                        left_uid, left_gid); 
+        <span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)          
+                <span style="color:#ff79c6">goto</span> out;        
+}               
+<span style="color:#ff79c6">if</span> (need_chmod) {    
+        ret <span style="color:#ff79c6">=</span> send_chmod(sctx, sctx<span style="color:#ff79c6">-&gt;</span>cur_ino, sctx<span style="color:#ff79c6">-&gt;</span>cur_inode_gen,
+                        left_mode);
+        <span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)          
+                <span style="color:#ff79c6">goto</span> out;        
+}               
+                
+ret <span style="color:#ff79c6">=</span> send_capabilities(sctx);   
+<span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) 
+        <span style="color:#ff79c6">goto</span> out;
+</code></pre></td></tr></table>
+</div>
+</div><p>The patch itself is somewhat bigger, and exposes how btrfs managed inodes and its attributes, and I plan to write about it in the future.</p>
+<p>For the most curious readers, here is the full <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=89efda52e6b6930f80f5adda9c3c9edfb1397191">path</a>. Along with the patch solving the problem, a <a href="https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=a1c25b75b456880f64ab30ced0892f7603e4bb3c">test</a> was created in xfstests to ensure this problem won&rsquo;t happen again in the future.</p>
+<p>The kernel patch was merged in v5.8 and backported to affected all stale kernels.</p>
+<p>Thanks for reading! See you in another post!</p>
+
+  </div>
+
+  
+
+
+  <div class="share-buttons">
+  <a class="twitter-share-button"
+     href="#"
+     title="Share on Twitter"
+     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
+     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-twitter"></i></a>
+
+  <a class="linkedin-share-button"
+     href="#"
+     title="Share on LinkedIn"
+     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
+     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-linkedin-in"></i></a>
+
+  <a class="facebook-share-button"
+     href="#"
+     title="Share on Facebook"
+     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
+     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-facebook"></i></a>
+
+  <a class="telegram-share-button"
+     href="#"
+     title="Share on Telegram"
+     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
+     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-telegram"></i></a>
+
+  <a class="pinterest-share-button"
+     href="#"
+     title="Share on Pinterest"
+     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
+     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-pinterest"></i></a>
+</div>
+
+
+  
+</div>
+  </main>
+
+  <footer>
+  <div>
+    <p>
+      &copy; Marcos Paulo de Souza 2021
+
+      &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
+
+      
+    </p>
+  </div>
+</footer>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
+          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
+          crossorigin="anonymous"></script>
+
+
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/soho.js"></script>
+
+  
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-114151448-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+</html>
