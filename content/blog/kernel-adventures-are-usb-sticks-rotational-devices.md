@@ -1,15 +1,10 @@
-+++
-title = "Kernel Adventures: Are USB Sticks Rotational Devices?"
-date = "2019-08-07"
-description = "Post about understanding why USB devices are usually set as rotational devices on linux."
-tags = [
-    "usb",
-    "storage",
-    "linux",
-    "kernel",
-    "vpd",
-]
-+++
+---
+title: "Kernel Adventures: Are USB Sticks Rotational Devices?"
+date: "2019-08-07"
+description: "Post about understanding why USB devices are usually set as rotational devices on linux."
+slug: kernel-adventures-are-usb-sticks-rotational-devices
+aliases: ["/kernel-adventures-are-usb-sticks-rotational-devices"]
+---
 
 A while ago I’ve found this [kernel bug entry](https://bugzilla.kernel.org/show_bug.cgi?id=90761) about USB mass storage being shown as a *rotational device*. This is wrong because a USB stick is a flash device, and does not *rotate*.
 
@@ -37,7 +32,7 @@ My idea was to check the kernel code in order to understand how it works. First 
   
 By looking at Linux kernel code, specifically function *sd_revalidate_disk* in [drivers/scsi/sd.c](https://elixir.bootlin.com/linux/v5.3-rc1/source/drivers/scsi/sd.c#L3129):
 
-```
+```c
 /*
  * set the default to rotational. All non-rotational devices
  * support the block characteristics VPD page, which will
@@ -49,7 +44,7 @@ blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
 
 This function is called when a disk is detected. It first sets the disk as *rotational*, by clearing the *NONROT* flag (yes, it’s confusing at first glance). A few lines bellow this point, we can see the following code:
 
-```
+```c
 if (scsi_device_supports_vpd(sdp)) {
 	sd_read_block_provisioning(sdkp);
 	sd_read_block_limits(sdkp);
@@ -60,7 +55,7 @@ if (scsi_device_supports_vpd(sdp)) {
 
 We need some background about VPD. VPD stands for *Vital Product Data*, and presents information and configuration about a device, a SCSI device in this case. VPD was introduced in **SCSI Primary Commands** (SPC) 2 specification, and can be “queried” from any SCSI storage device by using **sg_utils3** package:
 
-```
+```c
 $ sg_vpd /dev/sda 
   Supported VPD pages VPD page:
    Supported VPD pages [sv]
@@ -74,13 +69,13 @@ $ sg_vpd /dev/sda
 
 This is the output of my SSD device. Going back to our original problem, *rotating USB storage*, the function *sd_read_block_characteristics* does something interesting:
 
-```
+```c
 if (!buffer ||
      /* Block Device Characteristics VPD */
-     scsi_get_vpd_page(sdkp-&gt;device, 0xb1, buffer, vpd_len))
+     scsi_get_vpd_page(sdkp->device, 0xb1, buffer, vpd_len))
 	goto out;
   
-rot = get_unaligned_be16(&amp;buffer[4]);
+rot = get_unaligned_be16(buffer[4]);
   
 if (rot == 1) {
 	blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
@@ -90,7 +85,7 @@ if (rot == 1) {
 
 The code above reads the **Block Device Characteristics** VPD page, which is present only in [SPC-3](http://www.t10.org/ftp/t10/document.07/07-203r0.pdf) or later. Again, sg_vpd can help us to check BDC:
 
-```
+```sh
 $ sg_vpd — page bdc /dev/sda
   Block device characteristics VPD page (SBC):
    Non-rotating medium (e.g. solid state)
@@ -108,13 +103,13 @@ $ sg_vpd — page bdc /dev/sda
 
 As you can see, the **Block Device Characteristics** of my SSD device says clearly: **Non-rotation Medium**. Per the function above, the NONROT flag will be set, so *sysfs* will show when reading the rotational attribute of this device:
 
-```
+```sh
 $ cat /sys/block/sda/queue/rotational 
 0
 ```
 
 Moving further, I have another storage disk, now an HDD:
-```
+```sh
 $ sg_vpd  — page bdc /dev/sdb 
   Block device characteristics VPD page (SBC):
    Nominal rotation rate: 5400 rpm
@@ -135,7 +130,7 @@ $ sg_vpd  — page bdc /dev/sdb
 I’ve tested more than 10 USB sticks and USB SATA adapters, and neither of them have BDC exposed. Let’s use **sg_inq** to check if these which version of SCSI/SPC they implement, and which VPD they expose:
 
 #### Alcor Micro Corp. Flash Drive 058f:6387 (USB Stick)
-```
+```sh
 $ sg_inq -s /dev/sdc
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=1  LU_CONG=0  version=0x04  [SPC-2]
@@ -147,7 +142,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 ```
 
 #### Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick)
-```
+```sh
 $ sg_inq /dev/sdc
   invalid VPD response; probably a STANDARD INQUIRY response
   standard INQUIRY:
@@ -162,7 +157,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 This device does not even implements VPD.
 
 #### HP, Inc 4 GB flash drive 03f0:3207 (USB stick)
-```
+```sh
 $ sg_inq /dev/sdc
   invalid VPD response; probably a STANDARD INQUIRY response
   standard INQUIRY:
@@ -177,7 +172,7 @@ $ sg_vpd /dev/sdc
 This one is even worse, does not even comply with any specification.
 
 #### SanDisk Corp. Cruzer Blade 0781:5567 (USB Stick)
-```
+```sh
 $ sg_inq /dev/sdc
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=1  LU_CONG=0  version=0x06  [SPC-4]
@@ -191,7 +186,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 This one from SanDisk complies with SPC-4, but no BDC supported either.
 
 #### Super Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter)
-```
+```sh
 $ sg_inq /dev/sdc
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=0  LU_CONG=0  version=0x00  [no conformance claimed]
@@ -202,7 +197,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 It doesn’t show any VPD, but apprently understands the SCSI INQ command.
 
 #### Initio Corporation 13fd:3920 (USB SATA adapter)
-```
+```sh
 $ sg_inq /dev/sdc           
   standard INQUIRY:
     PQual=0  Device_type=0  RMB=0  LU_CONG=0  version=0x06  [SPC-4]
@@ -221,7 +216,7 @@ Without Block Device Characteristics, the kernel cannot say for sure if the devi
 
 The *rotational* information can be used to change the IO scheduler related to the device, as openSUSE currently does:
 
-```
+```sh
 $ cat /usr/lib/udev/rules.d/60-io-scheduler.rules
   # Set optimal IO schedulers for HDD and SSD
   ACTION!="add", GOTO="scheduler_end"

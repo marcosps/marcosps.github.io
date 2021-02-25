@@ -3,25 +3,20 @@ title: "btrfs: Differentiating bind mounts on subvolumes"
 date: 2021-02-16
 description: "Explaining how to differentiate bind mounts on btrfs subvolumes"
 images: ["images/btrfs-logo.png"]
-tags: [
-	"linux",
-	"btrfs",
-	"bind",
-	"mount",
-	"subvolume",
-]
+aliases: ["/btrfs-differentiating-bind-mounts-on-subvolumes"]
+slug: btrfs-differentiating-bind-mounts-on-subvolumes
 ---
 
 The *btrfs inspect-internal logical-resolve* command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file. But, for all current users of openSUSE/SUSE Enterprise Linux, this command was failing as shown below:
 
-```
+```sh
 btrfs inspect-internal logical-resolve 5085913088 / 
 ERROR: cannot access '//@/home': No such file or directory 
 ```
 
 An openSUSE/SLE installation would create a set of subvolumes, starting from */@*. These subvolumes are mounted on */*, but *@* is never mounted. For example, subvolume */@/home* is mounted at */home*. We can confirm this behavior by looking at the subvolume list:
 
-```
+```sh
 $ btrfs subvolume list /
 ID 256 gen 32 top level 5 path @
 ID 257 gen 416148 top level 256 path @/var
@@ -42,7 +37,7 @@ ID 280 gen 2186 top level 266 path @/.snapshots/7/snapshot
 
 By checking the fstab file we can verify that all subvolumes are mounted at /, but starting from the subvolume '@':
 
-```
+```sh
 $ cat /etc/fstab
 ...
 UUID=35b19e1f-efb2-49a5-ab93-03c04e6d0399  /opt                    btrfs  subvol=/@/opt                 0  0
@@ -60,7 +55,7 @@ In this post I'll discuss about the first patch: how to reliably find the correc
 
 As btrfs mount options always show subvolume and subvolume id, it would be simple as:
 
-```
+```sh
 $ cat /proc/mounts | grep btrfs | grep "subvolid=5,subvol=/"
 /storage/btrfs/1.disk on /mnt type btrfs (rw,relatime,ssd,space_cache,subvolid=5,subvol=/)
 ```
@@ -69,7 +64,7 @@ The command above searches in the [/proc/mounts](https://man7.org/linux/man-page
 
 In this case, it works as expect, but what if we have a bind mount mounting from a directory *within* the current mountpoint? Look at the example below:
 
-```
+```sh
 # create a new disk, format it, create a subvolume and a directory on it
 $ fallocate -l5G test.disk
 
@@ -96,7 +91,7 @@ $ mount --bind /mnt/dir1 another_mnt
 
 Now, if we run the same command as before, we have a problem:
 
-```
+```sh
 $ cat /proc/mounts | grep btrfs | grep "subvolid=256,subvol=/vol1"
 /storage/btrfs/test.disk on /mnt type btrfs (rw,relatime,ssd,space_cache,subvolid=256,subvol=/vol1)
 /storage/btrfs/test.disk on /storage/btrfs/another_mnt type btrfs (rw,relatime,ssd,space_cache,subvolid=256,subvol=/vol1)
@@ -104,7 +99,7 @@ $ cat /proc/mounts | grep btrfs | grep "subvolid=256,subvol=/vol1"
 
 As shown, the subvolid and subvol fields are the same, but the content isn't:
 
-```
+```sh
 $ ls /mnt
 dir1
 $ ls /storage/btrfs/another_mnt
@@ -113,14 +108,14 @@ $
 
 Prior to kernel 5.9-rc1, btrfs would show a diferent *subvol=* option when a bind mount was used. The issue was fixed by this [patch](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3ef3959b29c4a5bd65526ab310a1a18ae533172a). Before this change the */proc/mounts* file would differentiate bind mounts:
 
-```
+```sh
 /dev/sda /mnt/test btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
 /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid=256,subvol=/foo/bar 0 0
 ```
 
 This was wrong, since the subvolume shown should be the same for a bind mount. The patch above fixed the behavior, and now a bind mount will show the same subvol and subvolid fields on a mountpoint:
 
-```
+```sh
 /dev/sda /mnt/test btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
 /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
 ```
@@ -135,7 +130,7 @@ The description of all mountinfo fields, along with the /proc/mounts one, can be
 
 What does **mountinfo** shows in this setup?
 
-```
+```sh
 cat /proc/self/mountinfo | grep btrfs | grep "subvolid=256,subvol=/vol1"
 37 28 0:31 /vol1 /mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid=256,subvol=/vol1
 36 29 0:31 /vol1/dir1 /storage/btrfs/another_mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid=256,subvol=/vol1
@@ -149,7 +144,7 @@ The mountinfo proc file can show the path *within* the filesystem used at the mo
 
 What if we create a bind mount using the same directory of the original mount?
 
-```
+```sh
 $ umount another_mnt
 $ mount --bind /mnt/ another_mnt
 $ cat /proc/self/mountinfo | grep btrfs | grep "subvolid=256,subvol=/vol1"
@@ -161,7 +156,7 @@ As we can see, both mount roots are the same since both mountpoints have the sam
 
 I used this approach in this [patch](https://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git/commit/?id=57cfe29e69369be1fd1cfe149ee3cecf37a91968) in order to solve one of the *logical-resolve* issues when running the comannd on a openSUSE/SLE distribution. Now the command runs correctly and reports the file related to a logical-address in the filesystem:
 
-```
+```sh
 btrfs inspect-internal logical-resolve 5085913088 /
 //./home/marcos/.local/share/flatpak/repo/objects/00/7e3655177d55a02ca39d4cd3d095627f824b8004ad70f416eccb8bdd281fd5.file
 ```

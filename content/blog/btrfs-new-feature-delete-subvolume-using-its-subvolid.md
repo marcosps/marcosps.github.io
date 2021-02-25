@@ -2,35 +2,33 @@
 title: "New btrfs feature: Delete subvolumes using subvolume ids"
 date: 2020-01-23
 description: "Post about adding a new feature to btrfs to delete subvolumes based in their id."
-tags: [
-    "kernel",
-    "linux",
-    "filesystem",
-    "btrfs",
-    "ioctl",
-    "subvolume",
-]
+slug: new-btrfs-feature-delete-subvolumes-using-subvolume-ids
+aliases: ["/new-btrfs-feature-delete-subvolumes-using-subvolume-ids"]
 ---
 
-*Note: The kernel changes mentioned here should appear in Linux 5.6 since it's currently in linux-next, and the patches related to btrfs-progs and xfstests are still waiting to be merged*
-
-btrfs is a very versatile filesystem, and it has a lot of features that don't exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes. A subvolume can be compared to a *disk partition* since each subvolume can contain it's own filesystem tree and size limits. When created, subvolumes are shown as directories in the directory they were created.
+Btrfs is a very versatile filesystem, and it has a lot of features that don't exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes. A subvolume can be compared to a *disk partition* since each subvolume can contain it's own filesystem tree and size limits. When created, subvolumes are shown as directories in the directory they were created.
 
 Creating a subvolume is as easy as creating a directory:
 
-`$ btrfs subvolume create <mount point>/volume_name`
+```sh
+$ btrfs subvolume create <mount point>/volume_name
+```
 
 The same can be said of deleting a subvolume:
 
-`$ btrfs subvolume delete <mount point>/volume_name`
+```sh
+$ btrfs subvolume delete <mount point>/volume_name
+```
 
 As each subvolume can contain a different filesystem, you can even mount a subvolume as it was a partition:
 
-`$ mount /dev/sdX -o subvol=volume_name <mount_point>/`
+```sh
+$ mount /dev/sdX -o subvol=volume_name <mount_point>/
+```
 
 But, if it has sibling subvolumes, let's say subvol1 and subvol2 created under <mount_point>, when mounting subvol2 especially the user can't reach subvol1 in the same *<mount_point>*. Let's see an example:
 
-```
+```sh
 # allocate a 1G file
 $ fallocate -l 1G btrfs_fs
 
@@ -67,7 +65,7 @@ file2
 
 As you can see, two files were created. But, if the user mounts a specific subvolume under /mnt it won't be able to reach the other subvolume by the same mount point.
 
-```
+```sh
 $ umount /mntmount btrfs_fs -o subvol=subvol2 /mnt
 
 $ ls -R /mnt
@@ -81,7 +79,7 @@ ID 257 gen 7 top level 5 path subvol2
 
 By the code above, subvol1 can't be reached anymore, but it's listed by subvolume list. Up until now, to remove a subvolume, the user should be able to reach it from the mount point. With the given example, the only way to delete the subvolume is to mount the filesystem in another mount point and delete subvol1:
 
-```
+```sh
 $ mount btrfs_fs /tmp/test
 
 $ ls /tmp/test
@@ -93,7 +91,7 @@ Delete subvolume (no-commit): '/tmp/test/subvol1'
 
 Recent commits in **Linux kernel** and **btrfs-progs** package changed this situation. By using the **\-\-subvolid** argument a user can specify subvolume to be deleted:
 
-```
+```sh
 $ btrfs subvolume list /mnt
 ID 256 gen 6 top level 5 path subvol1
 ID 258 gen 7 top level 5 path subvol2

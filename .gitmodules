@@ -1,3 +1,9 @@
 [submodule "thingsaboutlinux/themes/hugo-bearblog"]
 	path = thingsaboutlinux/themes/hugo-bearblog
 	url = https://github.com/janraasch/hugo-bearblog.git
+[submodule "themes/hugo-theme-codex"]
+	path = themes/hugo-theme-codex
+	url = https://github.com/jakewies/hugo-theme-codex.git
+[submodule "themes/soho"]
+	path = themes/soho
+	url = https://github.com/alexandrevicenzi/soho.git

@@ -1,0 +1,54 @@
+baseURL: https://mpdesouza.com
+title: Marcos' Blog
+theme: soho
+languageCode: en
+enableInlineShortcodes: true
+
+summarylength: 10
+enableEmoji: true
+
+googleAnalytics: UA-114151448-3
+
+params:
+  permalinks:
+    blog: /:slug/
+
+  gravatar: marcos.souza.org@gmail.com
+
+  author: Marcos Paulo de Souza
+  copyright: Marcos Paulo de Souza
+  license: CC BY-SA 4.0
+  licenseURL: https://creativecommons.org/licenses/by-sa/4.0
+  description: Software Engineer
+
+  themeColor: "#000000"
+
+  socialIcons:
+    - icon: fa-linkedin
+      title: Linkedin
+      url: https://www.linkedin.com/in/marcospsouza/
+    - icon: fa-github
+      title: GitHub
+      url: https://github.com/marcosps
+    - icon: fa-twitter
+      title: Twitter
+      url: https://twitter.com/omarcossouza
+
+menu:
+  main:
+  - name: About Me
+    identifier: about
+    weight: 20
+    url: /about-me/
+
+markup:
+  highlight:
+    codeFences: true
+    guessSyntax: false
+    hl_Lines: ''
+    lineNoStart: 1
+    lineNos: true
+    lineNumbersInTable: true
+    noClasses: true
+    style: dracula
+    ntabWidth: 4
