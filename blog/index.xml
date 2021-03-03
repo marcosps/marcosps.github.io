@@ -6,7 +6,16 @@
     <description>Recent content in Blog on Marcos&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 16 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 27 Feb 2021 12:12:52 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Btrfs: Resolving the logical-resolve</title>
+      <link>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</link>
+      <pubDate>Sat, 27 Feb 2021 12:12:52 +0000</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</guid>
+      <description>Tools like fsck and smartctl are usually used when something bad happens on your disk.</description>
+    </item>
+    
     <item>
       <title>btrfs: Differentiating bind mounts on subvolumes</title>
       <link>https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/</link>
