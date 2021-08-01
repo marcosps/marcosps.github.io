@@ -1,8 +1,7 @@
 baseURL: https://mpdesouza.com
+theme: anatole
 title: Marcos' Blog
-theme: soho
 languageCode: en
-enableInlineShortcodes: true
 
 summarylength: 10
 enableEmoji: true
@@ -14,28 +13,32 @@ params:
     blog: /:slug/
 
   gravatar: marcos.souza.org@gmail.com
+  profilePicture: images/pp.jpg
 
   author: Marcos Paulo de Souza
-  copyright: Marcos Paulo de Souza
   license: CC BY-SA 4.0
   licenseURL: https://creativecommons.org/licenses/by-sa/4.0
-  description: Software Engineer
-
-  themeColor: "#000000"
+  title: Hi I'm Marcos
+  description: Welcome to my personal homepage
+  copyright: 2020-{{ YEAR }}
 
   socialIcons:
-    - icon: fa-linkedin
+    - icon: fab fa-linkedin
       title: Linkedin
       url: https://www.linkedin.com/in/marcospsouza/
-    - icon: fa-github
+    - icon: fab fa-github
       title: GitHub
       url: https://github.com/marcosps
-    - icon: fa-twitter
+    - icon: fab fa-twitter
       title: Twitter
       url: https://twitter.com/omarcossouza
 
 menu:
   main:
+  - name: Home
+    identifier: home
+    weight: 10
+    url: /
   - name: About Me
     identifier: about
     weight: 20
