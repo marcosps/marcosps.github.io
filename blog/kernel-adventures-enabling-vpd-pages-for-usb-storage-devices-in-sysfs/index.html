@@ -1,258 +1,312 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="generator" content="Hugo 0.81.0" />
+<html
+  dir="ltr"
+  lang="en"
+  data-theme=""
+><head>
+  <title>
+    Marcos Paulo de Souza
+      |
+      Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs
 
-  <title>Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs &middot; Marcos&#39; Blog</title>
 
-  <meta name="description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements." />
+    
+
+  </title>
 
   
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.86.1" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta
+    name="description"
+    content="
+      Sample article showcasing basic Markdown syntax and formatting for HTML elements.
 
-<meta itemprop="name" content="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs">
-<meta itemprop="description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements."><meta itemprop="datePublished" content="2019-08-16T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2019-08-16T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1052">
-<meta itemprop="keywords" content="" />
 
-<meta name="twitter:card" content="summary"/>
+    "
+  />
+  
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/main.min.51423ad97099a08f3a20e16d238c13adae76db7dd5e1913789bdc81143ff4cc6.css"
+    integrity="sha256-UUI62XCZoI86IOFtI4wTra52233V4ZE3ib3IEUP/TMY="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/markupHighlight.min.f798cbda9aaa38f89eb38be6414bd082cfd71a6780375cbf67b6d2fb2b96491e.css"
+    integrity="sha256-95jL2pqqOPies4vmQUvQgs/XGmeAN1y/Z7bS&#43;yuWSR4="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous"
+  />
+  
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+  <link rel="canonical" href="/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/" />
+
+  
+  
+  
+  
+  <script
+    type="text/javascript"
+    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
+    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    crossorigin="anonymous"
+  ></script>
+
+  
+    
+    
+    <script
+      type="text/javascript"
+      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
+      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      crossorigin="anonymous"
+    ></script>
+
+  
+  <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs"/>
 <meta name="twitter:description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements."/>
 
 
-<meta property="og:title" content="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs" />
-<meta property="og:description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2019-08-16T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2019-08-16T00:00:00&#43;00:00" />
+
+  
 
 
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
+  
+  
+  
+  
+  <script type="application/ld+json">
     {
-      "@type":"Person",
-      "@id": "https://mpdesouza.com#author",
-      "name": "Marcos Paulo de Souza",
-      "image": {
-        "@type":"ImageObject",
-        "url": "https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=400&d=mp"
-      },
-      "description": "Software Engineer"
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://mpdesouza.com#website",
-      "url": "https://mpdesouza.com",
-      "name": "Marcos' Blog",
-      "description": "Software Engineer",
-      "publisher": {
-        "@id": "https://mpdesouza.com#author"
-      },
-      "inLanguage": "en"
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/#webpage",
-      "url": "https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/",
-      "name": "Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs",
-      "isPartOf": {
-        "@id": "https://mpdesouza.com#website"
-      },
-      "about": {
-         "@id": "https://mpdesouza.com#author"
-      },
-      "datePublished": "2019-08-16T00:00:00+00:00",
-      "dateModified": "2019-08-16T00:00:00+00:00",
-      "description": "Sample article showcasing basic Markdown syntax and formatting for HTML elements.",
-      "inLanguage": "en",
-      "potentialAction": [
-        {
-          "@type": "ReadAction",
-          "target": [
-            "https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/"
-          ]
-        }
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "articleSection": "blog",
+        "name": "Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs",
+        "headline": "Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs",
+        "alternativeHeadline": "",
+        "description": "
+      Sample article showcasing basic Markdown syntax and formatting for HTML elements.
+
+
+    ",
+        "inLanguage": "en",
+        "isFamilyFriendly": "true",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/mpdesouza.com\/blog\/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs\/"
+        },
+        "author" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "creator" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "accountablePerson" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "copyrightHolder" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "copyrightYear" : "2019",
+        "dateCreated": "2019-08-16T00:00:00.00Z",
+        "datePublished": "2019-08-16T00:00:00.00Z",
+        "dateModified": "2019-08-16T00:00:00.00Z",
+        "publisher":{
+            "@type":"Organization",
+            "name": "Marcos Paulo de Souza",
+            "url": "https://mpdesouza.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/mpdesouza.comfavicon-32x32.png",
+                "width":"32",
+                "height":"32"
+            }
+        },
+        "image": 
+      [
       ]
-    },
-    {
-      "@type": "Article",
-      "isPartOf": {
-        "@id": "https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/#webpage"
-      },
-      "mainEntityOfPage": {
-        "@id": "https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/#webpage"
-      },
-      "headline": "Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs",
-      "datePublished": "2019-08-16T00:00:00+00:00",
-      "dateModified": "2019-08-16T00:00:00+00:00",
-      "publisher": {
-        "@id": "https://mpdesouza.com#author"
-      },
-      "keywords": [
-      ],
-      "articleSection": [
-      ],
-      "inLanguage": "en",
-      "author": {
-        "@type": "Person",
-        "name":  null 
-      },
-      "potentialAction": [
-        {
-          "@type": "CommentAction",
-          "name": "Comment",
-          "target": [
-            "https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/#comments"
-          ]
-        }
-      ]
+
+    ,
+        "url" : "https:\/\/mpdesouza.com\/blog\/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs\/",
+        "wordCount" : "1052",
+        "genre" : [ ],
+        "keywords" : [ ]
     }
-  ]
+  </script>
+
+
+
+</head>
+<body>
+    <header><div
+  class="page-top 
+    animated fadeInDown
+
+  "
+>
+  <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </a>
+  <nav>
+    <ul class="nav__list" id="navMenu">
+      <div class="nav__links">
+        
+        
+          
+          <li>
+            <a
+              
+              href="/"
+              
+              title=""
+              >Home</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/about-me/"
+              
+              title=""
+              >About Me</a
+            >
+          </li>
+
+        
+        
+      </div>
+      <li>
+        
+          <a class="theme-switch" title="Switch Theme">
+            <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+          </a>
+
+        
+      </li>
+    </ul>
+  </nav>
+</div>
+</header>
+    <div class="wrapper">
+      <aside><div
+  class="sidebar
+    animated fadeInDown
+
+  "
+>
+  <div class="sidebar__content">
+    <div class="logo-title">
+      <div class="title">
+        <img src="/images/pp.jpg" alt="profile picture" />
+        <h3 title=""><a href="/">Hi I&#39;m Marcos</a></h3>
+        <div class="description">
+          <p>Welcome to my personal homepage</p>
+        </div>
+      </div>
+    </div>
+    <ul class="social-links">
+      
+        <li>
+          <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" aria-label="Linkedin">
+            <i class="fab fa-linkedin fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://github.com/marcosps" rel="me" aria-label="GitHub">
+            <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://twitter.com/omarcossouza" rel="me" aria-label="Twitter">
+            <i class="fab fa-twitter fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+    </ul>
+  </div><footer class="footer footer--sidebar">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          2020-2021
+
+        
+      </li>
+      
+    </ul>
+  </div>
+</footer>
+  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-114151448-3', 'auto');
+	
+	ga('send', 'pageview');
 }
 </script>
-
-
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/print.css"
-        media="print">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/poole.css">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/hyde.css">
-
-  
-<style type="text/css">
-  .sidebar {
-    background-color: #000000;
-  }
-
-  .read-more-link a {
-    border-color: #000000;
-  }
-
-  .read-more-link a:hover {
-    background-color: #000000;
-  }
-
-  .pagination li a {
-    color: #000000;
-    border: 1px solid #000000;
-  }
-
-  .pagination li.active a {
-    background-color: #000000;
-  }
-
-  .pagination li a:hover {
-    background-color: #000000;
-    opacity: 0.75;
-  }
-
-  footer a,
-  .content a,
-  .related-posts li a:hover {
-    color: #000000;
-  }
-</style>
-
-
-
-  
-
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
-
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
-        crossorigin="anonymous" />
-
-  <link rel="apple-touch-icon-precomposed"
-        sizes="144x144"
-        href="/apple-touch-icon-144-precomposed.png">
-
-  <link rel="shortcut icon" href="/favicon.png">
-
-  
-  </head>
-<body>
-  <aside class="sidebar">
-  <div class="container">
-    <div class="sidebar-about">
-      
-      <div class="author-image">
-        <a href="https://mpdesouza.com">
-          <img src="https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=200&d=mp" class="img-circle img-headshot center" alt="Gravatar">
-        </a>
-      </div>
-      
-
-      <h1>Marcos&#39; Blog</h1>
-
-      
-      <p class="lead">Software Engineer</p>
-      
-    </div>
-
-    <nav>
-      <ul class="sidebar-nav">
-        <li>
-          <a href="https://mpdesouza.com">Home</a>
-        </li>
-        <li>
-          <a href="/about-me/">About Me</a>
-        </li>
-      </ul>
-    </nav>
-
-    <section class="social-icons">
-      
-      <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" title="Linkedin" target="_blank">
-        <i class="fab fa-linkedin" aria-hidden="true"></i>
-      </a>
-      
-      <a href="https://github.com/marcosps" rel="me" title="GitHub" target="_blank">
-        <i class="fab fa-github" aria-hidden="true"></i>
-      </a>
-      
-      <a href="https://twitter.com/omarcossouza" rel="me" title="Twitter" target="_blank">
-        <i class="fab fa-twitter" aria-hidden="true"></i>
-      </a>
-      
-    </section>
-  </div>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+</div>
 </aside>
+      <main>
+        <div class="autopagerize_page_element">
+          <div class="content">
+  <div
+    class="post 
+      animated fadeInDown
 
-
-  <main class="content container">
-  <div class="post">
-  <h1 class="title">Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs</h1>
-  
-
-  <div class="post-date">
-    <time datetime="2019-08-16T00:00:00Z">Aug 16, 2019</time> <span class="readtime">&middot; 5 min read</span>
-  </div>
-
-  <div>
-  <p>After chasing the problem of <a href="/kernel-adventures-are-usb-sticks-rotational-devices">rotational sysfs property of USB flash drives</a>, I started to check another <em>sysfs</em> attributes of USB storage devices, and I noted two missing attributes: <em>vpd_pg80</em> and <em>vpd_pg83</em>.</p>
+    "
+  >
+    <div class="post-content">
+      
+      <div class="post-title">
+        <h1>Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs</h1>
+        
+      </div><p>After chasing the problem of <a href="/kernel-adventures-are-usb-sticks-rotational-devices">rotational sysfs property of USB flash drives</a>, I started to check another <em>sysfs</em> attributes of USB storage devices, and I noted two missing attributes: <em>vpd_pg80</em> and <em>vpd_pg83</em>.</p>
 <p>As explained <a href="/kernel-adventures-are-usb-sticks-rotational-devices">here</a>, VPD pages contain data related to the device. In special, page 80 is <em>Unit Serial Number</em> (sn) and page 83 is <em>Device Information</em> (di), which are present in any SCSI device that complies with <em>SPC-2</em> or later.</p>
 <p>Check an example of my <em>sn</em> and <em>di</em> of my <em>SSD</em> using <strong>sg_vpd</strong> from sg3_utils package:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -265,7 +319,7 @@
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd --page 0x80 /dev/sda
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd --page 0x80 /dev/sda
   Unit serial number VPD page:
     Unit serial number: FS71N654610101U37
 $ sg_vpd --page 0x83 /dev/sda                                                                                        
@@ -281,14 +335,14 @@ $ sg_vpd --page 0x83 /dev/sda
 </div><p>This information is exported as attributes of storage devices in <em>sysfs</em>, like my HDD and SSD devices below:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ls /sys/block/sd<span style="color:#ff79c6">[</span>ab<span style="color:#ff79c6">]</span>/device/vpd*
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ls /sys/block/sd<span style="color:#ff79c6">[</span>ab<span style="color:#ff79c6">]</span>/device/vpd*
   /sys/block/sda/device/vpd_pg80
   /sys/block/sda/device/vpd_pg83
   /sys/block/sdb/device/vpd_pg80
@@ -298,7 +352,7 @@ $ sg_vpd --page 0x83 /dev/sda
 </div><p>This is true for the majority of storage devices, but not for USB flash drives. Most USB storage devices don’t have these attributes in <em>sysfs</em>, even when sg_vpd clearly shows them, like below:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -311,7 +365,7 @@ $ sg_vpd --page 0x83 /dev/sda
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd --page 0x80 /dev/sdc
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd --page 0x80 /dev/sdc
   Unit serial number VPD page:
     Unit serial number: 4C530001300722111594
 $ sg_vpd --page 0x83 /dev/sdc
@@ -328,13 +382,13 @@ $ ls /sys/block/sdc/device/vpd*
 <p>In order to understand the problem, I decided to look at the kernel code. By using <em>grep</em>, I found a couple of interesting files:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git grep -l pg80       
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git grep -l pg80       
 drivers/scsi/scsi.c
 drivers/scsi/scsi_sysfs.c
 include/scsi/scsi_device.h
@@ -345,7 +399,7 @@ include/scsi/scsi_device.h
 <p>But, let’s look at the first function that <a href="https://elixir.bootlin.com/linux/v5.3-rc4/source/drivers/scsi/scsi.c#L454"><em>scsi_attach_vpd</em></a> calls:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -372,7 +426,7 @@ include/scsi/scsi_device.h
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6272a4">/**
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6272a4">/**
 </span><span style="color:#6272a4"> * scsi_device_supports_vpd - test if a device supports VPD pages
 </span><span style="color:#6272a4"> * @sdev: the &amp;amp;struct scsi_device to test
 </span><span style="color:#6272a4"> *
@@ -402,12 +456,12 @@ include/scsi/scsi_device.h
 </div><p>By looking at this function we can presume that <strong>try_vpd_pages</strong> flag is not set and <strong>skip_vpd_pages</strong> is. We can discard checking <strong>scsi_level</strong> because <em>Cruzer Blade</em> is <em>SPC-4</em> compliant:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc | head -2
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc | head -2
   standard INQUIRY:
     <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
 </code></pre></td></tr></table>
@@ -417,14 +471,14 @@ include/scsi/scsi_device.h
 <p>Let’s <em>grep</em> again in the kernel source code to check where <strong>skip_vpd_pages</strong> is being set:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git grep -l skip_vpd_pages
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git grep -l skip_vpd_pages
 drivers/scsi/scsi.c
 drivers/scsi/scsi_scan.c
 drivers/usb/storage/scsiglue.c
@@ -434,11 +488,11 @@ include/scsi/scsi_device.h
 </div><p>Interesting to see that USB layer setting this flag. Let’s check <a href="https://elixir.bootlin.com/linux/v5.2.8/source/drivers/usb/storage/scsiglue.c#L210">drivers/usb/stoarge/scsiglue.c</a> file:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6272a4">/* Some devices don&#39;t handle VPD pages correctly */</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6272a4">/* Some devices don&#39;t handle VPD pages correctly */</span>
 sdev<span style="color:#ff79c6">-&gt;</span>skip_vpd_pages <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
 </code></pre></td></tr></table>
 </div>
@@ -446,24 +500,24 @@ sdev<span style="color:#ff79c6">-&gt;</span>skip_vpd_pages <span style="color:#f
 <p>But, shouldn’t we add support for <em>SanDisk Cruzer Blade</em> at least? There is a per device mapping with specific flags in SCSI layer that should help to fix this situation, specially regarding <strong>try_vpd_pages</strong>. To add support for <em>SanDisk Cruzer Blade</em>* devices, I submited this <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bc022145c939dd3938771535a8074a884aec0f9">patch</a> to the kernel mailing list and it’s now merged:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff">  {&#34;LENOVO&#34;, &#34;Universal Xport&#34;, &#34;*&#34;, BLIST_NO_ULD_ATTACH},
-<span style="font-weight:bold">+ {&#34;SanDisk&#34;, &#34;Cruzer Blade&#34;, NULL, BLIST_TRY_VPD_PAGES |
-</span><span style="font-weight:bold">+  BLIST_INQUIRY_36},
-</span><span style="font-weight:bold"></span>  {&#34;SMSC&#34;, &#34;USB 2 HS-CF&#34;, NULL, BLIST_SPARSELUN | BLIST_INQUIRY_36},
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff">  {&#34;LENOVO&#34;, &#34;Universal Xport&#34;, &#34;*&#34;, BLIST_NO_ULD_ATTACH},
+<span style="color:#50fa7b;font-weight:bold">+ {&#34;SanDisk&#34;, &#34;Cruzer Blade&#34;, NULL, BLIST_TRY_VPD_PAGES |
+</span><span style="color:#50fa7b;font-weight:bold">+  BLIST_INQUIRY_36},
+</span><span style="color:#50fa7b;font-weight:bold"></span>  {&#34;SMSC&#34;, &#34;USB 2 HS-CF&#34;, NULL, BLIST_SPARSELUN | BLIST_INQUIRY_36},
   ...
 </code></pre></td></tr></table>
 </div>
 </div><p>The patch adds specific flags that will be checked in SCSI layer and will be applied once the <em>SanDisk Cruzer Blade</em>* device is found. This change alone does not fix the problem as the flag **skip_vpd_pages** is still enabled. So I submited a second <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=349148785b8cea9781af520fd53c29ee8087ee74">patch</a>, to only set **skip_vpd_pages** when **try_vpd_pages** is not set allowing the SCSI layer to process all VPD pages when **try_vpd_pages** is set.</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -472,19 +526,19 @@ sdev<span style="color:#ff79c6">-&gt;</span>skip_vpd_pages <span style="color:#f
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#8b080b">-  /* Some devices don&#39;t handle VPD pages correctly */
-</span><span style="color:#8b080b">-  sdev-&gt;skip_vpd_pages = 1;
-</span><span style="color:#8b080b"></span><span style="font-weight:bold">+  /*
-</span><span style="font-weight:bold">+   * Some devices don&#39;t handle VPD pages correctly, so skip vpd
-</span><span style="font-weight:bold">+   * pages if not forced by SCSI layer.
-</span><span style="font-weight:bold">+   */
-</span><span style="font-weight:bold">+  sdev-&gt;skip_vpd_pages = !sdev-&gt;try_vpd_pages;
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#f55">-  /* Some devices don&#39;t handle VPD pages correctly */
+</span><span style="color:#f55">-  sdev-&gt;skip_vpd_pages = 1;
+</span><span style="color:#f55"></span><span style="color:#50fa7b;font-weight:bold">+  /*
+</span><span style="color:#50fa7b;font-weight:bold">+   * Some devices don&#39;t handle VPD pages correctly, so skip vpd
+</span><span style="color:#50fa7b;font-weight:bold">+   * pages if not forced by SCSI layer.
+</span><span style="color:#50fa7b;font-weight:bold">+   */
+</span><span style="color:#50fa7b;font-weight:bold">+  sdev-&gt;skip_vpd_pages = !sdev-&gt;try_vpd_pages;
 </span></code></pre></td></tr></table>
 </div>
 </div><p>With these two patches applied <em>SanDisk Cruzer Blade</em> USB flash device is able to properly show the VPD pages in <em>sysfs</em>:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -497,7 +551,7 @@ sdev<span style="color:#ff79c6">-&gt;</span>skip_vpd_pages <span style="color:#f
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /sys/block/sda/device/vendor
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /sys/block/sda/device/vendor
 SanDisk
 
 $ cat /sys/block/sda/device/model
@@ -511,73 +565,43 @@ $ cat /sys/block/sda/device/vpd_pg83
 </code></pre></td></tr></table>
 </div>
 </div><p>That’s all for today. Stay tuned for more posts about Kernel and whatnot, see ya!</p>
+</div>
+    <div class="post-footer">
+      <div class="info">
+        
 
+        
+      </div>
+    </div>
+
+    
   </div>
 
-  
 
+          </div>
+        </div>
+      </main>
+    </div><footer class="footer footer--base">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          2020-2021
 
-  <div class="share-buttons">
-  <a class="twitter-share-button"
-     href="#"
-     title="Share on Twitter"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/"
-     data-text="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs"><i class="fab fa-twitter"></i></a>
-
-  <a class="linkedin-share-button"
-     href="#"
-     title="Share on LinkedIn"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/"
-     data-text="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs"><i class="fab fa-linkedin-in"></i></a>
-
-  <a class="facebook-share-button"
-     href="#"
-     title="Share on Facebook"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/"
-     data-text="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs"><i class="fab fa-facebook"></i></a>
-
-  <a class="telegram-share-button"
-     href="#"
-     title="Share on Telegram"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/"
-     data-text="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs"><i class="fab fa-telegram"></i></a>
-
-  <a class="pinterest-share-button"
-     href="#"
-     title="Share on Pinterest"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/"
-     data-text="Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs"><i class="fab fa-pinterest"></i></a>
-</div>
-
-
-  
-</div>
-  </main>
-
-  <footer>
-  <div>
-    <p>
-      &copy; Marcos Paulo de Souza 2021
-
-      &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
-
+        
+      </li>
       
-    </p>
+    </ul>
   </div>
 </footer>
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
-          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
-          crossorigin="anonymous"></script>
-
-
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/soho.js"></script>
-
   
-
-  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script>
 <script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
@@ -588,6 +612,5 @@ if (!doNotTrack) {
 }
 </script>
 <script async src='https://www.google-analytics.com/analytics.js'></script>
-
 </body>
 </html>

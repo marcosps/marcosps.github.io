@@ -13,7 +13,9 @@
       <pubDate>Sat, 27 Feb 2021 12:12:52 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</guid>
-      <description>Tools like fsck and smartctl are usually used when something bad happens on your disk.</description>
+      
+        <description>Tools like fsck and smartctl are usually used when something bad happens on your disk.</description>
+      
     </item>
     
     <item>
@@ -22,7 +24,9 @@
       <pubDate>Tue, 16 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/</guid>
-      <description>The btrfs inspect-internal logical-resolve command is used to find a file related to a logical-address.</description>
+      
+        <description>The btrfs inspect-internal logical-resolve command is used to find a file related to a logical-address.</description>
+      
     </item>
     
     <item>
@@ -31,7 +35,9 @@
       <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-making-send-more-capable/</guid>
-      <description>The send/receive is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.</description>
+      
+        <description>The send/receive is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.</description>
+      
     </item>
     
     <item>
@@ -40,8 +46,10 @@
       <pubDate>Sun, 09 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/about-me/</guid>
-      <description>Hi, I am Marcos
+      
+        <description>Hi, I am Marcos
 I am a software developer focused on Linux and open source.</description>
+      
     </item>
     
     <item>
@@ -50,7 +58,9 @@ I am a software developer focused on Linux and open source.</description>
       <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</guid>
-      <description>Btrfs is a very versatile filesystem, and it has a lot of features that don&amp;rsquo;t exist in any other mainline Linux filesystem.</description>
+      
+        <description>Btrfs is a very versatile filesystem, and it has a lot of features that don&amp;rsquo;t exist in any other mainline Linux filesystem.</description>
+      
     </item>
     
     <item>
@@ -59,7 +69,9 @@ I am a software developer focused on Linux and open source.</description>
       <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</guid>
-      <description>After chasing the problem of rotational sysfs property of USB flash drives, I started to check another sysfs attributes of USB storage devices, and I noted two missing attributes: vpd_pg80 and vpd_pg83.</description>
+      
+        <description>After chasing the problem of rotational sysfs property of USB flash drives, I started to check another sysfs attributes of USB storage devices, and I noted two missing attributes: vpd_pg80 and vpd_pg83.</description>
+      
     </item>
     
     <item>
@@ -68,7 +80,9 @@ I am a software developer focused on Linux and open source.</description>
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/</guid>
-      <description>A while ago I’ve found this kernel bug entry about USB mass storage being shown as a rotational device.</description>
+      
+        <description>A while ago I’ve found this kernel bug entry about USB mass storage being shown as a rotational device.</description>
+      
     </item>
     
     <item>
@@ -77,7 +91,9 @@ I am a software developer focused on Linux and open source.</description>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/</guid>
-      <description>Proposed in 2012, the NO_NEW_PRIVS flag made possible to any process to avoid privilege escalation when this behavior is not desired.</description>
+      
+        <description>Proposed in 2012, the NO_NEW_PRIVS flag made possible to any process to avoid privilege escalation when this behavior is not desired.</description>
+      
     </item>
     
   </channel>

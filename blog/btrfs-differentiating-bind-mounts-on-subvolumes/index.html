@@ -1,272 +1,328 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="generator" content="Hugo 0.81.0" />
+<html
+  dir="ltr"
+  lang="en"
+  data-theme=""
+><head>
+  <title>
+    Marcos Paulo de Souza
+      |
+      btrfs: Differentiating bind mounts on subvolumes
 
-  <title>btrfs: Differentiating bind mounts on subvolumes &middot; Marcos&#39; Blog</title>
 
-  <meta name="description" content="Explaining how to differentiate bind mounts on btrfs subvolumes" />
+    
+
+  </title>
 
   
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.86.1" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta
+    name="description"
+    content="
+      Explaining how to differentiate bind mounts on btrfs subvolumes
 
-<meta itemprop="name" content="btrfs: Differentiating bind mounts on subvolumes">
-<meta itemprop="description" content="Explaining how to differentiate bind mounts on btrfs subvolumes"><meta itemprop="datePublished" content="2021-02-16T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2021-02-16T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1114"><meta itemprop="image" content="https://mpdesouza.com/images/btrfs-logo.png">
-<meta itemprop="keywords" content="" />
 
-<meta name="twitter:card" content="summary_large_image"/>
+    "
+  />
+  
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/main.min.51423ad97099a08f3a20e16d238c13adae76db7dd5e1913789bdc81143ff4cc6.css"
+    integrity="sha256-UUI62XCZoI86IOFtI4wTra52233V4ZE3ib3IEUP/TMY="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/markupHighlight.min.f798cbda9aaa38f89eb38be6414bd082cfd71a6780375cbf67b6d2fb2b96491e.css"
+    integrity="sha256-95jL2pqqOPies4vmQUvQgs/XGmeAN1y/Z7bS&#43;yuWSR4="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous"
+  />
+  
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+  <link rel="canonical" href="/blog/btrfs-differentiating-bind-mounts-on-subvolumes/" />
+
+  
+  
+  
+  
+  <script
+    type="text/javascript"
+    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
+    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    crossorigin="anonymous"
+  ></script>
+
+  
+    
+    
+    <script
+      type="text/javascript"
+      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
+      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      crossorigin="anonymous"
+    ></script>
+
+  
+  <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://mpdesouza.com/images/btrfs-logo.png"/>
 
 <meta name="twitter:title" content="btrfs: Differentiating bind mounts on subvolumes"/>
 <meta name="twitter:description" content="Explaining how to differentiate bind mounts on btrfs subvolumes"/>
 
 
-<meta property="og:title" content="btrfs: Differentiating bind mounts on subvolumes" />
-<meta property="og:description" content="Explaining how to differentiate bind mounts on btrfs subvolumes" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/" /><meta property="og:image" content="https://mpdesouza.com/images/btrfs-logo.png" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2021-02-16T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2021-02-16T00:00:00&#43;00:00" />
+
+  
 
 
+  
+  
+  
+  
+  <script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "articleSection": "blog",
+        "name": "btrfs: Differentiating bind mounts on subvolumes",
+        "headline": "btrfs: Differentiating bind mounts on subvolumes",
+        "alternativeHeadline": "",
+        "description": "
+      Explaining how to differentiate bind mounts on btrfs subvolumes
 
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type":"Person",
-      "@id": "https://mpdesouza.com#author",
-      "name": "Marcos Paulo de Souza",
-      "image": {
-        "@type":"ImageObject",
-        "url": "https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=400&d=mp"
-      },
-      "description": "Software Engineer"
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://mpdesouza.com#website",
-      "url": "https://mpdesouza.com",
-      "name": "Marcos' Blog",
-      "description": "Software Engineer",
-      "publisher": {
-        "@id": "https://mpdesouza.com#author"
-      },
-      "inLanguage": "en"
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/#webpage",
-      "url": "https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/",
-      "name": "btrfs: Differentiating bind mounts on subvolumes",
-      "isPartOf": {
-        "@id": "https://mpdesouza.com#website"
-      },
-      "about": {
-         "@id": "https://mpdesouza.com#author"
-      },
-      "datePublished": "2021-02-16T00:00:00+00:00",
-      "dateModified": "2021-02-16T00:00:00+00:00",
-      "description": "Explaining how to differentiate bind mounts on btrfs subvolumes",
-      "inLanguage": "en",
-      "potentialAction": [
-        {
-          "@type": "ReadAction",
-          "target": [
-            "https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/"
-          ]
-        }
-      ]
-    },
-    {
-      "@type": "Article",
-      "isPartOf": {
-        "@id": "https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/#webpage"
-      },
-      "mainEntityOfPage": {
-        "@id": "https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/#webpage"
-      },
-      "headline": "btrfs: Differentiating bind mounts on subvolumes",
-      "image": [
+    ",
+        "inLanguage": "en",
+        "isFamilyFriendly": "true",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/mpdesouza.com\/blog\/btrfs-differentiating-bind-mounts-on-subvolumes\/"
+        },
+        "author" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "creator" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "accountablePerson" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "copyrightHolder" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "copyrightYear" : "2021",
+        "dateCreated": "2021-02-16T00:00:00.00Z",
+        "datePublished": "2021-02-16T00:00:00.00Z",
+        "dateModified": "2021-02-16T00:00:00.00Z",
+        "publisher":{
+            "@type":"Organization",
+            "name": "Marcos Paulo de Souza",
+            "url": "https://mpdesouza.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/mpdesouza.comfavicon-32x32.png",
+                "width":"32",
+                "height":"32"
+            }
+        },
+        "image": 
+      [
+        
         "https://mpdesouza.com/images/btrfs-logo.png"
-      ],
-      "datePublished": "2021-02-16T00:00:00+00:00",
-      "dateModified": "2021-02-16T00:00:00+00:00",
-      "publisher": {
-        "@id": "https://mpdesouza.com#author"
-      },
-      "keywords": [
-      ],
-      "articleSection": [
-      ],
-      "inLanguage": "en",
-      "author": {
-        "@type": "Person",
-        "name":  null 
-      },
-      "potentialAction": [
-        {
-          "@type": "CommentAction",
-          "name": "Comment",
-          "target": [
-            "https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/#comments"
-          ]
-        }
+
+
+      
       ]
+
+    ,
+        "url" : "https:\/\/mpdesouza.com\/blog\/btrfs-differentiating-bind-mounts-on-subvolumes\/",
+        "wordCount" : "1114",
+        "genre" : [ ],
+        "keywords" : [ ]
     }
-  ]
+  </script>
+
+
+
+</head>
+<body>
+    <header><div
+  class="page-top 
+    animated fadeInDown
+
+  "
+>
+  <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </a>
+  <nav>
+    <ul class="nav__list" id="navMenu">
+      <div class="nav__links">
+        
+        
+          
+          <li>
+            <a
+              
+              href="/"
+              
+              title=""
+              >Home</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/about-me/"
+              
+              title=""
+              >About Me</a
+            >
+          </li>
+
+        
+        
+      </div>
+      <li>
+        
+          <a class="theme-switch" title="Switch Theme">
+            <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+          </a>
+
+        
+      </li>
+    </ul>
+  </nav>
+</div>
+</header>
+    <div class="wrapper">
+      <aside><div
+  class="sidebar
+    animated fadeInDown
+
+  "
+>
+  <div class="sidebar__content">
+    <div class="logo-title">
+      <div class="title">
+        <img src="/images/pp.jpg" alt="profile picture" />
+        <h3 title=""><a href="/">Hi I&#39;m Marcos</a></h3>
+        <div class="description">
+          <p>Welcome to my personal homepage</p>
+        </div>
+      </div>
+    </div>
+    <ul class="social-links">
+      
+        <li>
+          <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" aria-label="Linkedin">
+            <i class="fab fa-linkedin fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://github.com/marcosps" rel="me" aria-label="GitHub">
+            <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://twitter.com/omarcossouza" rel="me" aria-label="Twitter">
+            <i class="fab fa-twitter fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+    </ul>
+  </div><footer class="footer footer--sidebar">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          2020-2021
+
+        
+      </li>
+      
+    </ul>
+  </div>
+</footer>
+  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-114151448-3', 'auto');
+	
+	ga('send', 'pageview');
 }
 </script>
-
-
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/print.css"
-        media="print">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/poole.css">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/hyde.css">
-
-  
-<style type="text/css">
-  .sidebar {
-    background-color: #000000;
-  }
-
-  .read-more-link a {
-    border-color: #000000;
-  }
-
-  .read-more-link a:hover {
-    background-color: #000000;
-  }
-
-  .pagination li a {
-    color: #000000;
-    border: 1px solid #000000;
-  }
-
-  .pagination li.active a {
-    background-color: #000000;
-  }
-
-  .pagination li a:hover {
-    background-color: #000000;
-    opacity: 0.75;
-  }
-
-  footer a,
-  .content a,
-  .related-posts li a:hover {
-    color: #000000;
-  }
-</style>
-
-
-
-  
-
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
-
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
-        crossorigin="anonymous" />
-
-  <link rel="apple-touch-icon-precomposed"
-        sizes="144x144"
-        href="/apple-touch-icon-144-precomposed.png">
-
-  <link rel="shortcut icon" href="/favicon.png">
-
-  
-  </head>
-<body>
-  <aside class="sidebar">
-  <div class="container">
-    <div class="sidebar-about">
-      
-      <div class="author-image">
-        <a href="https://mpdesouza.com">
-          <img src="https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=200&d=mp" class="img-circle img-headshot center" alt="Gravatar">
-        </a>
-      </div>
-      
-
-      <h1>Marcos&#39; Blog</h1>
-
-      
-      <p class="lead">Software Engineer</p>
-      
-    </div>
-
-    <nav>
-      <ul class="sidebar-nav">
-        <li>
-          <a href="https://mpdesouza.com">Home</a>
-        </li>
-        <li>
-          <a href="/about-me/">About Me</a>
-        </li>
-      </ul>
-    </nav>
-
-    <section class="social-icons">
-      
-      <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" title="Linkedin" target="_blank">
-        <i class="fab fa-linkedin" aria-hidden="true"></i>
-      </a>
-      
-      <a href="https://github.com/marcosps" rel="me" title="GitHub" target="_blank">
-        <i class="fab fa-github" aria-hidden="true"></i>
-      </a>
-      
-      <a href="https://twitter.com/omarcossouza" rel="me" title="Twitter" target="_blank">
-        <i class="fab fa-twitter" aria-hidden="true"></i>
-      </a>
-      
-    </section>
-  </div>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+</div>
 </aside>
+      <main>
+        <div class="autopagerize_page_element">
+          <div class="content">
+  <div
+    class="post 
+      animated fadeInDown
 
-
-  <main class="content container">
-  <div class="post">
-  <h1 class="title">btrfs: Differentiating bind mounts on subvolumes</h1>
-  
-
-  <div class="post-date">
-    <time datetime="2021-02-16T00:00:00Z">Feb 16, 2021</time> <span class="readtime">&middot; 6 min read</span>
-  </div>
-
-  <div>
-  <p>The <em>btrfs inspect-internal logical-resolve</em> command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file. But, for all current users of openSUSE/SUSE Enterprise Linux, this command was failing as shown below:</p>
+    "
+  >
+    <div class="post-content">
+      
+      <div class="post-title">
+        <h1>btrfs: Differentiating bind mounts on subvolumes</h1>
+        
+      </div><p>The <em>btrfs inspect-internal logical-resolve</em> command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file. But, for all current users of openSUSE/SUSE Enterprise Linux, this command was failing as shown below:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> / 
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> / 
 ERROR: cannot access <span style="color:#f1fa8c">&#39;//@/home&#39;</span>: No such file or directory 
 </code></pre></td></tr></table>
 </div>
 </div><p>An openSUSE/SLE installation would create a set of subvolumes, starting from <em>/@</em>. These subvolumes are mounted on <em>/</em>, but <em>@</em> is never mounted. For example, subvolume <em>/@/home</em> is mounted at <em>/home</em>. We can confirm this behavior by looking at the subvolume list:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -284,7 +340,7 @@ ERROR: cannot access <span style="color:#f1fa8c">&#39;//@/home&#39;</span>: No s
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs subvolume list /
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs subvolume list /
 ID <span style="color:#bd93f9">256</span> gen <span style="color:#bd93f9">32</span> top level <span style="color:#bd93f9">5</span> path @
 ID <span style="color:#bd93f9">257</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/var
 ID <span style="color:#bd93f9">258</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/usr/local
@@ -305,14 +361,14 @@ ID <span style="color:#bd93f9">280</span> gen <span style="color:#bd93f9">2186</
 </div><p>By checking the fstab file we can verify that all subvolumes are mounted at /, but starting from the subvolume &lsquo;@':</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /etc/fstab
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /etc/fstab
 ...
 <span style="color:#8be9fd;font-style:italic">UUID</span><span style="color:#ff79c6">=</span>35b19e1f-efb2-49a5-ab93-03c04e6d0399  /opt                    btrfs  <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>/@/opt                 <span style="color:#bd93f9">0</span>  <span style="color:#bd93f9">0</span>
 <span style="color:#8be9fd;font-style:italic">UUID</span><span style="color:#ff79c6">=</span>35b19e1f-efb2-49a5-ab93-03c04e6d0399  /home                   btrfs  <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>/@/home                <span style="color:#bd93f9">0</span>  <span style="color:#bd93f9">0</span>
@@ -326,11 +382,11 @@ ID <span style="color:#bd93f9">280</span> gen <span style="color:#bd93f9">2186</
 <p>As btrfs mount options always show subvolume and subvolume id, it would be simple as:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=5,subvol=/&#34;</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=5,subvol=/&#34;</span>
 /storage/btrfs/1.disk on /mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>5,subvol<span style="color:#ff79c6">=</span>/<span style="color:#ff79c6">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -338,7 +394,7 @@ ID <span style="color:#bd93f9">280</span> gen <span style="color:#bd93f9">2186</
 <p>In this case, it works as expect, but what if we have a bind mount mounting from a directory <em>within</em> the current mountpoint? Look at the example below:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -362,7 +418,7 @@ ID <span style="color:#bd93f9">280</span> gen <span style="color:#bd93f9">2186</
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># create a new disk, format it, create a subvolume and a directory on it</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># create a new disk, format it, create a subvolume and a directory on it</span>
 $ fallocate -l5G test.disk
 
 $ mkfs.btrfs -f test.disk
@@ -389,12 +445,12 @@ $ mount --bind /mnt/dir1 another_mnt
 </div><p>Now, if we run the same command as before, we have a problem:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
 /storage/btrfs/test.disk on /mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1<span style="color:#ff79c6">)</span>
 /storage/btrfs/test.disk on /storage/btrfs/another_mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1<span style="color:#ff79c6">)</span>
 </code></pre></td></tr></table>
@@ -402,13 +458,13 @@ $ mount --bind /mnt/dir1 another_mnt
 </div><p>As shown, the subvolid and subvol fields are the same, but the content isn&rsquo;t:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ls /mnt
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ls /mnt
 dir1
 $ ls /storage/btrfs/another_mnt
 $
@@ -417,22 +473,22 @@ $
 </div><p>Prior to kernel 5.9-rc1, btrfs would show a diferent <em>subvol=</em> option when a bind mount was used. The issue was fixed by this <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3ef3959b29c4a5bd65526ab310a1a18ae533172a">patch</a>. Before this change the <em>/proc/mounts</em> file would differentiate bind mounts:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">/dev/sda /mnt/test btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">/dev/sda /mnt/test btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
 /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo/bar <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>This was wrong, since the subvolume shown should be the same for a bind mount. The patch above fixed the behavior, and now a bind mount will show the same subvol and subvolid fields on a mountpoint:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">/dev/sda /mnt/test btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">/dev/sda /mnt/test btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
 /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
 </code></pre></td></tr></table>
 </div>
@@ -443,12 +499,12 @@ $
 <p>What does <strong>mountinfo</strong> shows in this setup?</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cat /proc/self/mountinfo | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cat /proc/self/mountinfo | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
 <span style="color:#bd93f9">37</span> <span style="color:#bd93f9">28</span> 0:31 /vol1 /mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
 <span style="color:#bd93f9">36</span> <span style="color:#bd93f9">29</span> 0:31 /vol1/dir1 /storage/btrfs/another_mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
 </code></pre></td></tr></table>
@@ -461,14 +517,14 @@ $
 <p>What if we create a bind mount using the same directory of the original mount?</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ umount another_mnt
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ umount another_mnt
 $ mount --bind /mnt/ another_mnt
 $ cat /proc/self/mountinfo | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
 <span style="color:#bd93f9">37</span> <span style="color:#bd93f9">28</span> 0:31 /vol1 /mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
@@ -479,83 +535,53 @@ $ cat /proc/self/mountinfo | grep btrfs | grep <span style="color:#f1fa8c">&#34;
 <p>I used this approach in this <a href="https://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git/commit/?id=57cfe29e69369be1fd1cfe149ee3cecf37a91968">patch</a> in order to solve one of the <em>logical-resolve</em> issues when running the comannd on a openSUSE/SLE distribution. Now the command runs correctly and reports the file related to a logical-address in the filesystem:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> /
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> /
 //./home/marcos/.local/share/flatpak/repo/objects/00/7e3655177d55a02ca39d4cd3d095627f824b8004ad70f416eccb8bdd281fd5.file
 </code></pre></td></tr></table>
 </div>
 </div><p>The patch was merged and is already part of btrfs-progs v5.10.1 along with other important fixes.</p>
 <p>Thanks for reading!</p>
+</div>
+    <div class="post-footer">
+      <div class="info">
+        
 
+        
+      </div>
+    </div>
+
+    
   </div>
 
-  
 
+          </div>
+        </div>
+      </main>
+    </div><footer class="footer footer--base">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          2020-2021
 
-  <div class="share-buttons">
-  <a class="twitter-share-button"
-     href="#"
-     title="Share on Twitter"
-     data-url="https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/"
-     data-text="btrfs: Differentiating bind mounts on subvolumes"><i class="fab fa-twitter"></i></a>
-
-  <a class="linkedin-share-button"
-     href="#"
-     title="Share on LinkedIn"
-     data-url="https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/"
-     data-text="btrfs: Differentiating bind mounts on subvolumes"><i class="fab fa-linkedin-in"></i></a>
-
-  <a class="facebook-share-button"
-     href="#"
-     title="Share on Facebook"
-     data-url="https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/"
-     data-text="btrfs: Differentiating bind mounts on subvolumes"><i class="fab fa-facebook"></i></a>
-
-  <a class="telegram-share-button"
-     href="#"
-     title="Share on Telegram"
-     data-url="https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/"
-     data-text="btrfs: Differentiating bind mounts on subvolumes"><i class="fab fa-telegram"></i></a>
-
-  <a class="pinterest-share-button"
-     href="#"
-     title="Share on Pinterest"
-     data-url="https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/"
-     data-text="btrfs: Differentiating bind mounts on subvolumes"><i class="fab fa-pinterest"></i></a>
-</div>
-
-
-  
-</div>
-  </main>
-
-  <footer>
-  <div>
-    <p>
-      &copy; Marcos Paulo de Souza 2021
-
-      &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
-
+        
+      </li>
       
-    </p>
+    </ul>
   </div>
 </footer>
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
-          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
-          crossorigin="anonymous"></script>
-
-
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/soho.js"></script>
-
   
-
-  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script>
 <script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
@@ -566,6 +592,5 @@ if (!doNotTrack) {
 }
 </script>
 <script async src='https://www.google-analytics.com/analytics.js'></script>
-
 </body>
 </html>

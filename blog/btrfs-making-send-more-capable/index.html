@@ -1,266 +1,320 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="generator" content="Hugo 0.81.0" />
+<html
+  dir="ltr"
+  lang="en"
+  data-theme=""
+><head>
+  <title>
+    Marcos Paulo de Souza
+      |
+      btrfs: making &#34;send&#34; more &#34;capable&#34;
 
-  <title>btrfs: making &#34;send&#34; more &#34;capable&#34; &middot; Marcos&#39; Blog</title>
 
-  <meta name="description" content="Post fixing an issue in btrfs send/receive." />
+    
+
+  </title>
 
   
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.86.1" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta
+    name="description"
+    content="
+      Post fixing an issue in btrfs send/receive.
 
-<meta itemprop="name" content="btrfs: making &#34;send&#34; more &#34;capable&#34;">
-<meta itemprop="description" content="Post fixing an issue in btrfs send/receive."><meta itemprop="datePublished" content="2020-05-14T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2020-05-14T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1197">
-<meta itemprop="keywords" content="" />
 
-<meta name="twitter:card" content="summary"/>
+    "
+  />
+  
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/main.min.51423ad97099a08f3a20e16d238c13adae76db7dd5e1913789bdc81143ff4cc6.css"
+    integrity="sha256-UUI62XCZoI86IOFtI4wTra52233V4ZE3ib3IEUP/TMY="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/markupHighlight.min.f798cbda9aaa38f89eb38be6414bd082cfd71a6780375cbf67b6d2fb2b96491e.css"
+    integrity="sha256-95jL2pqqOPies4vmQUvQgs/XGmeAN1y/Z7bS&#43;yuWSR4="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous"
+  />
+  
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+  <link rel="canonical" href="/blog/btrfs-making-send-more-capable/" />
+
+  
+  
+  
+  
+  <script
+    type="text/javascript"
+    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
+    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    crossorigin="anonymous"
+  ></script>
+
+  
+    
+    
+    <script
+      type="text/javascript"
+      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
+      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      crossorigin="anonymous"
+    ></script>
+
+  
+  <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="btrfs: making &#34;send&#34; more &#34;capable&#34;"/>
 <meta name="twitter:description" content="Post fixing an issue in btrfs send/receive."/>
 
 
-<meta property="og:title" content="btrfs: making &#34;send&#34; more &#34;capable&#34;" />
-<meta property="og:description" content="Post fixing an issue in btrfs send/receive." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://mpdesouza.com/blog/btrfs-making-send-more-capable/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2020-05-14T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2020-05-14T00:00:00&#43;00:00" />
+
+  
 
 
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
+  
+  
+  
+  
+  <script type="application/ld+json">
     {
-      "@type":"Person",
-      "@id": "https://mpdesouza.com#author",
-      "name": "Marcos Paulo de Souza",
-      "image": {
-        "@type":"ImageObject",
-        "url": "https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=400&d=mp"
-      },
-      "description": "Software Engineer"
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://mpdesouza.com#website",
-      "url": "https://mpdesouza.com",
-      "name": "Marcos' Blog",
-      "description": "Software Engineer",
-      "publisher": {
-        "@id": "https://mpdesouza.com#author"
-      },
-      "inLanguage": "en"
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://mpdesouza.com/blog/btrfs-making-send-more-capable/#webpage",
-      "url": "https://mpdesouza.com/blog/btrfs-making-send-more-capable/",
-      "name": "btrfs: making \"send\" more \"capable\"",
-      "isPartOf": {
-        "@id": "https://mpdesouza.com#website"
-      },
-      "about": {
-         "@id": "https://mpdesouza.com#author"
-      },
-      "datePublished": "2020-05-14T00:00:00+00:00",
-      "dateModified": "2020-05-14T00:00:00+00:00",
-      "description": "Post fixing an issue in btrfs send/receive.",
-      "inLanguage": "en",
-      "potentialAction": [
-        {
-          "@type": "ReadAction",
-          "target": [
-            "https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
-          ]
-        }
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "articleSection": "blog",
+        "name": "btrfs: making \u0022send\u0022 more \u0022capable\u0022",
+        "headline": "btrfs: making \u0022send\u0022 more \u0022capable\u0022",
+        "alternativeHeadline": "",
+        "description": "
+      Post fixing an issue in btrfs send\/receive.
+
+
+    ",
+        "inLanguage": "en",
+        "isFamilyFriendly": "true",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/mpdesouza.com\/blog\/btrfs-making-send-more-capable\/"
+        },
+        "author" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "creator" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "accountablePerson" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "copyrightHolder" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "copyrightYear" : "2020",
+        "dateCreated": "2020-05-14T00:00:00.00Z",
+        "datePublished": "2020-05-14T00:00:00.00Z",
+        "dateModified": "2020-05-14T00:00:00.00Z",
+        "publisher":{
+            "@type":"Organization",
+            "name": "Marcos Paulo de Souza",
+            "url": "https://mpdesouza.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/mpdesouza.comfavicon-32x32.png",
+                "width":"32",
+                "height":"32"
+            }
+        },
+        "image": 
+      [
       ]
-    },
-    {
-      "@type": "Article",
-      "isPartOf": {
-        "@id": "https://mpdesouza.com/blog/btrfs-making-send-more-capable/#webpage"
-      },
-      "mainEntityOfPage": {
-        "@id": "https://mpdesouza.com/blog/btrfs-making-send-more-capable/#webpage"
-      },
-      "headline": "btrfs: making \"send\" more \"capable\"",
-      "datePublished": "2020-05-14T00:00:00+00:00",
-      "dateModified": "2020-05-14T00:00:00+00:00",
-      "publisher": {
-        "@id": "https://mpdesouza.com#author"
-      },
-      "keywords": [
-      ],
-      "articleSection": [
-      ],
-      "inLanguage": "en",
-      "author": {
-        "@type": "Person",
-        "name":  null 
-      },
-      "potentialAction": [
-        {
-          "@type": "CommentAction",
-          "name": "Comment",
-          "target": [
-            "https://mpdesouza.com/blog/btrfs-making-send-more-capable/#comments"
-          ]
-        }
-      ]
+
+    ,
+        "url" : "https:\/\/mpdesouza.com\/blog\/btrfs-making-send-more-capable\/",
+        "wordCount" : "1197",
+        "genre" : [ ],
+        "keywords" : [ ]
     }
-  ]
+  </script>
+
+
+
+</head>
+<body>
+    <header><div
+  class="page-top 
+    animated fadeInDown
+
+  "
+>
+  <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </a>
+  <nav>
+    <ul class="nav__list" id="navMenu">
+      <div class="nav__links">
+        
+        
+          
+          <li>
+            <a
+              
+              href="/"
+              
+              title=""
+              >Home</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/about-me/"
+              
+              title=""
+              >About Me</a
+            >
+          </li>
+
+        
+        
+      </div>
+      <li>
+        
+          <a class="theme-switch" title="Switch Theme">
+            <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+          </a>
+
+        
+      </li>
+    </ul>
+  </nav>
+</div>
+</header>
+    <div class="wrapper">
+      <aside><div
+  class="sidebar
+    animated fadeInDown
+
+  "
+>
+  <div class="sidebar__content">
+    <div class="logo-title">
+      <div class="title">
+        <img src="/images/pp.jpg" alt="profile picture" />
+        <h3 title=""><a href="/">Hi I&#39;m Marcos</a></h3>
+        <div class="description">
+          <p>Welcome to my personal homepage</p>
+        </div>
+      </div>
+    </div>
+    <ul class="social-links">
+      
+        <li>
+          <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" aria-label="Linkedin">
+            <i class="fab fa-linkedin fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://github.com/marcosps" rel="me" aria-label="GitHub">
+            <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://twitter.com/omarcossouza" rel="me" aria-label="Twitter">
+            <i class="fab fa-twitter fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+    </ul>
+  </div><footer class="footer footer--sidebar">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          2020-2021
+
+        
+      </li>
+      
+    </ul>
+  </div>
+</footer>
+  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-114151448-3', 'auto');
+	
+	ga('send', 'pageview');
 }
 </script>
-
-
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/print.css"
-        media="print">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/poole.css">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/hyde.css">
-
-  
-<style type="text/css">
-  .sidebar {
-    background-color: #000000;
-  }
-
-  .read-more-link a {
-    border-color: #000000;
-  }
-
-  .read-more-link a:hover {
-    background-color: #000000;
-  }
-
-  .pagination li a {
-    color: #000000;
-    border: 1px solid #000000;
-  }
-
-  .pagination li.active a {
-    background-color: #000000;
-  }
-
-  .pagination li a:hover {
-    background-color: #000000;
-    opacity: 0.75;
-  }
-
-  footer a,
-  .content a,
-  .related-posts li a:hover {
-    color: #000000;
-  }
-</style>
-
-
-
-  
-
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
-
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
-        crossorigin="anonymous" />
-
-  <link rel="apple-touch-icon-precomposed"
-        sizes="144x144"
-        href="/apple-touch-icon-144-precomposed.png">
-
-  <link rel="shortcut icon" href="/favicon.png">
-
-  
-  </head>
-<body>
-  <aside class="sidebar">
-  <div class="container">
-    <div class="sidebar-about">
-      
-      <div class="author-image">
-        <a href="https://mpdesouza.com">
-          <img src="https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=200&d=mp" class="img-circle img-headshot center" alt="Gravatar">
-        </a>
-      </div>
-      
-
-      <h1>Marcos&#39; Blog</h1>
-
-      
-      <p class="lead">Software Engineer</p>
-      
-    </div>
-
-    <nav>
-      <ul class="sidebar-nav">
-        <li>
-          <a href="https://mpdesouza.com">Home</a>
-        </li>
-        <li>
-          <a href="/about-me/">About Me</a>
-        </li>
-      </ul>
-    </nav>
-
-    <section class="social-icons">
-      
-      <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" title="Linkedin" target="_blank">
-        <i class="fab fa-linkedin" aria-hidden="true"></i>
-      </a>
-      
-      <a href="https://github.com/marcosps" rel="me" title="GitHub" target="_blank">
-        <i class="fab fa-github" aria-hidden="true"></i>
-      </a>
-      
-      <a href="https://twitter.com/omarcossouza" rel="me" title="Twitter" target="_blank">
-        <i class="fab fa-twitter" aria-hidden="true"></i>
-      </a>
-      
-    </section>
-  </div>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+</div>
 </aside>
+      <main>
+        <div class="autopagerize_page_element">
+          <div class="content">
+  <div
+    class="post 
+      animated fadeInDown
 
-
-  <main class="content container">
-  <div class="post">
-  <h1 class="title">btrfs: making &#34;send&#34; more &#34;capable&#34;</h1>
-  
-
-  <div class="post-date">
-    <time datetime="2020-05-14T00:00:00Z">May 14, 2020</time> <span class="readtime">&middot; 6 min read</span>
-  </div>
-
-  <div>
-  <p>The <strong>send/receive</strong> is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.</p>
+    "
+  >
+    <div class="post-content">
+      
+      <div class="post-title">
+        <h1>btrfs: making &#34;send&#34; more &#34;capable&#34;</h1>
+        
+      </div><p>The <strong>send/receive</strong> is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.</p>
 <p>The receive feature <em>receives</em> a stream of data, applying the it in the filesystem. As the stream can be a file, it&rsquo;s easy even to transfer the output of <strong>send</strong> over the network and <strong>receive</strong> in the other side. Here is an example of how this works:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs send /mnt/my_snapshot | ssh user@host <span style="color:#f1fa8c">&#34;btrfs receive /mnt/my_backup&#34;</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs send /mnt/my_snapshot | ssh user@host <span style="color:#f1fa8c">&#34;btrfs receive /mnt/my_backup&#34;</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>In this example, we are doing what we call a <em>full send</em>, which sends all data to the remote side. We can see what is being processed by the receiving side by using <em>--dump</em> argument:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -299,7 +353,7 @@
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># creating a &#34;disk&#34; and the btrfs filesystem</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># creating a &#34;disk&#34; and the btrfs filesystem</span>
 $ truncate -s 10G btrfs.disk
 $ mkfs.btrfs -f btrfs.disk
 
@@ -342,7 +396,7 @@ $ ls /mnt/bkp/snap1/file.txt
 <p>After we have a backup, we can send just incremental changes. We call this an <!-- raw HTML omitted -->incremental send<!-- raw HTML omitted -->. We use a parent snapshot (-p argument) and compare it with a new snapshot. Look at the example below, using the same snapshots created in the steps above:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -369,7 +423,7 @@ $ ls /mnt/bkp/snap1/file.txt
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># changing user/group of file.txt</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># changing user/group of file.txt</span>
 $ ls -l /mnt/vol1/file.txt                    
 -rw-r--r-- <span style="color:#bd93f9">1</span> root root <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/vol1/file.txt
                                               
@@ -407,7 +461,7 @@ $ ls -l /mnt/bkp/snap2/file.txt
 <p>It&rsquo;s easy to reproduce the problem:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -433,7 +487,7 @@ $ ls -l /mnt/bkp/snap2/file.txt
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># create a new sparse file with 5G of size, and create a btrfs fs on it</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># create a new sparse file with 5G of size, and create a btrfs fs on it</span>
 $ fallocate -l5G disk.btrfs                                     
 $ mkfs.btrfs disk.btrfs                                         
 
@@ -462,11 +516,11 @@ $ btrfs send -p /mnt/fs1/snap_init /mnt/fs1/snap_inc | btrfs receive fs2
 </div><p>At this point, the foo.bar sent to fs2 lost it&rsquo;s capability:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ getcap /mnt/fs2/snap_init/foo.bar 
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ getcap /mnt/fs2/snap_init/foo.bar 
 $
 </code></pre></td></tr></table>
 </div>
@@ -479,7 +533,7 @@ $
 <p>Here is a portion of the fix:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -497,7 +551,7 @@ $
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (need_chown) {
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (need_chown) {
         ret <span style="color:#ff79c6">=</span> send_chown(sctx, sctx<span style="color:#ff79c6">-&gt;</span>cur_ino, sctx<span style="color:#ff79c6">-&gt;</span>cur_inode_gen,
                         left_uid, left_gid); 
         <span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)          
@@ -519,73 +573,43 @@ ret <span style="color:#ff79c6">=</span> send_capabilities(sctx);
 <p>For the most curious readers, here is the full <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=89efda52e6b6930f80f5adda9c3c9edfb1397191">path</a>. Along with the patch solving the problem, a <a href="https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=a1c25b75b456880f64ab30ced0892f7603e4bb3c">test</a> was created in xfstests to ensure this problem won&rsquo;t happen again in the future.</p>
 <p>The kernel patch was merged in v5.8 and backported to affected all stale kernels.</p>
 <p>Thanks for reading! See you in another post!</p>
+</div>
+    <div class="post-footer">
+      <div class="info">
+        
 
+        
+      </div>
+    </div>
+
+    
   </div>
 
-  
 
+          </div>
+        </div>
+      </main>
+    </div><footer class="footer footer--base">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          2020-2021
 
-  <div class="share-buttons">
-  <a class="twitter-share-button"
-     href="#"
-     title="Share on Twitter"
-     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
-     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-twitter"></i></a>
-
-  <a class="linkedin-share-button"
-     href="#"
-     title="Share on LinkedIn"
-     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
-     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-linkedin-in"></i></a>
-
-  <a class="facebook-share-button"
-     href="#"
-     title="Share on Facebook"
-     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
-     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-facebook"></i></a>
-
-  <a class="telegram-share-button"
-     href="#"
-     title="Share on Telegram"
-     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
-     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-telegram"></i></a>
-
-  <a class="pinterest-share-button"
-     href="#"
-     title="Share on Pinterest"
-     data-url="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"
-     data-text="btrfs: making &#34;send&#34; more &#34;capable&#34;"><i class="fab fa-pinterest"></i></a>
-</div>
-
-
-  
-</div>
-  </main>
-
-  <footer>
-  <div>
-    <p>
-      &copy; Marcos Paulo de Souza 2021
-
-      &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
-
+        
+      </li>
       
-    </p>
+    </ul>
   </div>
 </footer>
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
-          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
-          crossorigin="anonymous"></script>
-
-
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/soho.js"></script>
-
   
-
-  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script>
 <script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
@@ -596,6 +620,5 @@ if (!doNotTrack) {
 }
 </script>
 <script async src='https://www.google-analytics.com/analytics.js'></script>
-
 </body>
 </html>

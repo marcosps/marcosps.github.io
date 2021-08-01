@@ -1,253 +1,307 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="generator" content="Hugo 0.81.0" />
+<html
+  dir="ltr"
+  lang="en"
+  data-theme=""
+><head>
+  <title>
+    Marcos Paulo de Souza
+      |
+      Kernel Adventures: Are USB Sticks Rotational Devices?
 
-  <title>Kernel Adventures: Are USB Sticks Rotational Devices? &middot; Marcos&#39; Blog</title>
 
-  <meta name="description" content="Post about understanding why USB devices are usually set as rotational devices on linux." />
+    
+
+  </title>
 
   
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.86.1" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta
+    name="description"
+    content="
+      Post about understanding why USB devices are usually set as rotational devices on linux.
 
-<meta itemprop="name" content="Kernel Adventures: Are USB Sticks Rotational Devices?">
-<meta itemprop="description" content="Post about understanding why USB devices are usually set as rotational devices on linux."><meta itemprop="datePublished" content="2019-08-07T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2019-08-07T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1435">
-<meta itemprop="keywords" content="" />
 
-<meta name="twitter:card" content="summary"/>
+    "
+  />
+  
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/main.min.51423ad97099a08f3a20e16d238c13adae76db7dd5e1913789bdc81143ff4cc6.css"
+    integrity="sha256-UUI62XCZoI86IOFtI4wTra52233V4ZE3ib3IEUP/TMY="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/markupHighlight.min.f798cbda9aaa38f89eb38be6414bd082cfd71a6780375cbf67b6d2fb2b96491e.css"
+    integrity="sha256-95jL2pqqOPies4vmQUvQgs/XGmeAN1y/Z7bS&#43;yuWSR4="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous"
+  />
+  
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+  <link rel="canonical" href="/blog/kernel-adventures-are-usb-sticks-rotational-devices/" />
+
+  
+  
+  
+  
+  <script
+    type="text/javascript"
+    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
+    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    crossorigin="anonymous"
+  ></script>
+
+  
+    
+    
+    <script
+      type="text/javascript"
+      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
+      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      crossorigin="anonymous"
+    ></script>
+
+  
+  <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Kernel Adventures: Are USB Sticks Rotational Devices?"/>
 <meta name="twitter:description" content="Post about understanding why USB devices are usually set as rotational devices on linux."/>
 
 
-<meta property="og:title" content="Kernel Adventures: Are USB Sticks Rotational Devices?" />
-<meta property="og:description" content="Post about understanding why USB devices are usually set as rotational devices on linux." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2019-08-07T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2019-08-07T00:00:00&#43;00:00" />
+
+  
 
 
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
+  
+  
+  
+  
+  <script type="application/ld+json">
     {
-      "@type":"Person",
-      "@id": "https://mpdesouza.com#author",
-      "name": "Marcos Paulo de Souza",
-      "image": {
-        "@type":"ImageObject",
-        "url": "https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=400&d=mp"
-      },
-      "description": "Software Engineer"
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://mpdesouza.com#website",
-      "url": "https://mpdesouza.com",
-      "name": "Marcos' Blog",
-      "description": "Software Engineer",
-      "publisher": {
-        "@id": "https://mpdesouza.com#author"
-      },
-      "inLanguage": "en"
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/#webpage",
-      "url": "https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/",
-      "name": "Kernel Adventures: Are USB Sticks Rotational Devices?",
-      "isPartOf": {
-        "@id": "https://mpdesouza.com#website"
-      },
-      "about": {
-         "@id": "https://mpdesouza.com#author"
-      },
-      "datePublished": "2019-08-07T00:00:00+00:00",
-      "dateModified": "2019-08-07T00:00:00+00:00",
-      "description": "Post about understanding why USB devices are usually set as rotational devices on linux.",
-      "inLanguage": "en",
-      "potentialAction": [
-        {
-          "@type": "ReadAction",
-          "target": [
-            "https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/"
-          ]
-        }
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "articleSection": "blog",
+        "name": "Kernel Adventures: Are USB Sticks Rotational Devices?",
+        "headline": "Kernel Adventures: Are USB Sticks Rotational Devices?",
+        "alternativeHeadline": "",
+        "description": "
+      Post about understanding why USB devices are usually set as rotational devices on linux.
+
+
+    ",
+        "inLanguage": "en",
+        "isFamilyFriendly": "true",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/mpdesouza.com\/blog\/kernel-adventures-are-usb-sticks-rotational-devices\/"
+        },
+        "author" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "creator" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "accountablePerson" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "copyrightHolder" : {
+            "@type": "Person",
+            "name": "Marcos Paulo de Souza"
+        },
+        "copyrightYear" : "2019",
+        "dateCreated": "2019-08-07T00:00:00.00Z",
+        "datePublished": "2019-08-07T00:00:00.00Z",
+        "dateModified": "2019-08-07T00:00:00.00Z",
+        "publisher":{
+            "@type":"Organization",
+            "name": "Marcos Paulo de Souza",
+            "url": "https://mpdesouza.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/mpdesouza.comfavicon-32x32.png",
+                "width":"32",
+                "height":"32"
+            }
+        },
+        "image": 
+      [
       ]
-    },
-    {
-      "@type": "Article",
-      "isPartOf": {
-        "@id": "https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/#webpage"
-      },
-      "mainEntityOfPage": {
-        "@id": "https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/#webpage"
-      },
-      "headline": "Kernel Adventures: Are USB Sticks Rotational Devices?",
-      "datePublished": "2019-08-07T00:00:00+00:00",
-      "dateModified": "2019-08-07T00:00:00+00:00",
-      "publisher": {
-        "@id": "https://mpdesouza.com#author"
-      },
-      "keywords": [
-      ],
-      "articleSection": [
-      ],
-      "inLanguage": "en",
-      "author": {
-        "@type": "Person",
-        "name":  null 
-      },
-      "potentialAction": [
-        {
-          "@type": "CommentAction",
-          "name": "Comment",
-          "target": [
-            "https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/#comments"
-          ]
-        }
-      ]
+
+    ,
+        "url" : "https:\/\/mpdesouza.com\/blog\/kernel-adventures-are-usb-sticks-rotational-devices\/",
+        "wordCount" : "1435",
+        "genre" : [ ],
+        "keywords" : [ ]
     }
-  ]
+  </script>
+
+
+
+</head>
+<body>
+    <header><div
+  class="page-top 
+    animated fadeInDown
+
+  "
+>
+  <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </a>
+  <nav>
+    <ul class="nav__list" id="navMenu">
+      <div class="nav__links">
+        
+        
+          
+          <li>
+            <a
+              
+              href="/"
+              
+              title=""
+              >Home</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/about-me/"
+              
+              title=""
+              >About Me</a
+            >
+          </li>
+
+        
+        
+      </div>
+      <li>
+        
+          <a class="theme-switch" title="Switch Theme">
+            <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+          </a>
+
+        
+      </li>
+    </ul>
+  </nav>
+</div>
+</header>
+    <div class="wrapper">
+      <aside><div
+  class="sidebar
+    animated fadeInDown
+
+  "
+>
+  <div class="sidebar__content">
+    <div class="logo-title">
+      <div class="title">
+        <img src="/images/pp.jpg" alt="profile picture" />
+        <h3 title=""><a href="/">Hi I&#39;m Marcos</a></h3>
+        <div class="description">
+          <p>Welcome to my personal homepage</p>
+        </div>
+      </div>
+    </div>
+    <ul class="social-links">
+      
+        <li>
+          <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" aria-label="Linkedin">
+            <i class="fab fa-linkedin fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://github.com/marcosps" rel="me" aria-label="GitHub">
+            <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://twitter.com/omarcossouza" rel="me" aria-label="Twitter">
+            <i class="fab fa-twitter fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+    </ul>
+  </div><footer class="footer footer--sidebar">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          2020-2021
+
+        
+      </li>
+      
+    </ul>
+  </div>
+</footer>
+  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-114151448-3', 'auto');
+	
+	ga('send', 'pageview');
 }
 </script>
-
-
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/print.css"
-        media="print">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/poole.css">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="/css/hyde.css">
-
-  
-<style type="text/css">
-  .sidebar {
-    background-color: #000000;
-  }
-
-  .read-more-link a {
-    border-color: #000000;
-  }
-
-  .read-more-link a:hover {
-    background-color: #000000;
-  }
-
-  .pagination li a {
-    color: #000000;
-    border: 1px solid #000000;
-  }
-
-  .pagination li.active a {
-    background-color: #000000;
-  }
-
-  .pagination li a:hover {
-    background-color: #000000;
-    opacity: 0.75;
-  }
-
-  footer a,
-  .content a,
-  .related-posts li a:hover {
-    color: #000000;
-  }
-</style>
-
-
-
-  
-
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
-
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
-        crossorigin="anonymous" />
-
-  <link rel="apple-touch-icon-precomposed"
-        sizes="144x144"
-        href="/apple-touch-icon-144-precomposed.png">
-
-  <link rel="shortcut icon" href="/favicon.png">
-
-  
-  </head>
-<body>
-  <aside class="sidebar">
-  <div class="container">
-    <div class="sidebar-about">
-      
-      <div class="author-image">
-        <a href="https://mpdesouza.com">
-          <img src="https://www.gravatar.com/avatar/11fc78ee518c3894943153a8f2e5cb0d?s=200&d=mp" class="img-circle img-headshot center" alt="Gravatar">
-        </a>
-      </div>
-      
-
-      <h1>Marcos&#39; Blog</h1>
-
-      
-      <p class="lead">Software Engineer</p>
-      
-    </div>
-
-    <nav>
-      <ul class="sidebar-nav">
-        <li>
-          <a href="https://mpdesouza.com">Home</a>
-        </li>
-        <li>
-          <a href="/about-me/">About Me</a>
-        </li>
-      </ul>
-    </nav>
-
-    <section class="social-icons">
-      
-      <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" title="Linkedin" target="_blank">
-        <i class="fab fa-linkedin" aria-hidden="true"></i>
-      </a>
-      
-      <a href="https://github.com/marcosps" rel="me" title="GitHub" target="_blank">
-        <i class="fab fa-github" aria-hidden="true"></i>
-      </a>
-      
-      <a href="https://twitter.com/omarcossouza" rel="me" title="Twitter" target="_blank">
-        <i class="fab fa-twitter" aria-hidden="true"></i>
-      </a>
-      
-    </section>
-  </div>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+</div>
 </aside>
+      <main>
+        <div class="autopagerize_page_element">
+          <div class="content">
+  <div
+    class="post 
+      animated fadeInDown
 
-
-  <main class="content container">
-  <div class="post">
-  <h1 class="title">Kernel Adventures: Are USB Sticks Rotational Devices?</h1>
-  
-
-  <div class="post-date">
-    <time datetime="2019-08-07T00:00:00Z">Aug 7, 2019</time> <span class="readtime">&middot; 7 min read</span>
-  </div>
-
-  <div>
-  <p>A while ago I’ve found this <a href="https://bugzilla.kernel.org/show_bug.cgi?id=90761">kernel bug entry</a> about USB mass storage being shown as a <em>rotational device</em>. This is wrong because a USB stick is a flash device, and does not <em>rotate</em>.</p>
+    "
+  >
+    <div class="post-content">
+      
+      <div class="post-title">
+        <h1>Kernel Adventures: Are USB Sticks Rotational Devices?</h1>
+        
+      </div><p>A while ago I’ve found this <a href="https://bugzilla.kernel.org/show_bug.cgi?id=90761">kernel bug entry</a> about USB mass storage being shown as a <em>rotational device</em>. This is wrong because a USB stick is a flash device, and does not <em>rotate</em>.</p>
 <h3 id="about-rotational-devices">About rotational devices</h3>
 <p>Let’s take a minute to discuss about the evolution from disk to flash storage.</p>
 <p>Older storage devices, HDD in this example, were called Disk Storage because these devices recorded data into one or more <em>rotating disks</em>. In such devices, the <em>rotation</em> speed was a feature that informed how fast the device was. A device with 5400 <em>RPM</em> (Rotations Per Minute) was slower than a device with 7200 <em>RPM</em>, for example.</p>
@@ -267,7 +321,7 @@
 <p>By looking at Linux kernel code, specifically function <em>sd_revalidate_disk</em> in <a href="https://elixir.bootlin.com/linux/v5.3-rc1/source/drivers/scsi/sd.c#L3129">drivers/scsi/sd.c</a>:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -276,7 +330,7 @@
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6272a4">/*
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6272a4">/*
 </span><span style="color:#6272a4"> * set the default to rotational. All non-rotational devices
 </span><span style="color:#6272a4"> * support the block characteristics VPD page, which will
 </span><span style="color:#6272a4"> * cause this to be updated correctly and any device which
@@ -288,7 +342,7 @@ blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
 </div><p>This function is called when a disk is detected. It first sets the disk as <em>rotational</em>, by clearing the <em>NONROT</em> flag (yes, it’s confusing at first glance). A few lines bellow this point, we can see the following code:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -296,7 +350,7 @@ blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (scsi_device_supports_vpd(sdp)) {
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (scsi_device_supports_vpd(sdp)) {
 	sd_read_block_provisioning(sdkp);
 	sd_read_block_limits(sdkp);
 	sd_read_block_characteristics(sdkp);
@@ -307,7 +361,7 @@ blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
 </div><p>We need some background about VPD. VPD stands for <em>Vital Product Data</em>, and presents information and configuration about a device, a SCSI device in this case. VPD was introduced in <strong>SCSI Primary Commands</strong> (SPC) 2 specification, and can be “queried” from any SCSI storage device by using <strong>sg_utils3</strong> package:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -318,7 +372,7 @@ blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">$ sg_vpd <span style="color:#ff79c6">/</span>dev<span style="color:#ff79c6">/</span>sda 
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">$ sg_vpd <span style="color:#ff79c6">/</span>dev<span style="color:#ff79c6">/</span>sda 
   Supported VPD pages VPD <span style="color:#8be9fd;font-style:italic">page</span>:
    Supported VPD pages [sv]
    Unit serial number [sn]
@@ -332,7 +386,7 @@ blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
 </div><p>This is the output of my SSD device. Going back to our original problem, <em>rotating USB storage</em>, the function <em>sd_read_block_characteristics</em> does something interesting:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -345,7 +399,7 @@ blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>buffer <span style="color:#ff79c6">||</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>buffer <span style="color:#ff79c6">||</span>
      <span style="color:#6272a4">/* Block Device Characteristics VPD */</span>
      scsi_get_vpd_page(sdkp<span style="color:#ff79c6">-&gt;</span>device, <span style="color:#bd93f9">0xb1</span>, buffer, vpd_len))
 	<span style="color:#ff79c6">goto</span> out;
@@ -361,7 +415,7 @@ rot <span style="color:#ff79c6">=</span> get_unaligned_be16(buffer[<span style="
 </div><p>The code above reads the <strong>Block Device Characteristics</strong> VPD page, which is present only in <a href="http://www.t10.org/ftp/t10/document.07/07-203r0.pdf">SPC-3</a> or later. Again, sg_vpd can help us to check BDC:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -376,7 +430,7 @@ rot <span style="color:#ff79c6">=</span> get_unaligned_be16(buffer[<span style="
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd — page bdc /dev/sda
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd — page bdc /dev/sda
   Block device characteristics VPD page <span style="color:#ff79c6">(</span>SBC<span style="color:#ff79c6">)</span>:
    Non-rotating medium <span style="color:#ff79c6">(</span>e.g. solid state<span style="color:#ff79c6">)</span>
    Product type: Not specified
@@ -394,18 +448,18 @@ rot <span style="color:#ff79c6">=</span> get_unaligned_be16(buffer[<span style="
 </div><p>As you can see, the <strong>Block Device Characteristics</strong> of my SSD device says clearly: <strong>Non-rotation Medium</strong>. Per the function above, the NONROT flag will be set, so <em>sysfs</em> will show when reading the rotational attribute of this device:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /sys/block/sda/queue/rotational 
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /sys/block/sda/queue/rotational 
 <span style="color:#bd93f9">0</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>Moving further, I have another storage disk, now an HDD:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -420,7 +474,7 @@ rot <span style="color:#ff79c6">=</span> get_unaligned_be16(buffer[<span style="
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd  — page bdc /dev/sdb 
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd  — page bdc /dev/sdb 
   Block device characteristics VPD page <span style="color:#ff79c6">(</span>SBC<span style="color:#ff79c6">)</span>:
    Nominal rotation rate: <span style="color:#bd93f9">5400</span> rpm
    Product type: Not specified
@@ -440,7 +494,7 @@ rot <span style="color:#ff79c6">=</span> get_unaligned_be16(buffer[<span style="
 <h4 id="alcor-micro-corp-flash-drive-058f6387-usb-stick">Alcor Micro Corp. Flash Drive 058f:6387 (USB Stick)</h4>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -450,7 +504,7 @@ rot <span style="color:#ff79c6">=</span> get_unaligned_be16(buffer[<span style="
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq -s /dev/sdc
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq -s /dev/sdc
   standard INQUIRY:
     <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x04  <span style="color:#ff79c6">[</span>SPC-2<span style="color:#ff79c6">]</span>
 $ sg_vpd --page 0x0 /dev/sdc
@@ -463,7 +517,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 </div><h4 id="chipsbank-microelectronics-co-ltd-1e3d2092-usb-stick">Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick)</h4>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -474,7 +528,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
   invalid VPD response; probably a STANDARD INQUIRY response
   standard INQUIRY:
     <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x02  <span style="color:#ff79c6">[</span>SCSI-2<span style="color:#ff79c6">]</span>
@@ -489,7 +543,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 <h4 id="hp-inc-4-gb-flash-drive-03f03207-usb-stick">HP, Inc 4 GB flash drive 03f0:3207 (USB stick)</h4>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -500,7 +554,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
   invalid VPD response; probably a STANDARD INQUIRY response
   standard INQUIRY:
     <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x00  <span style="color:#ff79c6">[</span>no conformance claimed<span style="color:#ff79c6">]</span>
@@ -515,7 +569,7 @@ $ sg_vpd /dev/sdc
 <h4 id="sandisk-corp-cruzer-blade-07815567-usb-stick">SanDisk Corp. Cruzer Blade 0781:5567 (USB Stick)</h4>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -525,7 +579,7 @@ $ sg_vpd /dev/sdc
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
   standard INQUIRY:
     <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
 $ sg_vpd --page 0x0 /dev/sdc
@@ -539,14 +593,14 @@ $ sg_vpd --page 0x0 /dev/sdc
 <h4 id="super-top-m6116-sata-bridge-14cd6116-usb-sata-adapter">Super Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter)</h4>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
   standard INQUIRY:
     <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x00  <span style="color:#ff79c6">[</span>no conformance claimed<span style="color:#ff79c6">]</span>
 $ sg_vpd --page 0x0 /dev/sdc
@@ -557,7 +611,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 <h4 id="initio-corporation-13fd3920-usb-sata-adapter">Initio Corporation 13fd:3920 (USB SATA adapter)</h4>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -567,7 +621,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc           
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc           
   standard INQUIRY:
     <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
 $ sg_vpd --page 0x0 /dev/sdc
@@ -583,7 +637,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 <p>The <em>rotational</em> information can be used to change the IO scheduler related to the device, as openSUSE currently does:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -603,7 +657,7 @@ $ sg_vpd --page 0x0 /dev/sdc
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /usr/lib/udev/rules.d/60-io-scheduler.rules
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /usr/lib/udev/rules.d/60-io-scheduler.rules
   <span style="color:#6272a4"># Set optimal IO schedulers for HDD and SSD</span>
   ACTION!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;add&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
   SUBSYSTEM!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;block&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
@@ -626,73 +680,43 @@ $ sg_vpd --page 0x0 /dev/sdc
 </div><p>Picking the right IO scheduler helps to extract the best performancee of your storage device. For example BFQ IO scheduler would reorder <em>read</em>/<em>write</em> requests, trying to make them contiguous in order to extract the best of performance from an HDD disk. Remember, HDD devices have the <em>head</em> that needs to be positioned in the right place to get your data, and avoiding it to be moved randomly helps to improve performance.</p>
 <p>The above is true for HDD devices but doesn’t help much SSD devices which don’t have the performance penalty of the seek time, so <em>mq-deadline</em> would be a better solution for this cases. This scheduler prefer <em>reads</em> over <em>writes</em> not reordering requests, and that’s all, making it perform better in SSD devices.</p>
 <p>Stay tuned for our next topic about IO schedulers and other things related to block layer. See you next time!</p>
+</div>
+    <div class="post-footer">
+      <div class="info">
+        
 
+        
+      </div>
+    </div>
+
+    
   </div>
 
-  
 
+          </div>
+        </div>
+      </main>
+    </div><footer class="footer footer--base">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          2020-2021
 
-  <div class="share-buttons">
-  <a class="twitter-share-button"
-     href="#"
-     title="Share on Twitter"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/"
-     data-text="Kernel Adventures: Are USB Sticks Rotational Devices?"><i class="fab fa-twitter"></i></a>
-
-  <a class="linkedin-share-button"
-     href="#"
-     title="Share on LinkedIn"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/"
-     data-text="Kernel Adventures: Are USB Sticks Rotational Devices?"><i class="fab fa-linkedin-in"></i></a>
-
-  <a class="facebook-share-button"
-     href="#"
-     title="Share on Facebook"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/"
-     data-text="Kernel Adventures: Are USB Sticks Rotational Devices?"><i class="fab fa-facebook"></i></a>
-
-  <a class="telegram-share-button"
-     href="#"
-     title="Share on Telegram"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/"
-     data-text="Kernel Adventures: Are USB Sticks Rotational Devices?"><i class="fab fa-telegram"></i></a>
-
-  <a class="pinterest-share-button"
-     href="#"
-     title="Share on Pinterest"
-     data-url="https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/"
-     data-text="Kernel Adventures: Are USB Sticks Rotational Devices?"><i class="fab fa-pinterest"></i></a>
-</div>
-
-
-  
-</div>
-  </main>
-
-  <footer>
-  <div>
-    <p>
-      &copy; Marcos Paulo de Souza 2021
-
-      &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
-
+        
+      </li>
       
-    </p>
+    </ul>
   </div>
 </footer>
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
-          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
-          crossorigin="anonymous"></script>
-
-
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/soho.js"></script>
-
   
-
-  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script>
 <script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
@@ -703,6 +727,5 @@ if (!doNotTrack) {
 }
 </script>
 <script async src='https://www.google-analytics.com/analytics.js'></script>
-
 </body>
 </html>
