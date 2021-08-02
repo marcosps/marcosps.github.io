@@ -3,7 +3,7 @@ theme: anatole
 title: Marcos' Blog
 languageCode: en
 
-summarylength: 10
+summaryLength: 30
 enableEmoji: true
 
 googleAnalytics: UA-114151448-3
@@ -21,6 +21,10 @@ params:
   title: Hi I'm Marcos
   description: Welcome to my personal homepage
   copyright: 2020-{{ YEAR }}
+
+  readMore: true
+  mainSections:
+    - blog
 
   socialIcons:
     - icon: fab fa-linkedin
