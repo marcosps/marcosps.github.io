@@ -14,7 +14,7 @@
       
       <guid>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</guid>
       
-        <description>Tools like fsck and smartctl are usually used when something bad happens on your disk.</description>
+        <description>Tools like fsck and smartctl are usually used when something bad happens on your disk. But, what if such tools have a problem and also need to be fixed? Well, that&amp;rsquo;s what we are going to see today.</description>
       
     </item>
     
@@ -25,7 +25,7 @@
       
       <guid>https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/</guid>
       
-        <description>The btrfs inspect-internal logical-resolve command is used to find a file related to a logical-address.</description>
+        <description>The btrfs inspect-internal logical-resolve command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file.</description>
       
     </item>
     
@@ -47,7 +47,7 @@
       
       <guid>https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</guid>
       
-        <description>Btrfs is a very versatile filesystem, and it has a lot of features that don&amp;rsquo;t exist in any other mainline Linux filesystem.</description>
+        <description>Btrfs is a very versatile filesystem, and it has a lot of features that don&amp;rsquo;t exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes.</description>
       
     </item>
     
@@ -69,7 +69,7 @@
       
       <guid>https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/</guid>
       
-        <description>A while ago I’ve found this kernel bug entry about USB mass storage being shown as a rotational device.</description>
+        <description>A while ago I’ve found this kernel bug entry about USB mass storage being shown as a rotational device. This is wrong because a USB stick is a flash device, and does not rotate.</description>
       
     </item>
     
@@ -80,7 +80,7 @@
       
       <guid>https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/</guid>
       
-        <description>Proposed in 2012, the NO_NEW_PRIVS flag made possible to any process to avoid privilege escalation when this behavior is not desired.</description>
+        <description>Proposed in 2012, the NO_NEW_PRIVS flag made possible to any process to avoid privilege escalation when this behavior is not desired. After the flag is set, it persists across execve, clone and fork syscalls, and cannot be cleared.</description>
       
     </item>
     
