@@ -15,7 +15,7 @@
   </title>
 
   
-  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.87.0" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.91.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta
     name="description"
     content="
@@ -191,6 +191,18 @@
           <li>
             <a
               
+              href="/links/"
+              
+              title=""
+              >Links</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
               href="/about-me/"
               
               title=""
@@ -260,7 +272,7 @@
       <li class="footer__item">
         &copy;
         
-          2020-2021
+          2020-2022
 
         
       </li>
@@ -514,7 +526,7 @@ sdev<span style="color:#ff79c6">-&gt;</span>skip_vpd_pages <span style="color:#f
   ...
 </code></pre></td></tr></table>
 </div>
-</div><p>The patch adds specific flags that will be checked in SCSI layer and will be applied once the <em>SanDisk Cruzer Blade</em>* device is found. This change alone does not fix the problem as the flag **skip_vpd_pages** is still enabled. So I submited a second <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=349148785b8cea9781af520fd53c29ee8087ee74">patch</a>, to only set **skip_vpd_pages** when **try_vpd_pages** is not set allowing the SCSI layer to process all VPD pages when **try_vpd_pages** is set.</p>
+</div><p>The patch adds specific flags that will be checked in SCSI layer and will be applied once the <em>SanDisk Cruzer Blade</em>* device is found. This change alone does not fix the problem as the flag <strong>skip_vpd_pages</strong> is still enabled. So I submited a second <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=349148785b8cea9781af520fd53c29ee8087ee74">patch</a>, to only set <strong>skip_vpd_pages</strong> when <strong>try_vpd_pages</strong> is not set allowing the SCSI layer to process all VPD pages when <strong>try_vpd_pages</strong> is set.</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -587,7 +599,7 @@ $ cat /sys/block/sda/device/vpd_pg83
       <li class="footer__item">
         &copy;
         
-          2020-2021
+          2020-2022
 
         
       </li>
