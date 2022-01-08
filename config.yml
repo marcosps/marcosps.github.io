@@ -43,9 +43,13 @@ menu:
     identifier: home
     weight: 10
     url: /
+  - name: Links
+    identifier: links
+    weight: 20
+    url: /links/
   - name: About Me
     identifier: about
-    weight: 20
+    weight: 30
     url: /about-me/
 
 markup:
