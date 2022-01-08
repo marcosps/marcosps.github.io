@@ -40,6 +40,10 @@ List of links to content that I find interesting, divided by subject.
 
 [Relocation Types (Processor-Specific)](https://docs.oracle.com/cd/E19120-01/open.solaris/819-0690/6n33n7fcv/index.html)
 
+[Position Independent Code (PIC) in shared libraries](https://eli.thegreenplace.net/2011/11/03/position-independent-code-pic-in-shared-libraries)
+
+[Position Independent Executables and Their Performance Impact](https://zatoichi-engineer.github.io/2017/10/10/position-independent-executables.html)
+
 Videos
 
 [The Bits Between the Bits: How We Get to main()](https://www.youtube.com/watch?v=dOfucXtyEsU)
@@ -63,6 +67,8 @@ Chris Kanich lessons:
 [PIC GOT PLT OMG: how does the procedure linkage table work in linux?](https://www.youtube.com/watch?v=Ss2e6JauS0Y)
 
 ### Linux Kernel in General
+[A Standalone Linux Kernel Module](https://itnext.io/a-standalone-linux-kernel-module-df54283d4803)
+
 [An introduction to KProbes](https://lwn.net/Articles/132196)
 
 [Anatomy of a system call, part 1](https://lwn.net/Articles/604287)
@@ -78,6 +84,8 @@ Chris Kanich lessons:
 [Oracle's kernel debugging part 1](https://blogs.oracle.com/linux/post/live-kernel-debugging-1)
 
 [Mentorship Session: Unraveling RCU-Usage Mysteries (Fundamentals)](https://www.youtube.com/watch?v=K-4TI5gFsig)
+
+[The never ending problems of local ASLR holes in Linux](https://blog.blazeinfosec.com/the-never-ending-problems-of-local-aslr-holes-in-linux)
 
 ### Kernel patch workflows
 [Patch review workflow](https://josefbacik.github.io/kernel/2021/10/19/patch-review.html)
