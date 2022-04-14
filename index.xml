@@ -53,20 +53,6 @@ I am a software developer focused on Linux and open source. I had the pleasure t
     </item>
     
     <item>
-      <title>Links</title>
-      <link>https://mpdesouza.com/links/</link>
-      <pubDate>Sun, 09 Feb 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://mpdesouza.com/links/</guid>
-      
-        <description>List of links to content that I find interesting, divided by subject.
-Operating Systems What Every Programmer Should Know About Memory
-ELF, compilers, linkers, &amp;hellip; ELF specification
-ELF Linux Executable PLT and GOT Tables</description>
-      
-    </item>
-    
-    <item>
       <title>New btrfs feature: Delete subvolumes using subvolume ids</title>
       <link>https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</link>
       <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
