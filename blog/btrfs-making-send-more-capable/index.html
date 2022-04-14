@@ -15,7 +15,7 @@
   </title>
 
   
-  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.91.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.96.0" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta
     name="description"
     content="
@@ -64,8 +64,8 @@
   
   <script
     type="text/javascript"
-    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
-    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    src="/js/anatole-header.min.d0408165d31a17f17bba83038bf54e86121f85021bdf936382e636f0f77a952f.js"
+    integrity="sha256-0ECBZdMaF/F7uoMDi/VOhhIfhQIb35NjguY28Pd6lS8="
     crossorigin="anonymous"
   ></script>
 
@@ -74,8 +74,8 @@
     
     <script
       type="text/javascript"
-      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
-      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      src="/js/anatole-theme-switcher.min.65e936b591bf81484a5ac438c8e4ae6454fb25516d58ce911e4888d7f230bdc5.js"
+      integrity="sha256-Zek2tZG/gUhKWsQ4yOSuZFT7JVFtWM6RHkiI1/IwvcU="
       crossorigin="anonymous"
     ></script>
 
@@ -283,8 +283,8 @@
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">
@@ -315,152 +315,152 @@ if (!doNotTrack) {
         
       </div><p>The <strong>send/receive</strong> is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.</p>
 <p>The receive feature <em>receives</em> a stream of data, applying the it in the filesystem. As the stream can be a file, it&rsquo;s easy even to transfer the output of <strong>send</strong> over the network and <strong>receive</strong> in the other side. Here is an example of how this works:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs send /mnt/my_snapshot | ssh user@host <span style="color:#f1fa8c">&#34;btrfs receive /mnt/my_backup&#34;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ btrfs send /mnt/my_snapshot | ssh user@host <span style="color:#f1fa8c">&#34;btrfs receive /mnt/my_backup&#34;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>In this example, we are doing what we call a <em>full send</em>, which sends all data to the remote side. We can see what is being processed by the receiving side by using <em>--dump</em> argument:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># creating a &#34;disk&#34; and the btrfs filesystem</span>
-$ truncate -s 10G btrfs.disk
-$ mkfs.btrfs -f btrfs.disk
-
-<span style="color:#6272a4"># creating a subvolume and a snapshot with one file</span>
-$ mount btrfs.disk /mnt
-$ btrfs subvolume create /mnt/vol1
-Create subvolume <span style="color:#f1fa8c">&#39;/mnt/vol1&#39;</span>
-
-$ touch /mnt/vol1/file.txt
-$ btrfs subvolume snapshot -r /mnt/vol1/ /mnt/snap1
-Create a <span style="color:#8be9fd;font-style:italic">readonly</span> snapshot of <span style="color:#f1fa8c">&#39;/mnt/vol1/&#39;</span> in <span style="color:#f1fa8c">&#39;/mnt/snap1&#39;</span>
-
-<span style="color:#6272a4"># create a full send stream from snap1</span>
-$ btrfs send /mnt/snap1 -f send.dump
-
-<span style="color:#6272a4"># dumping the contents of the stream</span>
-$ btrfs receive -f send.dump --dump
-subvol          ./snap1                         <span style="color:#8be9fd;font-style:italic">uuid</span><span style="color:#ff79c6">=</span>50ce3050-4ff1-f441-8202-7e49f3ac9657 <span style="color:#8be9fd;font-style:italic">transid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">7</span>
-chown           ./snap1/                        <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-chmod           ./snap1/                        <span style="color:#8be9fd;font-style:italic">mode</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">755</span>
-utimes          ./snap1/                        <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:32:50-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
-mkfile          ./snap1/o257-7-0
-rename          ./snap1/o257-7-0                <span style="color:#8be9fd;font-style:italic">dest</span><span style="color:#ff79c6">=</span>./snap1/file.txt
-utimes          ./snap1/                        <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:32:50-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
-chown           ./snap1/file.txt                <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-chmod           ./snap1/file.txt                <span style="color:#8be9fd;font-style:italic">mode</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">644</span>
-utimes          ./snap1/file.txt                <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
-
-<span style="color:#6272a4"># creating a subvolume to store the backups (this coudld be done in a different disk)</span>
-$ btrfs subvolume create /mnt/bkp
-Create subvolume <span style="color:#f1fa8c">&#39;/mnt/bkp&#39;</span>
-
-<span style="color:#6272a4"># applying the receiving the stream</span>
-$ btrfs receive -f send.dump /mnt/bkp
-$ ls /mnt/bkp/snap1/file.txt
-/mnt/bkp/snap1/file.txt
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#6272a4"># creating a &#34;disk&#34; and the btrfs filesystem</span>
+</span></span><span style="display:flex;"><span>$ truncate -s 10G btrfs.disk
+</span></span><span style="display:flex;"><span>$ mkfs.btrfs -f btrfs.disk
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># creating a subvolume and a snapshot with one file</span>
+</span></span><span style="display:flex;"><span>$ mount btrfs.disk /mnt
+</span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/vol1
+</span></span><span style="display:flex;"><span>Create subvolume <span style="color:#f1fa8c">&#39;/mnt/vol1&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ touch /mnt/vol1/file.txt
+</span></span><span style="display:flex;"><span>$ btrfs subvolume snapshot -r /mnt/vol1/ /mnt/snap1
+</span></span><span style="display:flex;"><span>Create a <span style="color:#8be9fd;font-style:italic">readonly</span> snapshot of <span style="color:#f1fa8c">&#39;/mnt/vol1/&#39;</span> in <span style="color:#f1fa8c">&#39;/mnt/snap1&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># create a full send stream from snap1</span>
+</span></span><span style="display:flex;"><span>$ btrfs send /mnt/snap1 -f send.dump
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># dumping the contents of the stream</span>
+</span></span><span style="display:flex;"><span>$ btrfs receive -f send.dump --dump
+</span></span><span style="display:flex;"><span>subvol          ./snap1                         <span style="color:#8be9fd;font-style:italic">uuid</span><span style="color:#ff79c6">=</span>50ce3050-4ff1-f441-8202-7e49f3ac9657 <span style="color:#8be9fd;font-style:italic">transid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">7</span>
+</span></span><span style="display:flex;"><span>chown           ./snap1/                        <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>chmod           ./snap1/                        <span style="color:#8be9fd;font-style:italic">mode</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">755</span>
+</span></span><span style="display:flex;"><span>utimes          ./snap1/                        <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:32:50-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
+</span></span><span style="display:flex;"><span>mkfile          ./snap1/o257-7-0
+</span></span><span style="display:flex;"><span>rename          ./snap1/o257-7-0                <span style="color:#8be9fd;font-style:italic">dest</span><span style="color:#ff79c6">=</span>./snap1/file.txt
+</span></span><span style="display:flex;"><span>utimes          ./snap1/                        <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:32:50-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
+</span></span><span style="display:flex;"><span>chown           ./snap1/file.txt                <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>chmod           ./snap1/file.txt                <span style="color:#8be9fd;font-style:italic">mode</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">644</span>
+</span></span><span style="display:flex;"><span>utimes          ./snap1/file.txt                <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># creating a subvolume to store the backups (this coudld be done in a different disk)</span>
+</span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/bkp
+</span></span><span style="display:flex;"><span>Create subvolume <span style="color:#f1fa8c">&#39;/mnt/bkp&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># applying the receiving the stream</span>
+</span></span><span style="display:flex;"><span>$ btrfs receive -f send.dump /mnt/bkp
+</span></span><span style="display:flex;"><span>$ ls /mnt/bkp/snap1/file.txt
+</span></span><span style="display:flex;"><span>/mnt/bkp/snap1/file.txt
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>As we could see by the outputs above, the full send really specifies all actions, from the first snapshot creation, creation of files, adding a owner/group/mode and access time.</p>
 <p>After we have a backup, we can send just incremental changes. We call this an <!-- raw HTML omitted -->incremental send<!-- raw HTML omitted -->. We use a parent snapshot (-p argument) and compare it with a new snapshot. Look at the example below, using the same snapshots created in the steps above:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># changing user/group of file.txt</span>
-$ ls -l /mnt/vol1/file.txt                    
--rw-r--r-- <span style="color:#bd93f9">1</span> root root <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/vol1/file.txt
-                                              
-$ chgrp <span style="color:#bd93f9">100</span> /mnt/vol1/file.txt                
-$ chown users /mnt/vol1/file.txt              
-$ ls -l /mnt/vol1/file.txt                    
--rw-r--r-- <span style="color:#bd93f9">1</span> marcos users <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/vol1/file.txt
-                                              
-<span style="color:#6272a4"># create a new snapshot based in the current version of vol1</span>
-$ btrfs subvolume snapshot -r /mnt/vol1/ /mnt/snap2
-Create a <span style="color:#8be9fd;font-style:italic">readonly</span> snapshot of <span style="color:#f1fa8c">&#39;/mnt/vol1/&#39;</span> in <span style="color:#f1fa8c">&#39;/mnt/snap2&#39;</span>
-                                              
-<span style="color:#6272a4"># create a new stream by comparing snap1 with snap2, and dumping the changes</span>
-$ btrfs send -p /mnt/snap1/ /mnt/snap2 -f send.dump
-$ btrfs receive -f send.dump --dump           
-snapshot        ./snap2                         <span style="color:#8be9fd;font-style:italic">uuid</span><span style="color:#ff79c6">=</span>16343add-4e38-e343-9af2-f64ff7d4b61d <span style="color:#8be9fd;font-style:italic">transid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">15</span> <span style="color:#8be9fd;font-style:italic">parent_uuid</span><span style="color:#ff79c6">=</span>50ce3050-4ff1-f441-8202-7e49f3ac9657 <span style="color:#8be9fd;font-style:italic">parent_transid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">7</span>
-utimes          ./snap2/                        <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:41:26-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
-chown           ./snap2/file.txt                <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">100</span> <span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1001</span>
-utimes          ./snap2/file.txt                <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:42:06-0300
-                                              
-<span style="color:#6272a4"># applying changes                            </span>
-$ btrfs receive -f send.dump /mnt/bkp/        
-$ ls -l /mnt/bkp/snap2/file.txt               
--rw-r--r-- <span style="color:#bd93f9">1</span> marcos users <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/bkp/snap2/file.txt
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#6272a4"># changing user/group of file.txt</span>
+</span></span><span style="display:flex;"><span>$ ls -l /mnt/vol1/file.txt                    
+</span></span><span style="display:flex;"><span>-rw-r--r-- <span style="color:#bd93f9">1</span> root root <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/vol1/file.txt
+</span></span><span style="display:flex;"><span>                                              
+</span></span><span style="display:flex;"><span>$ chgrp <span style="color:#bd93f9">100</span> /mnt/vol1/file.txt                
+</span></span><span style="display:flex;"><span>$ chown users /mnt/vol1/file.txt              
+</span></span><span style="display:flex;"><span>$ ls -l /mnt/vol1/file.txt                    
+</span></span><span style="display:flex;"><span>-rw-r--r-- <span style="color:#bd93f9">1</span> marcos users <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/vol1/file.txt
+</span></span><span style="display:flex;"><span>                                              
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># create a new snapshot based in the current version of vol1</span>
+</span></span><span style="display:flex;"><span>$ btrfs subvolume snapshot -r /mnt/vol1/ /mnt/snap2
+</span></span><span style="display:flex;"><span>Create a <span style="color:#8be9fd;font-style:italic">readonly</span> snapshot of <span style="color:#f1fa8c">&#39;/mnt/vol1/&#39;</span> in <span style="color:#f1fa8c">&#39;/mnt/snap2&#39;</span>
+</span></span><span style="display:flex;"><span>                                              
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># create a new stream by comparing snap1 with snap2, and dumping the changes</span>
+</span></span><span style="display:flex;"><span>$ btrfs send -p /mnt/snap1/ /mnt/snap2 -f send.dump
+</span></span><span style="display:flex;"><span>$ btrfs receive -f send.dump --dump           
+</span></span><span style="display:flex;"><span>snapshot        ./snap2                         <span style="color:#8be9fd;font-style:italic">uuid</span><span style="color:#ff79c6">=</span>16343add-4e38-e343-9af2-f64ff7d4b61d <span style="color:#8be9fd;font-style:italic">transid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">15</span> <span style="color:#8be9fd;font-style:italic">parent_uuid</span><span style="color:#ff79c6">=</span>50ce3050-4ff1-f441-8202-7e49f3ac9657 <span style="color:#8be9fd;font-style:italic">parent_transid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">7</span>
+</span></span><span style="display:flex;"><span>utimes          ./snap2/                        <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:41:26-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300
+</span></span><span style="display:flex;"><span>chown           ./snap2/file.txt                <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">100</span> <span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1001</span>
+</span></span><span style="display:flex;"><span>utimes          ./snap2/file.txt                <span style="color:#8be9fd;font-style:italic">atime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">mtime</span><span style="color:#ff79c6">=</span>2020-05-08T16:33:07-0300 <span style="color:#8be9fd;font-style:italic">ctime</span><span style="color:#ff79c6">=</span>2020-05-08T16:42:06-0300
+</span></span><span style="display:flex;"><span>                                              
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># applying changes                            </span>
+</span></span><span style="display:flex;"><span>$ btrfs receive -f send.dump /mnt/bkp/        
+</span></span><span style="display:flex;"><span>$ ls -l /mnt/bkp/snap2/file.txt               
+</span></span><span style="display:flex;"><span>-rw-r--r-- <span style="color:#bd93f9">1</span> marcos users <span style="color:#bd93f9">0</span> May  <span style="color:#bd93f9">8</span> 16:33 /mnt/bkp/snap2/file.txt
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This is what we call an <em>incremental send</em>. In this case, if we have a file that exists in both snapshots, but in the most recent one it only changed the <em>owner/group</em>, the send stream will contain only the <strong>chown</strong> command, instead of copying the content of the file over the network again. The receive side will apply the <strong>chown</strong>, and then the filesystem on the remote/local host will have the content of the most recent version.</p>
 <p>This feature works nicely for all users, but there is a corner case when it comes to <a href="http://man7.org/linux/man-pages/man7/capabilities.7.html">file capabilities</a>.</p>
@@ -471,70 +471,70 @@ $ ls -l /mnt/bkp/snap2/file.txt
 <p>The problem is: if you have a parent snapshot that contains a file with capabilities and the file changed the owner and later restored the capability, the current kernel code emits only the chown, making the receive side to drop the capability, even if the parent snapshot still has the same capability set.</p>
 <p><strong>This problem exists in all stable releases since v4.4.</strong></p>
 <p>It&rsquo;s easy to reproduce the problem:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># create a new sparse file with 5G of size, and create a btrfs fs on it</span>
-$ fallocate -l5G disk.btrfs                                     
-$ mkfs.btrfs disk.btrfs                                         
-
-<span style="color:#6272a4"># mount the fs and create subvolumes fs1 and fs2              </span>
-$ mount disk.btrfs /mnt                                         
-$ btrfs subvolume create /mnt/fs1                               
-$ btrfs subvolume create /mnt/fs2                               
-
-<span style="color:#6272a4"># create a foo.bar file on fs1,and set a capabilities on it</span>
-$ touch /mnt/fs1/foo.bar                                        
-$ setcap cap_sys_nice+ep /mnt/fs1/foo.bar                       
-<span style="color:#6272a4"># create a readonly snapshot and send to fs2 (full send)   </span>
-$ btrfs subvol snap -r /mnt/fs1 /mnt/fs1/snap_init              
-$ btrfs send /mnt/fs1/snap_init | btrfs receive /mnt/fs2        
-
-<span style="color:#6272a4"># change the capability on foo.bar, and restore the capability</span>
-$ chgrp adm /mnt/fs1/foo.bar                                    
-$ setcap cap_sys_nice+ep /mnt/fs1/foo.bar                       
-                                                              
-<span style="color:#6272a4"># create a new readonly snapshot containing foo.bar with different group</span>
-$ btrfs subvol snap -r /mnt/fs1 /mnt/fs1/snap_inc               
-<span style="color:#6272a4"># executing an incremental send comparing the two snapshots</span>
-$ btrfs send -p /mnt/fs1/snap_init /mnt/fs1/snap_inc | btrfs receive fs2
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#6272a4"># create a new sparse file with 5G of size, and create a btrfs fs on it</span>
+</span></span><span style="display:flex;"><span>$ fallocate -l5G disk.btrfs                                     
+</span></span><span style="display:flex;"><span>$ mkfs.btrfs disk.btrfs                                         
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># mount the fs and create subvolumes fs1 and fs2              </span>
+</span></span><span style="display:flex;"><span>$ mount disk.btrfs /mnt                                         
+</span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/fs1                               
+</span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/fs2                               
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># create a foo.bar file on fs1,and set a capabilities on it</span>
+</span></span><span style="display:flex;"><span>$ touch /mnt/fs1/foo.bar                                        
+</span></span><span style="display:flex;"><span>$ setcap cap_sys_nice+ep /mnt/fs1/foo.bar                       
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># create a readonly snapshot and send to fs2 (full send)   </span>
+</span></span><span style="display:flex;"><span>$ btrfs subvol snap -r /mnt/fs1 /mnt/fs1/snap_init              
+</span></span><span style="display:flex;"><span>$ btrfs send /mnt/fs1/snap_init | btrfs receive /mnt/fs2        
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># change the capability on foo.bar, and restore the capability</span>
+</span></span><span style="display:flex;"><span>$ chgrp adm /mnt/fs1/foo.bar                                    
+</span></span><span style="display:flex;"><span>$ setcap cap_sys_nice+ep /mnt/fs1/foo.bar                       
+</span></span><span style="display:flex;"><span>                                                              
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># create a new readonly snapshot containing foo.bar with different group</span>
+</span></span><span style="display:flex;"><span>$ btrfs subvol snap -r /mnt/fs1 /mnt/fs1/snap_inc               
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># executing an incremental send comparing the two snapshots</span>
+</span></span><span style="display:flex;"><span>$ btrfs send -p /mnt/fs1/snap_init /mnt/fs1/snap_inc | btrfs receive fs2
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>At this point, the foo.bar sent to fs2 lost it&rsquo;s capability:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ getcap /mnt/fs2/snap_init/foo.bar 
-$
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ getcap /mnt/fs2/snap_init/foo.bar 
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>How to fix the issue? Simple: just emit the capabilities <strong>after</strong> the chown was emitted. The basic idea is:</p>
 <ul>
@@ -543,43 +543,43 @@ $
 <li>If yes, emit them</li>
 </ul>
 <p>Here is a portion of the fix:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (need_chown) {
-        ret <span style="color:#ff79c6">=</span> send_chown(sctx, sctx<span style="color:#ff79c6">-&gt;</span>cur_ino, sctx<span style="color:#ff79c6">-&gt;</span>cur_inode_gen,
-                        left_uid, left_gid); 
-        <span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)          
-                <span style="color:#ff79c6">goto</span> out;        
-}               
-<span style="color:#ff79c6">if</span> (need_chmod) {    
-        ret <span style="color:#ff79c6">=</span> send_chmod(sctx, sctx<span style="color:#ff79c6">-&gt;</span>cur_ino, sctx<span style="color:#ff79c6">-&gt;</span>cur_inode_gen,
-                        left_mode);
-        <span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)          
-                <span style="color:#ff79c6">goto</span> out;        
-}               
-                
-ret <span style="color:#ff79c6">=</span> send_capabilities(sctx);   
-<span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) 
-        <span style="color:#ff79c6">goto</span> out;
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (need_chown) {
+</span></span><span style="display:flex;"><span>        ret <span style="color:#ff79c6">=</span> send_chown(sctx, sctx<span style="color:#ff79c6">-&gt;</span>cur_ino, sctx<span style="color:#ff79c6">-&gt;</span>cur_inode_gen,
+</span></span><span style="display:flex;"><span>                        left_uid, left_gid); 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)          
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">goto</span> out;        
+</span></span><span style="display:flex;"><span>}               
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (need_chmod) {    
+</span></span><span style="display:flex;"><span>        ret <span style="color:#ff79c6">=</span> send_chmod(sctx, sctx<span style="color:#ff79c6">-&gt;</span>cur_ino, sctx<span style="color:#ff79c6">-&gt;</span>cur_inode_gen,
+</span></span><span style="display:flex;"><span>                        left_mode);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)          
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">goto</span> out;        
+</span></span><span style="display:flex;"><span>}               
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>ret <span style="color:#ff79c6">=</span> send_capabilities(sctx);   
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (ret <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">goto</span> out;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The patch itself is somewhat bigger, and exposes how btrfs managed inodes and its attributes, and I plan to write about it in the future.</p>
 <p>For the most curious readers, here is the full <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=89efda52e6b6930f80f5adda9c3c9edfb1397191">path</a>. Along with the patch solving the problem, a <a href="https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=a1c25b75b456880f64ab30ced0892f7603e4bb3c">test</a> was created in xfstests to ensure this problem won&rsquo;t happen again in the future.</p>
@@ -618,8 +618,8 @@ ret <span style="color:#ff79c6">=</span> send_capabilities(sctx);
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">

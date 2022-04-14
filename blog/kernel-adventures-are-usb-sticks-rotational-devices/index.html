@@ -15,7 +15,7 @@
   </title>
 
   
-  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.91.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.96.0" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta
     name="description"
     content="
@@ -64,8 +64,8 @@
   
   <script
     type="text/javascript"
-    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
-    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    src="/js/anatole-header.min.d0408165d31a17f17bba83038bf54e86121f85021bdf936382e636f0f77a952f.js"
+    integrity="sha256-0ECBZdMaF/F7uoMDi/VOhhIfhQIb35NjguY28Pd6lS8="
     crossorigin="anonymous"
   ></script>
 
@@ -74,8 +74,8 @@
     
     <script
       type="text/javascript"
-      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
-      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      src="/js/anatole-theme-switcher.min.65e936b591bf81484a5ac438c8e4ae6454fb25516d58ce911e4888d7f230bdc5.js"
+      integrity="sha256-Zek2tZG/gUhKWsQ4yOSuZFT7JVFtWM6RHkiI1/IwvcU="
       crossorigin="anonymous"
     ></script>
 
@@ -283,8 +283,8 @@
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">
@@ -331,363 +331,363 @@ if (!doNotTrack) {
 <h3 id="back-to-the-bug">Back to the bug</h3>
 <p>My idea was to check the kernel code in order to understand how it works. First of all, <a href="https://en.wikipedia.org/wiki/USB_mass_storage_device_class">USB mass storage</a> uses <a href="https://en.wikipedia.org/wiki/SCSI_command">SCSI commands</a> to transfer data between host and USB device. With this in mind, there are two layers in kernel to check: SCSI and USB.</p>
 <p>By looking at Linux kernel code, specifically function <em>sd_revalidate_disk</em> in <a href="https://elixir.bootlin.com/linux/v5.3-rc1/source/drivers/scsi/sd.c#L3129">drivers/scsi/sd.c</a>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6272a4">/*
-</span><span style="color:#6272a4"> * set the default to rotational. All non-rotational devices
-</span><span style="color:#6272a4"> * support the block characteristics VPD page, which will
-</span><span style="color:#6272a4"> * cause this to be updated correctly and any device which
-</span><span style="color:#6272a4"> * doesn’t support it should be treated as rotational.
-</span><span style="color:#6272a4"> */</span>
-blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * set the default to rotational. All non-rotational devices
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * support the block characteristics VPD page, which will
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * cause this to be updated correctly and any device which
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * doesn’t support it should be treated as rotational.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> */</span>
+</span></span><span style="display:flex;"><span>blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This function is called when a disk is detected. It first sets the disk as <em>rotational</em>, by clearing the <em>NONROT</em> flag (yes, it’s confusing at first glance). A few lines bellow this point, we can see the following code:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (scsi_device_supports_vpd(sdp)) {
-	sd_read_block_provisioning(sdkp);
-	sd_read_block_limits(sdkp);
-	sd_read_block_characteristics(sdkp);
-	sd_zbc_read_zones(sdkp, buffer);
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (scsi_device_supports_vpd(sdp)) {
+</span></span><span style="display:flex;"><span>	sd_read_block_provisioning(sdkp);
+</span></span><span style="display:flex;"><span>	sd_read_block_limits(sdkp);
+</span></span><span style="display:flex;"><span>	sd_read_block_characteristics(sdkp);
+</span></span><span style="display:flex;"><span>	sd_zbc_read_zones(sdkp, buffer);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>We need some background about VPD. VPD stands for <em>Vital Product Data</em>, and presents information and configuration about a device, a SCSI device in this case. VPD was introduced in <strong>SCSI Primary Commands</strong> (SPC) 2 specification, and can be “queried” from any SCSI storage device by using <strong>sg_utils3</strong> package:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">$ sg_vpd <span style="color:#ff79c6">/</span>dev<span style="color:#ff79c6">/</span>sda 
-  Supported VPD pages VPD <span style="color:#8be9fd;font-style:italic">page</span>:
-   Supported VPD pages [sv]
-   Unit serial number [sn]
-   Device identification [di]
-   ATA information (SAT) [ai]
-   Block limits (SBC) [bl]
-   Block device characteristics (SBC) [bdc]
-   Logical block provisioning (SBC) [lbpv]
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>$ sg_vpd <span style="color:#ff79c6">/</span>dev<span style="color:#ff79c6">/</span>sda 
+</span></span><span style="display:flex;"><span>  Supported VPD pages VPD <span style="color:#8be9fd;font-style:italic">page</span>:
+</span></span><span style="display:flex;"><span>   Supported VPD pages [sv]
+</span></span><span style="display:flex;"><span>   Unit serial number [sn]
+</span></span><span style="display:flex;"><span>   Device identification [di]
+</span></span><span style="display:flex;"><span>   ATA information (SAT) [ai]
+</span></span><span style="display:flex;"><span>   Block limits (SBC) [bl]
+</span></span><span style="display:flex;"><span>   Block device characteristics (SBC) [bdc]
+</span></span><span style="display:flex;"><span>   Logical block provisioning (SBC) [lbpv]
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This is the output of my SSD device. Going back to our original problem, <em>rotating USB storage</em>, the function <em>sd_read_block_characteristics</em> does something interesting:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>buffer <span style="color:#ff79c6">||</span>
-     <span style="color:#6272a4">/* Block Device Characteristics VPD */</span>
-     scsi_get_vpd_page(sdkp<span style="color:#ff79c6">-&gt;</span>device, <span style="color:#bd93f9">0xb1</span>, buffer, vpd_len))
-	<span style="color:#ff79c6">goto</span> out;
-  
-rot <span style="color:#ff79c6">=</span> get_unaligned_be16(buffer[<span style="color:#bd93f9">4</span>]);
-  
-<span style="color:#ff79c6">if</span> (rot <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">1</span>) {
-	blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
-	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, q);
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>buffer <span style="color:#ff79c6">||</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#6272a4">/* Block Device Characteristics VPD */</span>
+</span></span><span style="display:flex;"><span>     scsi_get_vpd_page(sdkp<span style="color:#ff79c6">-&gt;</span>device, <span style="color:#bd93f9">0xb1</span>, buffer, vpd_len))
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">goto</span> out;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>rot <span style="color:#ff79c6">=</span> get_unaligned_be16(buffer[<span style="color:#bd93f9">4</span>]);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (rot <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>	blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
+</span></span><span style="display:flex;"><span>	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, q);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The code above reads the <strong>Block Device Characteristics</strong> VPD page, which is present only in <a href="http://www.t10.org/ftp/t10/document.07/07-203r0.pdf">SPC-3</a> or later. Again, sg_vpd can help us to check BDC:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd — page bdc /dev/sda
-  Block device characteristics VPD page <span style="color:#ff79c6">(</span>SBC<span style="color:#ff79c6">)</span>:
-   Non-rotating medium <span style="color:#ff79c6">(</span>e.g. solid state<span style="color:#ff79c6">)</span>
-   Product type: Not specified
-   <span style="color:#8be9fd;font-style:italic">WABEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">WACEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   Nominal form factor not reported
-   <span style="color:#8be9fd;font-style:italic">ZONED</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">RBWZ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">BOCS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">FUAB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">VBULS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">DEPOPULATION_TIME</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#ff79c6">(</span>seconds<span style="color:#ff79c6">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_vpd — page bdc /dev/sda
+</span></span><span style="display:flex;"><span>  Block device characteristics VPD page <span style="color:#ff79c6">(</span>SBC<span style="color:#ff79c6">)</span>:
+</span></span><span style="display:flex;"><span>   Non-rotating medium <span style="color:#ff79c6">(</span>e.g. solid state<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>   Product type: Not specified
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">WABEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">WACEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   Nominal form factor not reported
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">ZONED</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">RBWZ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">BOCS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">FUAB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">VBULS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">DEPOPULATION_TIME</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#ff79c6">(</span>seconds<span style="color:#ff79c6">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>As you can see, the <strong>Block Device Characteristics</strong> of my SSD device says clearly: <strong>Non-rotation Medium</strong>. Per the function above, the NONROT flag will be set, so <em>sysfs</em> will show when reading the rotational attribute of this device:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /sys/block/sda/queue/rotational 
-<span style="color:#bd93f9">0</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat /sys/block/sda/queue/rotational 
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Moving further, I have another storage disk, now an HDD:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd  — page bdc /dev/sdb 
-  Block device characteristics VPD page <span style="color:#ff79c6">(</span>SBC<span style="color:#ff79c6">)</span>:
-   Nominal rotation rate: <span style="color:#bd93f9">5400</span> rpm
-   Product type: Not specified
-   <span style="color:#8be9fd;font-style:italic">WABEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">WACEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   Nominal form factor not reported
-   <span style="color:#8be9fd;font-style:italic">ZONED</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">RBWZ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">BOCS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">FUAB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">VBULS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-   <span style="color:#8be9fd;font-style:italic">DEPOPULATION_TIME</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#ff79c6">(</span>seconds<span style="color:#ff79c6">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_vpd  — page bdc /dev/sdb 
+</span></span><span style="display:flex;"><span>  Block device characteristics VPD page <span style="color:#ff79c6">(</span>SBC<span style="color:#ff79c6">)</span>:
+</span></span><span style="display:flex;"><span>   Nominal rotation rate: <span style="color:#bd93f9">5400</span> rpm
+</span></span><span style="display:flex;"><span>   Product type: Not specified
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">WABEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">WACEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   Nominal form factor not reported
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">ZONED</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">RBWZ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">BOCS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">FUAB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">VBULS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">DEPOPULATION_TIME</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#ff79c6">(</span>seconds<span style="color:#ff79c6">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>Nominal rotation rate: 5400 rpm</strong>. Indeed, it’s a rotational device. But, what about USB sticks?</p>
 <p>I’ve tested more than 10 USB sticks and USB SATA adapters, and neither of them have BDC exposed. Let’s use <strong>sg_inq</strong> to check if these which version of SCSI/SPC they implement, and which VPD they expose:</p>
 <h4 id="alcor-micro-corp-flash-drive-058f6387-usb-stick">Alcor Micro Corp. Flash Drive 058f:6387 (USB Stick)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq -s /dev/sdc
-  standard INQUIRY:
-    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x04  <span style="color:#ff79c6">[</span>SPC-2<span style="color:#ff79c6">]</span>
-$ sg_vpd --page 0x0 /dev/sdc
-  Supported VPD pages VPD page:
-    Supported VPD pages <span style="color:#ff79c6">[</span>sv<span style="color:#ff79c6">]</span>
-    Unit serial number <span style="color:#ff79c6">[</span>sn<span style="color:#ff79c6">]</span>
-    Device identification <span style="color:#ff79c6">[</span>di<span style="color:#ff79c6">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq -s /dev/sdc
+</span></span><span style="display:flex;"><span>  standard INQUIRY:
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x04  <span style="color:#ff79c6">[</span>SPC-2<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
+</span></span><span style="display:flex;"><span>    Supported VPD pages <span style="color:#ff79c6">[</span>sv<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>    Unit serial number <span style="color:#ff79c6">[</span>sn<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>    Device identification <span style="color:#ff79c6">[</span>di<span style="color:#ff79c6">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="chipsbank-microelectronics-co-ltd-1e3d2092-usb-stick">Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
-  invalid VPD response; probably a STANDARD INQUIRY response
-  standard INQUIRY:
-    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x02  <span style="color:#ff79c6">[</span>SCSI-2<span style="color:#ff79c6">]</span>
-$ sg_vpd --page 0x0 /dev/sdc
-  Supported VPD pages VPD page:
-  invalid VPD response; probably a STANDARD INQUIRY response
-  fetching VPD page failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
-  sg_vpd failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc
+</span></span><span style="display:flex;"><span>  invalid VPD response; probably a STANDARD INQUIRY response
+</span></span><span style="display:flex;"><span>  standard INQUIRY:
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x02  <span style="color:#ff79c6">[</span>SCSI-2<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
+</span></span><span style="display:flex;"><span>  invalid VPD response; probably a STANDARD INQUIRY response
+</span></span><span style="display:flex;"><span>  fetching VPD page failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
+</span></span><span style="display:flex;"><span>  sg_vpd failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This device does not even implements VPD.</p>
 <h4 id="hp-inc-4-gb-flash-drive-03f03207-usb-stick">HP, Inc 4 GB flash drive 03f0:3207 (USB stick)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
-  invalid VPD response; probably a STANDARD INQUIRY response
-  standard INQUIRY:
-    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x00  <span style="color:#ff79c6">[</span>no conformance claimed<span style="color:#ff79c6">]</span>
-$ sg_vpd /dev/sdc
-  Supported VPD pages VPD page:
-  invalid VPD response; probably a STANDARD INQUIRY response
-  fetching VPD page failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
-  sg_vpd failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc
+</span></span><span style="display:flex;"><span>  invalid VPD response; probably a STANDARD INQUIRY response
+</span></span><span style="display:flex;"><span>  standard INQUIRY:
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x00  <span style="color:#ff79c6">[</span>no conformance claimed<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>$ sg_vpd /dev/sdc
+</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
+</span></span><span style="display:flex;"><span>  invalid VPD response; probably a STANDARD INQUIRY response
+</span></span><span style="display:flex;"><span>  fetching VPD page failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
+</span></span><span style="display:flex;"><span>  sg_vpd failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This one is even worse, does not even comply with any specification.</p>
 <h4 id="sandisk-corp-cruzer-blade-07815567-usb-stick">SanDisk Corp. Cruzer Blade 0781:5567 (USB Stick)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
-  standard INQUIRY:
-    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
-$ sg_vpd --page 0x0 /dev/sdc
-  Supported VPD pages VPD page:
-    Supported VPD pages <span style="color:#ff79c6">[</span>sv<span style="color:#ff79c6">]</span>
-    Unit serial number <span style="color:#ff79c6">[</span>sn<span style="color:#ff79c6">]</span>
-    Device identification <span style="color:#ff79c6">[</span>di<span style="color:#ff79c6">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc
+</span></span><span style="display:flex;"><span>  standard INQUIRY:
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
+</span></span><span style="display:flex;"><span>    Supported VPD pages <span style="color:#ff79c6">[</span>sv<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>    Unit serial number <span style="color:#ff79c6">[</span>sn<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>    Device identification <span style="color:#ff79c6">[</span>di<span style="color:#ff79c6">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This one from SanDisk complies with SPC-4, but no BDC supported either.</p>
 <h4 id="super-top-m6116-sata-bridge-14cd6116-usb-sata-adapter">Super Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc
-  standard INQUIRY:
-    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x00  <span style="color:#ff79c6">[</span>no conformance claimed<span style="color:#ff79c6">]</span>
-$ sg_vpd --page 0x0 /dev/sdc
-  Supported VPD pages VPD page:
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc
+</span></span><span style="display:flex;"><span>  standard INQUIRY:
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x00  <span style="color:#ff79c6">[</span>no conformance claimed<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>It doesn’t show any VPD, but apprently understands the SCSI INQ command.</p>
 <h4 id="initio-corporation-13fd3920-usb-sata-adapter">Initio Corporation 13fd:3920 (USB SATA adapter)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc           
-  standard INQUIRY:
-    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
-$ sg_vpd --page 0x0 /dev/sdc
-  Supported VPD pages VPD page:
-    Supported VPD pages <span style="color:#ff79c6">[</span>sv<span style="color:#ff79c6">]</span>
-    Unit serial number <span style="color:#ff79c6">[</span>sn<span style="color:#ff79c6">]</span>
-    Device identification <span style="color:#ff79c6">[</span>di<span style="color:#ff79c6">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc           
+</span></span><span style="display:flex;"><span>  standard INQUIRY:
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
+</span></span><span style="display:flex;"><span>    Supported VPD pages <span style="color:#ff79c6">[</span>sv<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>    Unit serial number <span style="color:#ff79c6">[</span>sn<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>    Device identification <span style="color:#ff79c6">[</span>di<span style="color:#ff79c6">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Another device which implements SPC-4 and does not expose BDC.</p>
 <h3 id="conclusion">Conclusion</h3>
 <p>Without Block Device Characteristics, the kernel cannot say for sure if the device is rotational or not, so the <em>NONROT</em> flag keeps cleared.</p>
 <p>The <em>rotational</em> information can be used to change the IO scheduler related to the device, as openSUSE currently does:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /usr/lib/udev/rules.d/60-io-scheduler.rules
-  <span style="color:#6272a4"># Set optimal IO schedulers for HDD and SSD</span>
-  ACTION!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;add&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
-  SUBSYSTEM!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;block&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
-  <span style="color:#6272a4"># Do not change scheduler if `elevator` cmdline parameter is set</span>
-  IMPORT<span style="color:#ff79c6">{</span>cmdline<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;elevator&#34;</span>
-  ENV<span style="color:#ff79c6">{</span>elevator<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;?*&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
-  <span style="color:#6272a4"># Determine if BLK-MQ is enabled</span>
-  <span style="color:#8be9fd;font-style:italic">TEST</span><span style="color:#ff79c6">==</span><span style="color:#f1fa8c">&#34;%S%p/mq&#34;</span>, ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;1&#34;</span>
-  <span style="color:#6272a4"># MQ: BFQ scheduler for HDD</span>
-  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;bfq&#34;</span>
-  <span style="color:#6272a4"># MQ: deadline scheduler for SSD</span>
-  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;mq-deadline&#34;</span>
-  <span style="color:#6272a4"># Non-MQ: CFQ scheduler for HDD</span>
-  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;cfq&#34;</span>
-  <span style="color:#6272a4"># Non-MQ: deadline scheduler for SSD</span>
-  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;deadline&#34;</span>
-  <span style="color:#8be9fd;font-style:italic">LABEL</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat /usr/lib/udev/rules.d/60-io-scheduler.rules
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Set optimal IO schedulers for HDD and SSD</span>
+</span></span><span style="display:flex;"><span>  ACTION!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;add&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
+</span></span><span style="display:flex;"><span>  SUBSYSTEM!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;block&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Do not change scheduler if `elevator` cmdline parameter is set</span>
+</span></span><span style="display:flex;"><span>  IMPORT<span style="color:#ff79c6">{</span>cmdline<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;elevator&#34;</span>
+</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>elevator<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;?*&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Determine if BLK-MQ is enabled</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">TEST</span><span style="color:#ff79c6">==</span><span style="color:#f1fa8c">&#34;%S%p/mq&#34;</span>, ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># MQ: BFQ scheduler for HDD</span>
+</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;bfq&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># MQ: deadline scheduler for SSD</span>
+</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;mq-deadline&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Non-MQ: CFQ scheduler for HDD</span>
+</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;cfq&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Non-MQ: deadline scheduler for SSD</span>
+</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;deadline&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">LABEL</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Picking the right IO scheduler helps to extract the best performancee of your storage device. For example BFQ IO scheduler would reorder <em>read</em>/<em>write</em> requests, trying to make them contiguous in order to extract the best of performance from an HDD disk. Remember, HDD devices have the <em>head</em> that needs to be positioned in the right place to get your data, and avoiding it to be moved randomly helps to improve performance.</p>
 <p>The above is true for HDD devices but doesn’t help much SSD devices which don’t have the performance penalty of the seek time, so <em>mq-deadline</em> would be a better solution for this cases. This scheduler prefer <em>reads</em> over <em>writes</em> not reordering requests, and that’s all, making it perform better in SSD devices.</p>
@@ -725,8 +725,8 @@ $ sg_vpd --page 0x0 /dev/sdc
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">

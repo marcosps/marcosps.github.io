@@ -15,7 +15,7 @@
   </title>
 
   
-  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.91.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.96.0" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta
     name="description"
     content="
@@ -64,8 +64,8 @@
   
   <script
     type="text/javascript"
-    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
-    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    src="/js/anatole-header.min.d0408165d31a17f17bba83038bf54e86121f85021bdf936382e636f0f77a952f.js"
+    integrity="sha256-0ECBZdMaF/F7uoMDi/VOhhIfhQIb35NjguY28Pd6lS8="
     crossorigin="anonymous"
   ></script>
 
@@ -74,8 +74,8 @@
     
     <script
       type="text/javascript"
-      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
-      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      src="/js/anatole-theme-switcher.min.65e936b591bf81484a5ac438c8e4ae6454fb25516d58ce911e4888d7f230bdc5.js"
+      integrity="sha256-Zek2tZG/gUhKWsQ4yOSuZFT7JVFtWM6RHkiI1/IwvcU="
       crossorigin="anonymous"
     ></script>
 
@@ -283,8 +283,8 @@
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">
@@ -316,265 +316,265 @@ if (!doNotTrack) {
       </div><p>After chasing the problem of <a href="/kernel-adventures-are-usb-sticks-rotational-devices">rotational sysfs property of USB flash drives</a>, I started to check another <em>sysfs</em> attributes of USB storage devices, and I noted two missing attributes: <em>vpd_pg80</em> and <em>vpd_pg83</em>.</p>
 <p>As explained <a href="/kernel-adventures-are-usb-sticks-rotational-devices">here</a>, VPD pages contain data related to the device. In special, page 80 is <em>Unit Serial Number</em> (sn) and page 83 is <em>Device Information</em> (di), which are present in any SCSI device that complies with <em>SPC-2</em> or later.</p>
 <p>Check an example of my <em>sn</em> and <em>di</em> of my <em>SSD</em> using <strong>sg_vpd</strong> from sg3_utils package:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd --page 0x80 /dev/sda
-  Unit serial number VPD page:
-    Unit serial number: FS71N654610101U37
-$ sg_vpd --page 0x83 /dev/sda                                                                                        
-  Device Identification VPD page:
-    Addressed logical unit:
-      designator type: vendor specific <span style="color:#ff79c6">[</span>0x0<span style="color:#ff79c6">]</span>,  code set: ASCII
-        vendor specific: FS71N654610101U37   
-      designator type: T10 vendor identification,  code set: ASCII
-        vendor id: ATA     
-        vendor specific: SK hynix SC300 SATA 512GB               FS71N654610101U37
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_vpd --page 0x80 /dev/sda
+</span></span><span style="display:flex;"><span>  Unit serial number VPD page:
+</span></span><span style="display:flex;"><span>    Unit serial number: FS71N654610101U37
+</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x83 /dev/sda                                                                                        
+</span></span><span style="display:flex;"><span>  Device Identification VPD page:
+</span></span><span style="display:flex;"><span>    Addressed logical unit:
+</span></span><span style="display:flex;"><span>      designator type: vendor specific <span style="color:#ff79c6">[</span>0x0<span style="color:#ff79c6">]</span>,  code set: ASCII
+</span></span><span style="display:flex;"><span>        vendor specific: FS71N654610101U37   
+</span></span><span style="display:flex;"><span>      designator type: T10 vendor identification,  code set: ASCII
+</span></span><span style="display:flex;"><span>        vendor id: ATA     
+</span></span><span style="display:flex;"><span>        vendor specific: SK hynix SC300 SATA 512GB               FS71N654610101U37
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This information is exported as attributes of storage devices in <em>sysfs</em>, like my HDD and SSD devices below:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ls /sys/block/sd<span style="color:#ff79c6">[</span>ab<span style="color:#ff79c6">]</span>/device/vpd*
-  /sys/block/sda/device/vpd_pg80
-  /sys/block/sda/device/vpd_pg83
-  /sys/block/sdb/device/vpd_pg80
-  /sys/block/sdb/device/vpd_pg83
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ ls /sys/block/sd<span style="color:#ff79c6">[</span>ab<span style="color:#ff79c6">]</span>/device/vpd*
+</span></span><span style="display:flex;"><span>  /sys/block/sda/device/vpd_pg80
+</span></span><span style="display:flex;"><span>  /sys/block/sda/device/vpd_pg83
+</span></span><span style="display:flex;"><span>  /sys/block/sdb/device/vpd_pg80
+</span></span><span style="display:flex;"><span>  /sys/block/sdb/device/vpd_pg83
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This is true for the majority of storage devices, but not for USB flash drives. Most USB storage devices don’t have these attributes in <em>sysfs</em>, even when sg_vpd clearly shows them, like below:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_vpd --page 0x80 /dev/sdc
-  Unit serial number VPD page:
-    Unit serial number: 4C530001300722111594
-$ sg_vpd --page 0x83 /dev/sdc
-  Device Identification VPD page:
-    Addressed logical unit:
-      designator type: T10 vendor identification,  code set: ASCII
-        vendor id: SanDisk
-        vendor specific: Cruzer Blade
-$ ls /sys/block/sdc/device/vpd*    
-  zsh: no matches found: /sys/block/sdc/device/vpd*
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_vpd --page 0x80 /dev/sdc
+</span></span><span style="display:flex;"><span>  Unit serial number VPD page:
+</span></span><span style="display:flex;"><span>    Unit serial number: 4C530001300722111594
+</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x83 /dev/sdc
+</span></span><span style="display:flex;"><span>  Device Identification VPD page:
+</span></span><span style="display:flex;"><span>    Addressed logical unit:
+</span></span><span style="display:flex;"><span>      designator type: T10 vendor identification,  code set: ASCII
+</span></span><span style="display:flex;"><span>        vendor id: SanDisk
+</span></span><span style="display:flex;"><span>        vendor specific: Cruzer Blade
+</span></span><span style="display:flex;"><span>$ ls /sys/block/sdc/device/vpd*    
+</span></span><span style="display:flex;"><span>  zsh: no matches found: /sys/block/sdc/device/vpd*
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>I’ve tested a bunch of different USB flash devices and USB to SATA adapters <a href="/kernel-adventures-are-usb-sticks-rotational-devices">in my previous post</a>, and neither of them had <em>vpd_pg80</em> and <em>vpd_pg83</em> in <em>sysfs</em>, although all <em>SanDisk Cruzer Blade</em> devices tested expose these VPD pages (thanks to my friend <a href="https://twitter.com/alxvicenzi">Alexandre Vicenzi</a> who also had a <em>Cruzer Blades</em> to test).</p>
 <p>In order to understand the problem, I decided to look at the kernel code. By using <em>grep</em>, I found a couple of interesting files:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git grep -l pg80       
-drivers/scsi/scsi.c
-drivers/scsi/scsi_sysfs.c
-include/scsi/scsi_device.h
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ git grep -l pg80       
+</span></span><span style="display:flex;"><span>drivers/scsi/scsi.c
+</span></span><span style="display:flex;"><span>drivers/scsi/scsi_sysfs.c
+</span></span><span style="display:flex;"><span>include/scsi/scsi_device.h
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>At first glance, <em>scsi_sysfs.c</em> seems the best place to start. This file describes the <em>sysfs</em> attributes of SCSI devices, like <em>vpd_pg80</em> and how the values of this properly is presented. So far, no information from where it is assigned.</p>
 <p>File <em>scsi.c</em> had some answers. Looking at function <em>scsi_attach_vpd</em>, we can clearly see where the SCSI layer checks for <em>Device Information</em> and <em>Serial Number</em>.</p>
 <p>But, let’s look at the first function that <a href="https://elixir.bootlin.com/linux/v5.3-rc4/source/drivers/scsi/scsi.c#L454"><em>scsi_attach_vpd</em></a> calls:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6272a4">/**
-</span><span style="color:#6272a4"> * scsi_device_supports_vpd - test if a device supports VPD pages
-</span><span style="color:#6272a4"> * @sdev: the &amp;amp;struct scsi_device to test
-</span><span style="color:#6272a4"> *
-</span><span style="color:#6272a4"> * If the &#39;try_vpd_pages&#39; flag is set it takes precedence.
-</span><span style="color:#6272a4"> * Otherwise we will assume VPD pages are supported if the
-</span><span style="color:#6272a4"> * SCSI level is at least SPC-3 and &#39;skip_vpd_pages&#39; is not set.
-</span><span style="color:#6272a4"> */</span>
-
-<span style="color:#ff79c6">static</span> <span style="color:#ff79c6">inline</span> <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">scsi_device_supports_vpd</span>(<span style="color:#ff79c6">struct</span> scsi_device <span style="color:#ff79c6">*</span>sdev)
-{
-	<span style="color:#6272a4">/* Attempt VPD inquiry if the device blacklist explicitly calls
-</span><span style="color:#6272a4">	 * for it.
-</span><span style="color:#6272a4">	 */</span>
-	<span style="color:#ff79c6">if</span> (sdev<span style="color:#ff79c6">-&gt;</span>try_vpd_pages)
-		<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">1</span>;
-	<span style="color:#6272a4">/*
-</span><span style="color:#6272a4">	 * Although VPD inquiries can go to SCSI-2 type devices,
-</span><span style="color:#6272a4">	 * some USB ones crash on receiving them, and the pages
-</span><span style="color:#6272a4">	 * we currently ask for are mandatory for SPC-2 and beyond
-</span><span style="color:#6272a4">	 */</span>
-	<span style="color:#ff79c6">if</span> (sdev<span style="color:#ff79c6">-&gt;</span>scsi_level <span style="color:#ff79c6">&gt;=</span> SCSI_SPC_2 <span style="color:#ff79c6">&amp;&amp;</span> <span style="color:#ff79c6">!</span>sdev<span style="color:#ff79c6">-&gt;</span>skip_vpd_pages)
-		<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">1</span>;
-	<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#6272a4">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * scsi_device_supports_vpd - test if a device supports VPD pages
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * @sdev: the &amp;amp;struct scsi_device to test
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * If the &#39;try_vpd_pages&#39; flag is set it takes precedence.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * Otherwise we will assume VPD pages are supported if the
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * SCSI level is at least SPC-3 and &#39;skip_vpd_pages&#39; is not set.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">static</span> <span style="color:#ff79c6">inline</span> <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">scsi_device_supports_vpd</span>(<span style="color:#ff79c6">struct</span> scsi_device <span style="color:#ff79c6">*</span>sdev)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">/* Attempt VPD inquiry if the device blacklist explicitly calls
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	 * for it.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	 */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (sdev<span style="color:#ff79c6">-&gt;</span>try_vpd_pages)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	 * Although VPD inquiries can go to SCSI-2 type devices,
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	 * some USB ones crash on receiving them, and the pages
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	 * we currently ask for are mandatory for SPC-2 and beyond
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	 */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (sdev<span style="color:#ff79c6">-&gt;</span>scsi_level <span style="color:#ff79c6">&gt;=</span> SCSI_SPC_2 <span style="color:#ff79c6">&amp;&amp;</span> <span style="color:#ff79c6">!</span>sdev<span style="color:#ff79c6">-&gt;</span>skip_vpd_pages)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>By looking at this function we can presume that <strong>try_vpd_pages</strong> flag is not set and <strong>skip_vpd_pages</strong> is. We can discard checking <strong>scsi_level</strong> because <em>Cruzer Blade</em> is <em>SPC-4</em> compliant:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sg_inq /dev/sdc | head -2
-  standard INQUIRY:
-    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc | head -2
+</span></span><span style="display:flex;"><span>  standard INQUIRY:
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>By looking at the comment of <em>scsi_device_supports_vpd</em>, some USB devices crash after checking their VPD pages, in this case, it makes sense to not enable VPD for all devices. Although, our <em>SanDisk Cruzer Blade</em> device clearly supports VPD and does not crash.</p>
 <p><em>scsi_device_supports_vpd</em> is called in two places: <em>scsi_add_lun</em> and <em>scsi_rescan_device</em>. These callers are common path of device setup, so fixing <em>skip_vpd_pages</em> should be enough.</p>
 <p>Let’s <em>grep</em> again in the kernel source code to check where <strong>skip_vpd_pages</strong> is being set:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git grep -l skip_vpd_pages
-drivers/scsi/scsi.c
-drivers/scsi/scsi_scan.c
-drivers/usb/storage/scsiglue.c
-include/scsi/scsi_device.h
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ git grep -l skip_vpd_pages
+</span></span><span style="display:flex;"><span>drivers/scsi/scsi.c
+</span></span><span style="display:flex;"><span>drivers/scsi/scsi_scan.c
+</span></span><span style="display:flex;"><span>drivers/usb/storage/scsiglue.c
+</span></span><span style="display:flex;"><span>include/scsi/scsi_device.h
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Interesting to see that USB layer setting this flag. Let’s check <a href="https://elixir.bootlin.com/linux/v5.2.8/source/drivers/usb/storage/scsiglue.c#L210">drivers/usb/stoarge/scsiglue.c</a> file:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6272a4">/* Some devices don&#39;t handle VPD pages correctly */</span>
-sdev<span style="color:#ff79c6">-&gt;</span>skip_vpd_pages <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#6272a4">/* Some devices don&#39;t handle VPD pages correctly */</span>
+</span></span><span style="display:flex;"><span>sdev<span style="color:#ff79c6">-&gt;</span>skip_vpd_pages <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>By the code above, which belongs to <em>slave_configure</em> function, USB layer disables VPD for all USB storage devices. Makes sense, since some devices are reported to crash when checking for VPD, as stated before.</p>
 <p>But, shouldn’t we add support for <em>SanDisk Cruzer Blade</em> at least? There is a per device mapping with specific flags in SCSI layer that should help to fix this situation, specially regarding <strong>try_vpd_pages</strong>. To add support for <em>SanDisk Cruzer Blade</em>* devices, I submited this <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bc022145c939dd3938771535a8074a884aec0f9">patch</a> to the kernel mailing list and it’s now merged:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff">  {&#34;LENOVO&#34;, &#34;Universal Xport&#34;, &#34;*&#34;, BLIST_NO_ULD_ATTACH},
-<span style="color:#50fa7b;font-weight:bold">+ {&#34;SanDisk&#34;, &#34;Cruzer Blade&#34;, NULL, BLIST_TRY_VPD_PAGES |
-</span><span style="color:#50fa7b;font-weight:bold">+  BLIST_INQUIRY_36},
-</span><span style="color:#50fa7b;font-weight:bold"></span>  {&#34;SMSC&#34;, &#34;USB 2 HS-CF&#34;, NULL, BLIST_SPARSELUN | BLIST_INQUIRY_36},
-  ...
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-diff" data-lang="diff"><span style="display:flex;"><span>  {&#34;LENOVO&#34;, &#34;Universal Xport&#34;, &#34;*&#34;, BLIST_NO_ULD_ATTACH},
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b;font-weight:bold">+ {&#34;SanDisk&#34;, &#34;Cruzer Blade&#34;, NULL, BLIST_TRY_VPD_PAGES |
+</span></span></span><span style="display:flex;"><span><span style="color:#50fa7b;font-weight:bold">+  BLIST_INQUIRY_36},
+</span></span></span><span style="display:flex;"><span><span style="color:#50fa7b;font-weight:bold"></span>  {&#34;SMSC&#34;, &#34;USB 2 HS-CF&#34;, NULL, BLIST_SPARSELUN | BLIST_INQUIRY_36},
+</span></span><span style="display:flex;"><span>  ...
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The patch adds specific flags that will be checked in SCSI layer and will be applied once the <em>SanDisk Cruzer Blade</em>* device is found. This change alone does not fix the problem as the flag <strong>skip_vpd_pages</strong> is still enabled. So I submited a second <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=349148785b8cea9781af520fd53c29ee8087ee74">patch</a>, to only set <strong>skip_vpd_pages</strong> when <strong>try_vpd_pages</strong> is not set allowing the SCSI layer to process all VPD pages when <strong>try_vpd_pages</strong> is set.</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#f55">-  /* Some devices don&#39;t handle VPD pages correctly */
-</span><span style="color:#f55">-  sdev-&gt;skip_vpd_pages = 1;
-</span><span style="color:#f55"></span><span style="color:#50fa7b;font-weight:bold">+  /*
-</span><span style="color:#50fa7b;font-weight:bold">+   * Some devices don&#39;t handle VPD pages correctly, so skip vpd
-</span><span style="color:#50fa7b;font-weight:bold">+   * pages if not forced by SCSI layer.
-</span><span style="color:#50fa7b;font-weight:bold">+   */
-</span><span style="color:#50fa7b;font-weight:bold">+  sdev-&gt;skip_vpd_pages = !sdev-&gt;try_vpd_pages;
-</span></code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-diff" data-lang="diff"><span style="display:flex;"><span><span style="color:#f55">-  /* Some devices don&#39;t handle VPD pages correctly */
+</span></span></span><span style="display:flex;"><span><span style="color:#f55">-  sdev-&gt;skip_vpd_pages = 1;
+</span></span></span><span style="display:flex;"><span><span style="color:#f55"></span><span style="color:#50fa7b;font-weight:bold">+  /*
+</span></span></span><span style="display:flex;"><span><span style="color:#50fa7b;font-weight:bold">+   * Some devices don&#39;t handle VPD pages correctly, so skip vpd
+</span></span></span><span style="display:flex;"><span><span style="color:#50fa7b;font-weight:bold">+   * pages if not forced by SCSI layer.
+</span></span></span><span style="display:flex;"><span><span style="color:#50fa7b;font-weight:bold">+   */
+</span></span></span><span style="display:flex;"><span><span style="color:#50fa7b;font-weight:bold">+  sdev-&gt;skip_vpd_pages = !sdev-&gt;try_vpd_pages;
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>With these two patches applied <em>SanDisk Cruzer Blade</em> USB flash device is able to properly show the VPD pages in <em>sysfs</em>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /sys/block/sda/device/vendor
-SanDisk
-
-$ cat /sys/block/sda/device/model
-Cruzer Blade
-
-$ cat /sys/block/sda/device/vpd_pg80
-4C530001300722111594
-
-$ cat /sys/block/sda/device/vpd_pg83 
-0,SanDiskCruzer Blade4C530001300722111594
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat /sys/block/sda/device/vendor
+</span></span><span style="display:flex;"><span>SanDisk
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ cat /sys/block/sda/device/model
+</span></span><span style="display:flex;"><span>Cruzer Blade
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ cat /sys/block/sda/device/vpd_pg80
+</span></span><span style="display:flex;"><span>4C530001300722111594
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ cat /sys/block/sda/device/vpd_pg83 
+</span></span><span style="display:flex;"><span>0,SanDiskCruzer Blade4C530001300722111594
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>That’s all for today. Stay tuned for more posts about Kernel and whatnot, see ya!</p>
 </div>
@@ -610,8 +610,8 @@ $ cat /sys/block/sda/device/vpd_pg83
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">

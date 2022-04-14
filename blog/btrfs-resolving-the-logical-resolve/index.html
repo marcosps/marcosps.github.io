@@ -15,7 +15,7 @@
   </title>
 
   
-  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.91.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.96.0" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta
     name="description"
     content="
@@ -64,8 +64,8 @@
   
   <script
     type="text/javascript"
-    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
-    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    src="/js/anatole-header.min.d0408165d31a17f17bba83038bf54e86121f85021bdf936382e636f0f77a952f.js"
+    integrity="sha256-0ECBZdMaF/F7uoMDi/VOhhIfhQIb35NjguY28Pd6lS8="
     crossorigin="anonymous"
   ></script>
 
@@ -74,8 +74,8 @@
     
     <script
       type="text/javascript"
-      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
-      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      src="/js/anatole-theme-switcher.min.65e936b591bf81484a5ac438c8e4ae6454fb25516d58ce911e4888d7f230bdc5.js"
+      integrity="sha256-Zek2tZG/gUhKWsQ4yOSuZFT7JVFtWM6RHkiI1/IwvcU="
       crossorigin="anonymous"
     ></script>
 
@@ -283,8 +283,8 @@
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">
@@ -315,39 +315,39 @@ if (!doNotTrack) {
         
       </div><p>Tools like <a href="https://linux.die.net/man/8/fsck">fsck</a> and <a href="https://linux.die.net/man/8/smartctl">smartctl</a> are usually used when something bad happens on your disk. But, what if such tools have a problem and also need to be fixed? Well, that&rsquo;s what we are going to see today.</p>
 <p>The command <strong>btrfs inspect-internal logical-resolve</strong>, as stated in a <a href="/blog/btrfs-differentiating-bind-mounts-on-subvolumes">previous</a> post, is useful when the btrfs filesystem reports a problem related to data consistency, for example:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#ff79c6">[</span>2349645.383479<span style="color:#ff79c6">]</span> BTRFS error <span style="color:#ff79c6">(</span>device sda<span style="color:#ff79c6">)</span>: bdev /dev/sda errs: wr 0, rd 0, flush 0, corrupt 19, gen <span style="color:#bd93f9">0</span>
-<span style="color:#ff79c6">[</span>2349645.383483<span style="color:#ff79c6">]</span> BTRFS error <span style="color:#ff79c6">(</span>device sda<span style="color:#ff79c6">)</span>: unable to fixup <span style="color:#ff79c6">(</span>regular<span style="color:#ff79c6">)</span> error at logical <span style="color:#bd93f9">519704576</span> on dev /dev/sda
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#ff79c6">[</span>2349645.383479<span style="color:#ff79c6">]</span> BTRFS error <span style="color:#ff79c6">(</span>device sda<span style="color:#ff79c6">)</span>: bdev /dev/sda errs: wr 0, rd 0, flush 0, corrupt 19, gen <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>2349645.383483<span style="color:#ff79c6">]</span> BTRFS error <span style="color:#ff79c6">(</span>device sda<span style="color:#ff79c6">)</span>: unable to fixup <span style="color:#ff79c6">(</span>regular<span style="color:#ff79c6">)</span> error at logical <span style="color:#bd93f9">519704576</span> on dev /dev/sda
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Btrfs uses blocks groups and chunks to map logical and physical addresses, respectively. The logical address is needed since btrfs has built-in support for multi device and raid.</p>
 <p>To find what is corruped, we need to find what is the file corresponding to the reported logical address, and this is what <em>logical-resolve</em> was designed to do. This tool is currently failing on some cases, as shown below:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs inspect-internal logical-resolve <span style="color:#bd93f9">519704576</span> /
-ERROR: cannot access <span style="color:#f1fa8c">&#39;//@/home&#39;</span>: No such file or directory
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ btrfs inspect-internal logical-resolve <span style="color:#bd93f9">519704576</span> /
+</span></span><span style="display:flex;"><span>ERROR: cannot access <span style="color:#f1fa8c">&#39;//@/home&#39;</span>: No such file or directory
+</span></span></code></pre></td></tr></table>
 </div>
-</div><p>As we can see, the command returned <strong>-ENOENT</strong> and reported an odd path: <strong>'//@/home'</strong>. If you had a similar issue, this is most likely because you are using openSUSE/SLE as your Linux distribution, since these systems use <strong>@</strong> as it&rsquo;s top subvolume. For more details  about the subvolume layout used in openSUSE check this <a href="https://rootco.de/2018-01-19-opensuse-btrfs-subvolumes/">post</a> from Richard Brown.</p>
+</div><p>As we can see, the command returned <strong>-ENOENT</strong> and reported an odd path: <strong>&rsquo;//@/home&rsquo;</strong>. If you had a similar issue, this is most likely because you are using openSUSE/SLE as your Linux distribution, since these systems use <strong>@</strong> as it&rsquo;s top subvolume. For more details  about the subvolume layout used in openSUSE check this <a href="https://rootco.de/2018-01-19-opensuse-btrfs-subvolumes/">post</a> from Richard Brown.</p>
 <p>By looking at the problematic path returned we can assume that <em>logical-resolve</em> is using the full subvolume path when searching for the file. This won&rsquo;t work because the subvolume <strong>@</strong> is not mounted, only it&rsquo;s child subvolume <strong>home</strong>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mount -l | grep home 
-/dev/sda2 on /home <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>263,subvol<span style="color:#ff79c6">=</span>/@/home<span style="color:#ff79c6">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ mount -l | grep home 
+</span></span><span style="display:flex;"><span>/dev/sda2 on /home <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>263,subvol<span style="color:#ff79c6">=</span>/@/home<span style="color:#ff79c6">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>In this case the tool should start looking at <em>/home</em>, or in other words, it should be looking at where the subvolume is mounted, not at the subvolume path.</p>
 <h3 id="resolving-the-resolver">Resolving the resolver</h3>
@@ -367,83 +367,83 @@ ERROR: cannot access <span style="color:#f1fa8c">&#39;//@/home&#39;</span>: No s
 <p>From the steps shown above we can see that <strong>step 2.3</strong> will fail. The path <em>/@</em> is not accessible, only <em>/home</em>. We can fix the problem by changing the behavior and getting the <strong>subvolue mount point</strong> instead of the <strong>subvolume path</strong>.</p>
 <p>An astute reader would think that we can get wrong mount points too, like a bind mount that points to a directory <em>within</em> our desired mount point. This was fixed by the commit mentioned in a <a href="/blog/btrfs-differentiating-bind-mounts-on-subvolumes">previous</a> post.</p>
 <p>With the bind mount problem resolved, the fixing is a matter of changing <strong>step 2.2</strong>, like what was done in this <a href="https://github.com/kdave/btrfs-progs/commit/6b8fed9e798dbcad196e06384b03691ad6512fba">patch</a>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">				<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>mounted <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>;
-				<span style="color:#8be9fd">char</span> subvol[PATH_MAX];
-				<span style="color:#8be9fd">char</span> subvolid[PATH_MAX];
-
-				<span style="color:#6272a4">/*
-</span><span style="color:#6272a4">				 * btrfs_list_path_for_root returns the full
-</span><span style="color:#6272a4">				 * path to the subvolume pointed by root, but the
-</span><span style="color:#6272a4">				 * subvolume can be mounted in a directory name
-</span><span style="color:#6272a4">				 * different from the subvolume name. In this
-</span><span style="color:#6272a4">				 * case we need to find the correct mount point
-</span><span style="color:#6272a4">				 * using same subvolume path and subvol id found
-</span><span style="color:#6272a4">				 * before.
-</span><span style="color:#6272a4">				 */</span>
-
-				snprintf(subvol, PATH_MAX, <span style="color:#f1fa8c">&#34;/%s&#34;</span>, name);
-				snprintf(subvolid, PATH_MAX, <span style="color:#f1fa8c">&#34;%llu&#34;</span>, root);
-
-				ret <span style="color:#ff79c6">=</span> find_mount_fsroot(subvol, subvolid, <span style="color:#ff79c6">&amp;</span>mounted);
-
-				<span style="color:#ff79c6">if</span> (ret) {
-					error(<span style="color:#f1fa8c">&#34;failed to parse mountinfo&#34;</span>);
-					<span style="color:#ff79c6">goto</span> out;
-				}
-
-				<span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>mounted) {
-					printf(
-			<span style="color:#f1fa8c">&#34;inode %llu subvol %s could not be accessed: not mounted</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,
-						inum, name);
-					<span style="color:#ff79c6">continue</span>;
-				}
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>				<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>mounted <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>;
+</span></span><span style="display:flex;"><span>				<span style="color:#8be9fd">char</span> subvol[PATH_MAX];
+</span></span><span style="display:flex;"><span>				<span style="color:#8be9fd">char</span> subvolid[PATH_MAX];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				<span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">				 * btrfs_list_path_for_root returns the full
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">				 * path to the subvolume pointed by root, but the
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">				 * subvolume can be mounted in a directory name
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">				 * different from the subvolume name. In this
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">				 * case we need to find the correct mount point
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">				 * using same subvolume path and subvol id found
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">				 * before.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">				 */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				snprintf(subvol, PATH_MAX, <span style="color:#f1fa8c">&#34;/%s&#34;</span>, name);
+</span></span><span style="display:flex;"><span>				snprintf(subvolid, PATH_MAX, <span style="color:#f1fa8c">&#34;%llu&#34;</span>, root);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				ret <span style="color:#ff79c6">=</span> find_mount_fsroot(subvol, subvolid, <span style="color:#ff79c6">&amp;</span>mounted);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">if</span> (ret) {
+</span></span><span style="display:flex;"><span>					error(<span style="color:#f1fa8c">&#34;failed to parse mountinfo&#34;</span>);
+</span></span><span style="display:flex;"><span>					<span style="color:#ff79c6">goto</span> out;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>mounted) {
+</span></span><span style="display:flex;"><span>					printf(
+</span></span><span style="display:flex;"><span>			<span style="color:#f1fa8c">&#34;inode %llu subvol %s could not be accessed: not mounted</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,
+</span></span><span style="display:flex;"><span>						inum, name);
+</span></span><span style="display:flex;"><span>					<span style="color:#ff79c6">continue</span>;
+</span></span><span style="display:flex;"><span>				}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The new behavior searches for all currently mounted filesystems in order to find the correct mount point related to the subvolume name and subvolume id returned from the <em>BTRFS_IOC_LOGICAL_INO</em> ioctl. This is done by function <em>find_mount_fsroot</em>.</p>
 <p>With the most recent version of btrfs-progs, <em>logical-resolve</em> works as expected:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> /
-//./home/marcos/.local/share/flatpak/repo/objects/00/7e3655177d55a02ca39d4cd3d095627f824b8004ad70f416eccb8bdd281fd5.file
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> /
+</span></span><span style="display:flex;"><span>//./home/marcos/.local/share/flatpak/repo/objects/00/7e3655177d55a02ca39d4cd3d095627f824b8004ad70f416eccb8bdd281fd5.file
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The package btrfs-progs v5.10 already contains the fixes pointed in this post, so make sure to upgrade your package in order to have a working <em>logical-resolve</em>.</p>
 <p>Thanks for reading!</p>
@@ -480,8 +480,8 @@ ERROR: cannot access <span style="color:#f1fa8c">&#39;//@/home&#39;</span>: No s
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">

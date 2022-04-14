@@ -15,7 +15,7 @@
   </title>
 
   
-  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.91.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.96.0" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta
     name="description"
     content="
@@ -64,8 +64,8 @@
   
   <script
     type="text/javascript"
-    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
-    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    src="/js/anatole-header.min.d0408165d31a17f17bba83038bf54e86121f85021bdf936382e636f0f77a952f.js"
+    integrity="sha256-0ECBZdMaF/F7uoMDi/VOhhIfhQIb35NjguY28Pd6lS8="
     crossorigin="anonymous"
   ></script>
 
@@ -74,8 +74,8 @@
     
     <script
       type="text/javascript"
-      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
-      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      src="/js/anatole-theme-switcher.min.65e936b591bf81484a5ac438c8e4ae6454fb25516d58ce911e4888d7f230bdc5.js"
+      integrity="sha256-Zek2tZG/gUhKWsQ4yOSuZFT7JVFtWM6RHkiI1/IwvcU="
       crossorigin="anonymous"
     ></script>
 
@@ -290,8 +290,8 @@
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">
@@ -321,205 +321,205 @@ if (!doNotTrack) {
         <h1>btrfs: Differentiating bind mounts on subvolumes</h1>
         
       </div><p>The <em>btrfs inspect-internal logical-resolve</em> command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file. But, for all current users of openSUSE/SUSE Enterprise Linux, this command was failing as shown below:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> / 
-ERROR: cannot access <span style="color:#f1fa8c">&#39;//@/home&#39;</span>: No such file or directory 
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> / 
+</span></span><span style="display:flex;"><span>ERROR: cannot access <span style="color:#f1fa8c">&#39;//@/home&#39;</span>: No such file or directory 
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>An openSUSE/SLE installation would create a set of subvolumes, starting from <em>/@</em>. These subvolumes are mounted on <em>/</em>, but <em>@</em> is never mounted. For example, subvolume <em>/@/home</em> is mounted at <em>/home</em>. We can confirm this behavior by looking at the subvolume list:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ btrfs subvolume list /
-ID <span style="color:#bd93f9">256</span> gen <span style="color:#bd93f9">32</span> top level <span style="color:#bd93f9">5</span> path @
-ID <span style="color:#bd93f9">257</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/var
-ID <span style="color:#bd93f9">258</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/usr/local
-ID <span style="color:#bd93f9">259</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/tmp
-ID <span style="color:#bd93f9">260</span> gen <span style="color:#bd93f9">405918</span> top level <span style="color:#bd93f9">256</span> path @/srv
-ID <span style="color:#bd93f9">261</span> gen <span style="color:#bd93f9">362296</span> top level <span style="color:#bd93f9">256</span> path @/root
-ID <span style="color:#bd93f9">262</span> gen <span style="color:#bd93f9">371476</span> top level <span style="color:#bd93f9">256</span> path @/opt
-ID <span style="color:#bd93f9">263</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/home
-ID <span style="color:#bd93f9">264</span> gen <span style="color:#bd93f9">131967</span> top level <span style="color:#bd93f9">256</span> path @/boot/grub2/x86_64-efi
-ID <span style="color:#bd93f9">265</span> gen <span style="color:#bd93f9">28</span> top level <span style="color:#bd93f9">256</span> path @/boot/grub2/i386-pc
-ID <span style="color:#bd93f9">266</span> gen <span style="color:#bd93f9">354001</span> top level <span style="color:#bd93f9">256</span> path @/.snapshots
-ID <span style="color:#bd93f9">267</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">266</span> path @/.snapshots/1/snapshot
-ID <span style="color:#bd93f9">274</span> gen <span style="color:#bd93f9">53</span> top level <span style="color:#bd93f9">266</span> path @/.snapshots/2/snapshot
-ID <span style="color:#bd93f9">280</span> gen <span style="color:#bd93f9">2186</span> top level <span style="color:#bd93f9">266</span> path @/.snapshots/7/snapshot
-...
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ btrfs subvolume list /
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">256</span> gen <span style="color:#bd93f9">32</span> top level <span style="color:#bd93f9">5</span> path @
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">257</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/var
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">258</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/usr/local
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">259</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/tmp
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">260</span> gen <span style="color:#bd93f9">405918</span> top level <span style="color:#bd93f9">256</span> path @/srv
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">261</span> gen <span style="color:#bd93f9">362296</span> top level <span style="color:#bd93f9">256</span> path @/root
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">262</span> gen <span style="color:#bd93f9">371476</span> top level <span style="color:#bd93f9">256</span> path @/opt
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">263</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">256</span> path @/home
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">264</span> gen <span style="color:#bd93f9">131967</span> top level <span style="color:#bd93f9">256</span> path @/boot/grub2/x86_64-efi
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">265</span> gen <span style="color:#bd93f9">28</span> top level <span style="color:#bd93f9">256</span> path @/boot/grub2/i386-pc
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">266</span> gen <span style="color:#bd93f9">354001</span> top level <span style="color:#bd93f9">256</span> path @/.snapshots
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">267</span> gen <span style="color:#bd93f9">416148</span> top level <span style="color:#bd93f9">266</span> path @/.snapshots/1/snapshot
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">274</span> gen <span style="color:#bd93f9">53</span> top level <span style="color:#bd93f9">266</span> path @/.snapshots/2/snapshot
+</span></span><span style="display:flex;"><span>ID <span style="color:#bd93f9">280</span> gen <span style="color:#bd93f9">2186</span> top level <span style="color:#bd93f9">266</span> path @/.snapshots/7/snapshot
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></td></tr></table>
 </div>
-</div><p>By checking the fstab file we can verify that all subvolumes are mounted at /, but starting from the subvolume &lsquo;@':</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</div><p>By checking the fstab file we can verify that all subvolumes are mounted at /, but starting from the subvolume &lsquo;@&rsquo;:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /etc/fstab
-...
-<span style="color:#8be9fd;font-style:italic">UUID</span><span style="color:#ff79c6">=</span>35b19e1f-efb2-49a5-ab93-03c04e6d0399  /opt                    btrfs  <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>/@/opt                 <span style="color:#bd93f9">0</span>  <span style="color:#bd93f9">0</span>
-<span style="color:#8be9fd;font-style:italic">UUID</span><span style="color:#ff79c6">=</span>35b19e1f-efb2-49a5-ab93-03c04e6d0399  /home                   btrfs  <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>/@/home                <span style="color:#bd93f9">0</span>  <span style="color:#bd93f9">0</span>
-...
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat /etc/fstab
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">UUID</span><span style="color:#ff79c6">=</span>35b19e1f-efb2-49a5-ab93-03c04e6d0399  /opt                    btrfs  <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>/@/opt                 <span style="color:#bd93f9">0</span>  <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">UUID</span><span style="color:#ff79c6">=</span>35b19e1f-efb2-49a5-ab93-03c04e6d0399  /home                   btrfs  <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>/@/home                <span style="color:#bd93f9">0</span>  <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The code related to <em>logical-address</em> look at the full subvolume path (/@/home) and tries to follow it, but subvolume <em>/@</em> isn&rsquo;t mounted, returning an error. To address it, we need to find the exact mountpoint of the subvolume where the file is mounted, and show the path starting from it.</p>
 <p>These two patches (<a href="https://github.com/kdave/btrfs-progs/commit/57cfe29e69369be1fd1cfe149ee3cecf37a91968">patch 1</a>, <a href="https://github.com/kdave/btrfs-progs/commit/6b8fed9e798dbcad196e06384b03691ad6512fba">path 2</a>) fix the issue: finding the correct mountpoint of a subvolume and using it to show the path to the file related to the logical-address.</p>
 <p>In this post I&rsquo;ll discuss about the first patch: how to reliably find the correct mountpoint related to a subvolume and a subvolume id.</p>
 <h3 id="searching-for-mounted-subvolumes">Searching for mounted subvolumes</h3>
 <p>As btrfs mount options always show subvolume and subvolume id, it would be simple as:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=5,subvol=/&#34;</span>
-/storage/btrfs/1.disk on /mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>5,subvol<span style="color:#ff79c6">=</span>/<span style="color:#ff79c6">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=5,subvol=/&#34;</span>
+</span></span><span style="display:flex;"><span>/storage/btrfs/1.disk on /mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>5,subvol<span style="color:#ff79c6">=</span>/<span style="color:#ff79c6">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The command above searches in the <a href="https://man7.org/linux/man-pages/man5/procfs.5.html">/proc/mounts</a> file which contain all mountpoints, source, target, filesystem type and filesystem options used to mount.</p>
 <p>In this case, it works as expect, but what if we have a bind mount mounting from a directory <em>within</em> the current mountpoint? Look at the example below:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#6272a4"># create a new disk, format it, create a subvolume and a directory on it</span>
-$ fallocate -l5G test.disk
-
-$ mkfs.btrfs -f test.disk
-
-$ mount test.disk /mnt
-
-$ btrfs subvolume create /mnt/vol1
-Create subvolume <span style="color:#f1fa8c">&#39;/mnt/vol1&#39;</span>
-
-$ mount -o <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>vol1 /mnt
-$ mkdir /mnt/dir1
-
-$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
-/storage/btrfs/test.disk on /mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1<span style="color:#ff79c6">)</span>
-
-$ umount /mnt
-
-<span style="color:#6272a4"># bind mount it</span>
-$ mkdir another_mnt
-$ mount -o <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>vol1 /mnt
-$ mount --bind /mnt/dir1 another_mnt
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#6272a4"># create a new disk, format it, create a subvolume and a directory on it</span>
+</span></span><span style="display:flex;"><span>$ fallocate -l5G test.disk
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ mkfs.btrfs -f test.disk
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ mount test.disk /mnt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/vol1
+</span></span><span style="display:flex;"><span>Create subvolume <span style="color:#f1fa8c">&#39;/mnt/vol1&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ mount -o <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>vol1 /mnt
+</span></span><span style="display:flex;"><span>$ mkdir /mnt/dir1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
+</span></span><span style="display:flex;"><span>/storage/btrfs/test.disk on /mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ umount /mnt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># bind mount it</span>
+</span></span><span style="display:flex;"><span>$ mkdir another_mnt
+</span></span><span style="display:flex;"><span>$ mount -o <span style="color:#8be9fd;font-style:italic">subvol</span><span style="color:#ff79c6">=</span>vol1 /mnt
+</span></span><span style="display:flex;"><span>$ mount --bind /mnt/dir1 another_mnt
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Now, if we run the same command as before, we have a problem:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
-/storage/btrfs/test.disk on /mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1<span style="color:#ff79c6">)</span>
-/storage/btrfs/test.disk on /storage/btrfs/another_mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1<span style="color:#ff79c6">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat /proc/mounts | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
+</span></span><span style="display:flex;"><span>/storage/btrfs/test.disk on /mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>/storage/btrfs/test.disk on /storage/btrfs/another_mnt <span style="color:#8be9fd;font-style:italic">type</span> btrfs <span style="color:#ff79c6">(</span>rw,relatime,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1<span style="color:#ff79c6">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>As shown, the subvolid and subvol fields are the same, but the content isn&rsquo;t:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ls /mnt
-dir1
-$ ls /storage/btrfs/another_mnt
-$
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ ls /mnt
+</span></span><span style="display:flex;"><span>dir1
+</span></span><span style="display:flex;"><span>$ ls /storage/btrfs/another_mnt
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Prior to kernel 5.9-rc1, btrfs would show a diferent <em>subvol=</em> option when a bind mount was used. The issue was fixed by this <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3ef3959b29c4a5bd65526ab310a1a18ae533172a">patch</a>. Before this change the <em>/proc/mounts</em> file would differentiate bind mounts:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">/dev/sda /mnt/test btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
-/dev/sda /mnt/test/baz btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo/bar <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>/dev/sda /mnt/test btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>/dev/sda /mnt/test/baz btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo/bar <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This was wrong, since the subvolume shown should be the same for a bind mount. The patch above fixed the behavior, and now a bind mount will show the same subvol and subvolid fields on a mountpoint:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">/dev/sda /mnt/test btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
-/dev/sda /mnt/test/baz btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>/dev/sda /mnt/test btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>/dev/sda /mnt/test/baz btrfs rw,relatime,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/foo <span style="color:#bd93f9">0</span> <span style="color:#bd93f9">0</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>As <em>/proc/mounts</em> can&rsquo;t be used to differentiate bind mounts, how can we proceed?</p>
 <h3 id="using-procpidmountinfo">Using /proc/&lt;pid&gt;/mountinfo</h3>
 <p>There is a different proc file that shows all mountpoints, accessible by <em>/proc/&lt;pid&gt;/mountinfo</em>. The <em>&lt;pid&gt;</em> comes form the fact that the process can be in a different <a href="https://man7.org/linux/man-pages/man7/mount_namespaces.7.html">mount namespace</a>. By using the <em>pid</em> the kernel knows which mountpoints are visible to the process. You can also use <em>self</em> if you want the mountpoints of the current process namespace.</p>
 <p>The description of all mountinfo fields, along with the /proc/mounts one, can be see in the <a href="https://man7.org/linux/man-pages/man5/procfs.5.html">procfs manpage</a>.</p>
 <p>What does <strong>mountinfo</strong> shows in this setup?</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cat /proc/self/mountinfo | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
-<span style="color:#bd93f9">37</span> <span style="color:#bd93f9">28</span> 0:31 /vol1 /mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
-<span style="color:#bd93f9">36</span> <span style="color:#bd93f9">29</span> 0:31 /vol1/dir1 /storage/btrfs/another_mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>cat /proc/self/mountinfo | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">37</span> <span style="color:#bd93f9">28</span> 0:31 /vol1 /mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">36</span> <span style="color:#bd93f9">29</span> 0:31 /vol1/dir1 /storage/btrfs/another_mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>By looking at the forth field, we can see an interesting info. The manpage describes this field as:</p>
 <blockquote>
@@ -527,33 +527,33 @@ $
 </blockquote>
 <p>The mountinfo proc file can show the path <em>within</em> the filesystem used at the mount time. In this case, we just need to check if the forth field contains the same subvolume path specified in the filesystem options.</p>
 <p>What if we create a bind mount using the same directory of the original mount?</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ umount another_mnt
-$ mount --bind /mnt/ another_mnt
-$ cat /proc/self/mountinfo | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
-<span style="color:#bd93f9">37</span> <span style="color:#bd93f9">28</span> 0:31 /vol1 /mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
-<span style="color:#bd93f9">36</span> <span style="color:#bd93f9">29</span> 0:31 /vol1 /storage/btrfs/another_mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ umount another_mnt
+</span></span><span style="display:flex;"><span>$ mount --bind /mnt/ another_mnt
+</span></span><span style="display:flex;"><span>$ cat /proc/self/mountinfo | grep btrfs | grep <span style="color:#f1fa8c">&#34;subvolid=256,subvol=/vol1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">37</span> <span style="color:#bd93f9">28</span> 0:31 /vol1 /mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">36</span> <span style="color:#bd93f9">29</span> 0:31 /vol1 /storage/btrfs/another_mnt rw,relatime - btrfs /dev/loop0 rw,ssd,space_cache,subvolid<span style="color:#ff79c6">=</span>256,subvol<span style="color:#ff79c6">=</span>/vol1
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>As we can see, both mount roots are the same since both mountpoints have the same contents. The bind mount is just another way of accessing the same content of /mnt.</p>
 <p>I used this approach in this <a href="https://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git/commit/?id=57cfe29e69369be1fd1cfe149ee3cecf37a91968">patch</a> in order to solve one of the <em>logical-resolve</em> issues when running the comannd on a openSUSE/SLE distribution. Now the command runs correctly and reports the file related to a logical-address in the filesystem:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> /
-//./home/marcos/.local/share/flatpak/repo/objects/00/7e3655177d55a02ca39d4cd3d095627f824b8004ad70f416eccb8bdd281fd5.file
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>btrfs inspect-internal logical-resolve <span style="color:#bd93f9">5085913088</span> /
+</span></span><span style="display:flex;"><span>//./home/marcos/.local/share/flatpak/repo/objects/00/7e3655177d55a02ca39d4cd3d095627f824b8004ad70f416eccb8bdd281fd5.file
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The patch was merged and is already part of btrfs-progs v5.10.1 along with other important fixes.</p>
 <p>Thanks for reading!</p>
@@ -590,8 +590,8 @@ $ cat /proc/self/mountinfo | grep btrfs | grep <span style="color:#f1fa8c">&#34;
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script>
 <script type="application/javascript">
