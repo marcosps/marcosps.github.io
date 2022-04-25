@@ -5,7 +5,16 @@
     <link>https://mpdesouza.com/</link>
     <description>Recent content on Marcos&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 27 Feb 2021 12:12:52 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 25 Apr 2022 13:30:25 -0300</lastBuildDate><atom:link href="https://mpdesouza.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Btrfs for mere mortals: inode allocation</title>
+      <link>https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/</link>
+      <pubDate>Mon, 25 Apr 2022 13:30:25 -0300</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/</guid>
+      <description>Describe how btrfs manages it&amp;#39;s inodes when compared to other Linux filesystems, from the inside.</description>
+    </item>
+    
     <item>
       <title>Btrfs: Resolving the logical-resolve</title>
       <link>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</link>

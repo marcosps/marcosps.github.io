@@ -3,12 +3,15 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://mpdesouza.com/blog/</loc>
-    <lastmod>2021-02-27T12:12:52+00:00</lastmod>
+    <lastmod>2022-04-25T13:30:25-03:00</lastmod>
   </url><url>
-    <loc>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</loc>
-    <lastmod>2021-02-27T12:12:52+00:00</lastmod>
+    <loc>https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/</loc>
+    <lastmod>2022-04-25T13:30:25-03:00</lastmod>
   </url><url>
     <loc>https://mpdesouza.com/</loc>
+    <lastmod>2022-04-25T13:30:25-03:00</lastmod>
+  </url><url>
+    <loc>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</loc>
     <lastmod>2021-02-27T12:12:52+00:00</lastmod>
   </url><url>
     <loc>https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/</loc>
