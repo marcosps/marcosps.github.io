@@ -1,12 +1,12 @@
 ---
 title: "Btrfs for mere mortals: inode allocation"
 date: 2022-04-25T13:30:25-03:00
-description: "Describe how btrfs manages it's inodes when compared to other Linux filesystems, from the inside."
+description: "Describe how btrfs manages its inodes when compared to other Linux filesystems, from the inside."
 slug: btrfs-for-mere-mortals-inode-allocation
 ---
 
 It's known that btrfs behaves differently from other Linux filesystems. There
-are some fascinating aspects of how btrfs manages it's internal structures and
+are some fascinating aspects of how btrfs manages its internal structures and
 how common tools are not prepared to handle it.
 
 
@@ -32,7 +32,7 @@ Filesystem     Inodes IUsed IFree IUse% Mounted on
 
 # Why btrfs always shows the number of available inodes as zero?
 
-This aspect tells a lot about how btrfs manages it's physical space.
+This aspect tells a lot about how btrfs manages its physical space.
 
 Filesystems like ext4 allocate the entire disk on filesystem creation
 time, creating block groups all over the available space. This means that once
@@ -50,7 +50,7 @@ filesystem can manage. Ext4 accepts block sizes of 1k, 2k, 4k and 64k.
 
 A block group, as the name implies, is a collection of blocks, and many
 filesystems manage their spaces using block groups. Ext4 divides the entire disk
-into block groups when creating the filesystem and it's size is defined by the
+into block groups when creating the filesystem and its size is defined by the
 block size. By default, ext4 uses blocks of 4k of size. Ext4 stores both data
 and metadata in a block group.
 
@@ -157,7 +157,7 @@ gives a general idea about how the filesystem is organized. From now on this
 post will describe how these values are calculated, and why they were chosen by
 ext4.
 
-As ext4 manages it's spaces using block groups, and with 4k block sizes we can
+As ext4 manages its spaces using block groups, and with 4k block sizes we can
 have a block group mapping up to 128Mb of space, mkfs.ext4 needed to create 40
 block groups:
 
@@ -232,7 +232,7 @@ documentation
 
 # What about btrfs?
 
-Btrfs allocates it's structures dynamically. From block groups to internal
+Btrfs allocates its structures dynamically. From block groups to internal
 structures and inodes, btrfs allocates them on demand.
 
 ## Btrfs: block groups
@@ -384,7 +384,7 @@ It shows only one data block group.
 ## Btrfs: inodes
 
 Btrfs does not use fixes inode bitmaps for inode allocation. As stated before,
-btrfs allocates internal **items** to manage it's metadata. Each item is
+btrfs allocates internal **items** to manage its metadata. Each item is
 addressed by three values that together compose a **key**. These values are
 described as **objectid**, **type** and **offset**.
 
@@ -412,10 +412,10 @@ chunk uuid b3e0fa4d-fddb-40b3-bd9c-349df8095b39
 
 There are two items in the listing, and the two refer to the top level
 directory. The INODE_ITEM item contains data about the inode, owner, size and
-etc. It's key is always (inode_number INODE_ITEM 0), and 256 is the first inode
+etc. Its key is always (inode_number INODE_ITEM 0), and 256 is the first inode
 number used in a filesystem tree.
 
-The INODE_REF item maps an inode to it's parent directory (inode_number
+The INODE_REF item maps an inode to its parent directory (inode_number
 INODE_REF parent_dir_inode). In this case it points to itself since the top
 level directory ancestor is itself.
 
@@ -452,10 +452,10 @@ new INODE_REF item's **offset** points to 256, which is the top level directory,
 as expected.
 
 Two new items are also allocated: DIR_ITEM and DIR_INDEX. DIR_INDEX is used for
-directory listing, like readdir for example. It's key (parent_dir_inode
+directory listing, like readdir for example. Its key (parent_dir_inode
 DIR_INDEX pos) almost explains itself. The **pos** value says it's the third
 file created in the directory, as values 1 and 2 are related to '.' and '..'
-respectively. DIR_ITEM is used for searching. It's **offset** value is the
+respectively. DIR_ITEM is used for searching. Its **offset** value is the
 filename hashed, making it quick to find a file by name inside a directory.
 
 As the file grows, more item are created:
