@@ -1,40 +1,45 @@
 baseURL: https://mpdesouza.com
-theme: anatole
+theme: PaperMod
 title: Marcos' Blog
-languageCode: en
 
-summaryLength: 30
+enableInlineShortcodes: true
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
 enableEmoji: true
-
+pygmentsUseClasses: true
 googleAnalytics: UA-114151448-3
 
+outputs:
+    home:
+        - HTML
+        - RSS
+        - JSON
+
 params:
-  permalinks:
-    blog: /:slug/
-
-  gravatar: marcos.souza.org@gmail.com
-  profilePicture: images/pp.jpg
-
+  env: production
   author: Marcos Paulo de Souza
-  license: CC BY-SA 4.0
-  licenseURL: https://creativecommons.org/licenses/by-sa/4.0
-  title: Hi I'm Marcos
-  description: Welcome to my personal homepage
   copyright: 2020-{{ YEAR }}
 
-  readMore: true
-  mainSections:
-    - blog
+  defaultTheme: auto
+  ShowReadingTime: true
+  displayFullLangName: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowToc: true
+
+  homeInfoParams:
+    Title: "Hi, I'm Marcos"
+    Content: "Welcome to my personal homepage"
 
   socialIcons:
-    - icon: fab fa-linkedin
-      title: Linkedin
+    - name: linkedin
       url: https://www.linkedin.com/in/marcospsouza/
-    - icon: fab fa-github
-      title: GitHub
+    - name: github
       url: https://github.com/marcosps
-    - icon: fab fa-twitter
-      title: Twitter
+    - name: twitter
       url: https://twitter.com/omarcossouza
 
 menu:
