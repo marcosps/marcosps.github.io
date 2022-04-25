@@ -12,7 +12,7 @@
       <pubDate>Mon, 25 Apr 2022 13:30:25 -0300</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/</guid>
-      <description>Describe how btrfs manages it&amp;#39;s inodes when compared to other Linux filesystems, from the inside.</description>
+      <description>Describe how btrfs manages its inodes when compared to other Linux filesystems, from the inside.</description>
     </item>
     
     <item>
