@@ -1,731 +1,808 @@
 <!DOCTYPE html>
-<html
-  dir="ltr"
-  lang="en"
-  data-theme=""
-><head>
-  <title>
-    Marcos Paulo de Souza
-      |
-      Kernel Adventures: Are USB Sticks Rotational Devices?
+<html lang="en" dir="auto">
 
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Kernel Adventures: Are USB Sticks Rotational Devices? | Marcos&#39; Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="Post about understanding why USB devices are usually set as rotational devices on linux.">
+<meta name="author" content="Marcos Paulo de Souza">
+<link rel="canonical" href="https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.b4e19c453811e60acfec1f00c15ac2be1c53f6ab90187e684358ce7faaf48bab.css" integrity="sha256-tOGcRTgR5grP7B8AwVrCvhxT9quQGH5oQ1jOf6r0i6s=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.2840b7fccd34145847db71a290569594bdbdb00047097f75d6495d162f5d7dff.js" integrity="sha256-KEC3/M00FFhH23GikFaVlL29sABHCX911kldFi9dff8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://mpdesouza.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://mpdesouza.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://mpdesouza.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://mpdesouza.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://mpdesouza.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
 
-    
-
-  </title>
-
-  
-  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.97.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta
-    name="description"
-    content="
-      Post about understanding why USB devices are usually set as rotational devices on linux.
-
-
-    "
-  />
-  
-  
-  
-  <link
-    rel="stylesheet"
-    href="/css/main.min.51423ad97099a08f3a20e16d238c13adae76db7dd5e1913789bdc81143ff4cc6.css"
-    integrity="sha256-UUI62XCZoI86IOFtI4wTra52233V4ZE3ib3IEUP/TMY="
-    crossorigin="anonymous"
-    type="text/css"
-  />
-  
-  
-  <link
-    rel="stylesheet"
-    href="/css/markupHighlight.min.f798cbda9aaa38f89eb38be6414bd082cfd71a6780375cbf67b6d2fb2b96491e.css"
-    integrity="sha256-95jL2pqqOPies4vmQUvQgs/XGmeAN1y/Z7bS&#43;yuWSR4="
-    crossorigin="anonymous"
-    type="text/css"
-  />
-  
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
-    crossorigin="anonymous"
-  />
-  
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-
-  <link rel="canonical" href="/blog/kernel-adventures-are-usb-sticks-rotational-devices/" />
-
-  
-  
-  
-  
-  <script
-    type="text/javascript"
-    src="/js/anatole-header.min.d0408165d31a17f17bba83038bf54e86121f85021bdf936382e636f0f77a952f.js"
-    integrity="sha256-0ECBZdMaF/F7uoMDi/VOhhIfhQIb35NjguY28Pd6lS8="
-    crossorigin="anonymous"
-  ></script>
-
-  
-    
-    
-    <script
-      type="text/javascript"
-      src="/js/anatole-theme-switcher.min.65e936b591bf81484a5ac438c8e4ae6454fb25516d58ce911e4888d7f230bdc5.js"
-      integrity="sha256-Zek2tZG/gUhKWsQ4yOSuZFT7JVFtWM6RHkiI1/IwvcU="
-      crossorigin="anonymous"
-    ></script>
-
-  
-  <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Kernel Adventures: Are USB Sticks Rotational Devices?"/>
-<meta name="twitter:description" content="Post about understanding why USB devices are usually set as rotational devices on linux."/>
-
-
-
-  
-
-
-  
-  
-  
-  
-  <script type="application/ld+json">
-    {
-        "@context": "http://schema.org",
-        "@type": "BlogPosting",
-        "articleSection": "blog",
-        "name": "Kernel Adventures: Are USB Sticks Rotational Devices?",
-        "headline": "Kernel Adventures: Are USB Sticks Rotational Devices?",
-        "alternativeHeadline": "",
-        "description": "
-      Post about understanding why USB devices are usually set as rotational devices on linux.
-
-
-    ",
-        "inLanguage": "en",
-        "isFamilyFriendly": "true",
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "https:\/\/mpdesouza.com\/blog\/kernel-adventures-are-usb-sticks-rotational-devices\/"
-        },
-        "author" : {
-            "@type": "Person",
-            "name": "Marcos Paulo de Souza"
-        },
-        "creator" : {
-            "@type": "Person",
-            "name": "Marcos Paulo de Souza"
-        },
-        "accountablePerson" : {
-            "@type": "Person",
-            "name": "Marcos Paulo de Souza"
-        },
-        "copyrightHolder" : {
-            "@type": "Person",
-            "name": "Marcos Paulo de Souza"
-        },
-        "copyrightYear" : "2019",
-        "dateCreated": "2019-08-07T00:00:00.00Z",
-        "datePublished": "2019-08-07T00:00:00.00Z",
-        "dateModified": "2019-08-07T00:00:00.00Z",
-        "publisher":{
-            "@type":"Organization",
-            "name": "Marcos Paulo de Souza",
-            "url": "https://mpdesouza.com",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https:\/\/mpdesouza.comfavicon-32x32.png",
-                "width":"32",
-                "height":"32"
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
             }
-        },
-        "image": 
-      [
-      ]
 
-    ,
-        "url" : "https:\/\/mpdesouza.com\/blog\/kernel-adventures-are-usb-sticks-rotational-devices\/",
-        "wordCount" : "1435",
-        "genre" : [ ],
-        "keywords" : [ ]
-    }
-  </script>
+            .list {
+                background: var(--theme);
+            }
 
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
 
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
 
-</head>
-<body>
-    <header><div
-  class="page-top 
-    animated fadeInDown
-
-  "
->
-  <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
-    <span aria-hidden="true"></span>
-    <span aria-hidden="true"></span>
-    <span aria-hidden="true"></span>
-  </a>
-  <nav>
-    <ul class="nav__list" id="navMenu">
-      <div class="nav__links">
-        
-        
-          
-          <li>
-            <a
-              
-              href="/"
-              
-              title=""
-              >Home</a
-            >
-          </li>
-
-        
-          
-          <li>
-            <a
-              
-              href="/about-me/"
-              
-              title=""
-              >About Me</a
-            >
-          </li>
-
-        
-        
-      </div>
-      <li>
-        
-          <a class="theme-switch" title="Switch Theme">
-            <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-          </a>
-
-        
-      </li>
-    </ul>
-  </nav>
-</div>
-</header>
-    <div class="wrapper">
-      <aside><div
-  class="sidebar
-    animated fadeInDown
-
-  "
->
-  <div class="sidebar__content">
-    <div class="logo-title">
-      <div class="title">
-        <img src="/images/pp.jpg" alt="profile picture" />
-        <h3 title=""><a href="/">Hi I&#39;m Marcos</a></h3>
-        <div class="description">
-          <p>Welcome to my personal homepage</p>
-        </div>
-      </div>
-    </div>
-    <ul class="social-links">
-      
-        <li>
-          <a href="https://www.linkedin.com/in/marcospsouza/" rel="me" aria-label="Linkedin">
-            <i class="fab fa-linkedin fa-2x" aria-hidden="true"></i>
-          </a>
-        </li>
-
-      
-        <li>
-          <a href="https://github.com/marcosps" rel="me" aria-label="GitHub">
-            <i class="fab fa-github fa-2x" aria-hidden="true"></i>
-          </a>
-        </li>
-
-      
-        <li>
-          <a href="https://twitter.com/omarcossouza" rel="me" aria-label="Twitter">
-            <i class="fab fa-twitter fa-2x" aria-hidden="true"></i>
-          </a>
-        </li>
-
-      
-    </ul>
-  </div><footer class="footer footer--sidebar">
-  <div class="by_farbox">
-    <ul class="footer__list">
-      <li class="footer__item">
-        &copy;
-        
-          2020-2022
-
-        
-      </li>
-      
-    </ul>
-  </div>
-</footer>
-  
-  <script
-    type="text/javascript"
-    src="/js/medium-zoom.min.80b0768059c89e2a2180578a3e0e18ede16635e5fedabcccfba6479f60c40bbb.js"
-    integrity="sha256-gLB2gFnIniohgFeKPg4Y7eFmNeX&#43;2rzM&#43;6ZHn2DEC7s="
-    crossorigin="anonymous"
-  ></script>
+    </style>
+</noscript>
 <script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 	ga('create', 'UA-114151448-3', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-</div>
-</aside>
-      <main>
-        <div class="autopagerize_page_element">
-          <div class="content">
-  <div
-    class="post 
-      animated fadeInDown
+</script><meta property="og:title" content="Kernel Adventures: Are USB Sticks Rotational Devices?" />
+<meta property="og:description" content="Post about understanding why USB devices are usually set as rotational devices on linux." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2019-08-07T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2019-08-07T00:00:00&#43;00:00" />
 
-    "
-  >
-    <div class="post-content">
-      
-      <div class="post-title">
-        <h1>Kernel Adventures: Are USB Sticks Rotational Devices?</h1>
-        
-      </div><p>A while ago I’ve found this <a href="https://bugzilla.kernel.org/show_bug.cgi?id=90761">kernel bug entry</a> about USB mass storage being shown as a <em>rotational device</em>. This is wrong because a USB stick is a flash device, and does not <em>rotate</em>.</p>
-<h3 id="about-rotational-devices">About rotational devices</h3>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kernel Adventures: Are USB Sticks Rotational Devices?"/>
+<meta name="twitter:description" content="Post about understanding why USB devices are usually set as rotational devices on linux."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Blog",
+      "item": "https://mpdesouza.com/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Kernel Adventures: Are USB Sticks Rotational Devices?",
+      "item": "https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Kernel Adventures: Are USB Sticks Rotational Devices?",
+  "name": "Kernel Adventures: Are USB Sticks Rotational Devices?",
+  "description": "Post about understanding why USB devices are usually set as rotational devices on linux.",
+  "keywords": [
+    
+  ],
+  "articleBody": "A while ago I’ve found this kernel bug entry about USB mass storage being shown as a rotational device. This is wrong because a USB stick is a flash device, and does not rotate.\nAbout rotational devices Let’s take a minute to discuss about the evolution from disk to flash storage.\nOlder storage devices, HDD in this example, were called Disk Storage because these devices recorded data into one or more rotating disks. In such devices, the rotation speed was a feature that informed how fast the device was. A device with 5400 RPM (Rotations Per Minute) was slower than a device with 7200 RPM, for example.\n An example of a working HDD, a rotational disk. Reference: https://www.behance.net/gallery/25354853/HDD-Animation\n These devices were known to spend a large amount of time only to position the arm/head of the disk in the right sector/track to read the desired data. If a disk spins faster, so you can get your data faster.\nFlash Storage USB sticks and SSD storage devices are Non-Volatile Memory, which is much faster when compared to the disk storage because they don’t need a mechanical rotational procedure to find the stored data. Data is stored in an array of transistors, and the seek time to find the desired data is constant while seek time can vary in rotational devices due to the position of the head needed to be positioned in different places of storage disk.\n Inside of a SSD device. Reference: https://www.backblaze.com/blog/hdd-versus-ssd-whats-the-diff/\n Back to the bug My idea was to check the kernel code in order to understand how it works. First of all, USB mass storage uses SCSI commands to transfer data between host and USB device. With this in mind, there are two layers in kernel to check: SCSI and USB.\nBy looking at Linux kernel code, specifically function sd_revalidate_disk in drivers/scsi/sd.c:\n1 2 3 4 5 6 7  /* * set the default to rotational. All non-rotational devices * support the block characteristics VPD page, which will * cause this to be updated correctly and any device which * doesn’t support it should be treated as rotational. */ blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);   This function is called when a disk is detected. It first sets the disk as rotational, by clearing the NONROT flag (yes, it’s confusing at first glance). A few lines bellow this point, we can see the following code:\n1 2 3 4 5 6  if (scsi_device_supports_vpd(sdp)) { sd_read_block_provisioning(sdkp); sd_read_block_limits(sdkp); sd_read_block_characteristics(sdkp); sd_zbc_read_zones(sdkp, buffer); }   We need some background about VPD. VPD stands for Vital Product Data, and presents information and configuration about a device, a SCSI device in this case. VPD was introduced in SCSI Primary Commands (SPC) 2 specification, and can be “queried” from any SCSI storage device by using sg_utils3 package:\n1 2 3 4 5 6 7 8 9  $ sg_vpd /dev/sda Supported VPD pages VPD page: Supported VPD pages [sv] Unit serial number [sn] Device identification [di] ATA information (SAT) [ai] Block limits (SBC) [bl] Block device characteristics (SBC) [bdc] Logical block provisioning (SBC) [lbpv]   This is the output of my SSD device. Going back to our original problem, rotating USB storage, the function sd_read_block_characteristics does something interesting:\n1 2 3 4 5 6 7 8 9 10 11  if (!buffer || /* Block Device Characteristics VPD */ scsi_get_vpd_page(sdkp-device, 0xb1, buffer, vpd_len)) goto out; rot = get_unaligned_be16(buffer[4]); if (rot == 1) { blk_queue_flag_set(QUEUE_FLAG_NONROT, q); blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, q); }   The code above reads the Block Device Characteristics VPD page, which is present only in SPC-3 or later. Again, sg_vpd can help us to check BDC:\n1 2 3 4 5 6 7 8 9 10 11 12 13  $ sg_vpd — page bdc /dev/sda Block device characteristics VPD page (SBC): Non-rotating medium (e.g. solid state) Product type: Not specified WABEREQ=0 WACEREQ=0 Nominal form factor not reported ZONED=0 RBWZ=0 BOCS=0 FUAB=0 VBULS=0 DEPOPULATION_TIME=0 (seconds)   As you can see, the Block Device Characteristics of my SSD device says clearly: Non-rotation Medium. Per the function above, the NONROT flag will be set, so sysfs will show when reading the rotational attribute of this device:\n1 2  $ cat /sys/block/sda/queue/rotational 0   Moving further, I have another storage disk, now an HDD:\n1 2 3 4 5 6 7 8 9 10 11 12 13  $ sg_vpd — page bdc /dev/sdb Block device characteristics VPD page (SBC): Nominal rotation rate: 5400 rpm Product type: Not specified WABEREQ=0 WACEREQ=0 Nominal form factor not reported ZONED=0 RBWZ=0 BOCS=0 FUAB=0 VBULS=0 DEPOPULATION_TIME=0 (seconds)   Nominal rotation rate: 5400 rpm. Indeed, it’s a rotational device. But, what about USB sticks?\nI’ve tested more than 10 USB sticks and USB SATA adapters, and neither of them have BDC exposed. Let’s use sg_inq to check if these which version of SCSI/SPC they implement, and which VPD they expose:\nAlcor Micro Corp. Flash Drive 058f:6387 (USB Stick) 1 2 3 4 5 6 7 8  $ sg_inq -s /dev/sdc standard INQUIRY: PQual=0 Device_type=0 RMB=1 LU_CONG=0 version=0x04 [SPC-2] $ sg_vpd --page 0x0 /dev/sdc Supported VPD pages VPD page: Supported VPD pages [sv] Unit serial number [sn] Device identification [di]   Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick) 1 2 3 4 5 6 7 8 9  $ sg_inq /dev/sdc invalid VPD response; probably a STANDARD INQUIRY response standard INQUIRY: PQual=0 Device_type=0 RMB=1 LU_CONG=0 version=0x02 [SCSI-2] $ sg_vpd --page 0x0 /dev/sdc Supported VPD pages VPD page: invalid VPD response; probably a STANDARD INQUIRY response fetching VPD page failed: Malformed SCSI command sg_vpd failed: Malformed SCSI command   This device does not even implements VPD.\nHP, Inc 4 GB flash drive 03f0:3207 (USB stick) 1 2 3 4 5 6 7 8 9  $ sg_inq /dev/sdc invalid VPD response; probably a STANDARD INQUIRY response standard INQUIRY: PQual=0 Device_type=0 RMB=1 LU_CONG=0 version=0x00 [no conformance claimed] $ sg_vpd /dev/sdc Supported VPD pages VPD page: invalid VPD response; probably a STANDARD INQUIRY response fetching VPD page failed: Malformed SCSI command sg_vpd failed: Malformed SCSI command   This one is even worse, does not even comply with any specification.\nSanDisk Corp. Cruzer Blade 0781:5567 (USB Stick) 1 2 3 4 5 6 7 8  $ sg_inq /dev/sdc standard INQUIRY: PQual=0 Device_type=0 RMB=1 LU_CONG=0 version=0x06 [SPC-4] $ sg_vpd --page 0x0 /dev/sdc Supported VPD pages VPD page: Supported VPD pages [sv] Unit serial number [sn] Device identification [di]   This one from SanDisk complies with SPC-4, but no BDC supported either.\nSuper Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter) 1 2 3 4 5  $ sg_inq /dev/sdc standard INQUIRY: PQual=0 Device_type=0 RMB=0 LU_CONG=0 version=0x00 [no conformance claimed] $ sg_vpd --page 0x0 /dev/sdc Supported VPD pages VPD page:   It doesn’t show any VPD, but apprently understands the SCSI INQ command.\nInitio Corporation 13fd:3920 (USB SATA adapter) 1 2 3 4 5 6 7 8  $ sg_inq /dev/sdc standard INQUIRY: PQual=0 Device_type=0 RMB=0 LU_CONG=0 version=0x06 [SPC-4] $ sg_vpd --page 0x0 /dev/sdc Supported VPD pages VPD page: Supported VPD pages [sv] Unit serial number [sn] Device identification [di]   Another device which implements SPC-4 and does not expose BDC.\nConclusion Without Block Device Characteristics, the kernel cannot say for sure if the device is rotational or not, so the NONROT flag keeps cleared.\nThe rotational information can be used to change the IO scheduler related to the device, as openSUSE currently does:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  $ cat /usr/lib/udev/rules.d/60-io-scheduler.rules # Set optimal IO schedulers for HDD and SSD ACTION!=\"add\", GOTO=\"scheduler_end\" SUBSYSTEM!=\"block\", GOTO=\"scheduler_end\" # Do not change scheduler if `elevator` cmdline parameter is set IMPORT{cmdline}=\"elevator\" ENV{elevator}==\"?*\", GOTO=\"scheduler_end\" # Determine if BLK-MQ is enabled TEST==\"%S%p/mq\", ENV{.IS_MQ}=\"1\" # MQ: BFQ scheduler for HDD ENV{.IS_MQ}==\"1\", ATTR{queue/rotational}!=\"0\", ATTR{queue/scheduler}=\"bfq\" # MQ: deadline scheduler for SSD ENV{.IS_MQ}==\"1\", ATTR{queue/rotational}==\"0\", ATTR{queue/scheduler}=\"mq-deadline\" # Non-MQ: CFQ scheduler for HDD ENV{.IS_MQ}!=\"1\", ATTR{queue/rotational}!=\"0\", ATTR{queue/scheduler}=\"cfq\" # Non-MQ: deadline scheduler for SSD ENV{.IS_MQ}!=\"1\", ATTR{queue/rotational}==\"0\", ATTR{queue/scheduler}=\"deadline\" LABEL=\"scheduler_end\"   Picking the right IO scheduler helps to extract the best performancee of your storage device. For example BFQ IO scheduler would reorder read/write requests, trying to make them contiguous in order to extract the best of performance from an HDD disk. Remember, HDD devices have the head that needs to be positioned in the right place to get your data, and avoiding it to be moved randomly helps to improve performance.\nThe above is true for HDD devices but doesn’t help much SSD devices which don’t have the performance penalty of the seek time, so mq-deadline would be a better solution for this cases. This scheduler prefer reads over writes not reordering requests, and that’s all, making it perform better in SSD devices.\nStay tuned for our next topic about IO schedulers and other things related to block layer. See you next time!\n",
+  "wordCount" : "1435",
+  "inLanguage": "en",
+  "datePublished": "2019-08-07T00:00:00Z",
+  "dateModified": "2019-08-07T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Marcos Paulo de Souza"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marcos' Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://mpdesouza.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://mpdesouza.com" accesskey="h" title="Marcos&#39; Blog (Alt + H)">Marcos&#39; Blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://mpdesouza.com/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://mpdesouza.com/about-me/" title="About Me">
+                    <span>About Me</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://mpdesouza.com">Home</a>&nbsp;»&nbsp;<a href="https://mpdesouza.com/blog/">Blog</a></div>
+    <h1 class="post-title">
+      Kernel Adventures: Are USB Sticks Rotational Devices?
+    </h1>
+    <div class="post-description">
+      Post about understanding why USB devices are usually set as rotational devices on linux.
+    </div>
+    <div class="post-meta"><span title='2019-08-07 00:00:00 +0000 UTC'>August 7, 2019</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Marcos Paulo de Souza
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#about-rotational-devices" aria-label="About rotational devices">About rotational devices</a></li>
+                <li>
+                    <a href="#flash-storage" aria-label="Flash Storage">Flash Storage</a></li>
+                <li>
+                    <a href="#back-to-the-bug" aria-label="Back to the bug">Back to the bug</a><ul>
+                        
+                <li>
+                    <a href="#alcor-micro-corp-flash-drive-058f6387-usb-stick" aria-label="Alcor Micro Corp. Flash Drive 058f:6387 (USB Stick)">Alcor Micro Corp. Flash Drive 058f:6387 (USB Stick)</a></li>
+                <li>
+                    <a href="#chipsbank-microelectronics-co-ltd-1e3d2092-usb-stick" aria-label="Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick)">Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick)</a></li>
+                <li>
+                    <a href="#hp-inc-4-gb-flash-drive-03f03207-usb-stick" aria-label="HP, Inc 4 GB flash drive 03f0:3207 (USB stick)">HP, Inc 4 GB flash drive 03f0:3207 (USB stick)</a></li>
+                <li>
+                    <a href="#sandisk-corp-cruzer-blade-07815567-usb-stick" aria-label="SanDisk Corp. Cruzer Blade 0781:5567 (USB Stick)">SanDisk Corp. Cruzer Blade 0781:5567 (USB Stick)</a></li>
+                <li>
+                    <a href="#super-top-m6116-sata-bridge-14cd6116-usb-sata-adapter" aria-label="Super Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter)">Super Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter)</a></li>
+                <li>
+                    <a href="#initio-corporation-13fd3920-usb-sata-adapter" aria-label="Initio Corporation 13fd:3920 (USB SATA adapter)">Initio Corporation 13fd:3920 (USB SATA adapter)</a></li></ul>
+                </li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>A while ago I’ve found this <a href="https://bugzilla.kernel.org/show_bug.cgi?id=90761">kernel bug entry</a> about USB mass storage being shown as a <em>rotational device</em>. This is wrong because a USB stick is a flash device, and does not <em>rotate</em>.</p>
+<h3 id="about-rotational-devices">About rotational devices<a hidden class="anchor" aria-hidden="true" href="#about-rotational-devices">#</a></h3>
 <p>Let’s take a minute to discuss about the evolution from disk to flash storage.</p>
 <p>Older storage devices, HDD in this example, were called Disk Storage because these devices recorded data into one or more <em>rotating disks</em>. In such devices, the <em>rotation</em> speed was a feature that informed how fast the device was. A device with 5400 <em>RPM</em> (Rotations Per Minute) was slower than a device with 7200 <em>RPM</em>, for example.</p>
-<p><img src="/images/rotational-disk.gif" alt="An example of a working HDD, a rotational disk"></p>
+<p><img loading="lazy" src="/images/rotational-disk.gif" alt="An example of a working HDD, a rotational disk"  />
+</p>
 <blockquote>
 <p>An example of a working HDD, a rotational disk. Reference: <a href="https://www.behance.net/gallery/25354853/HDD-Animation">https://www.behance.net/gallery/25354853/HDD-Animation</a></p>
 </blockquote>
 <p>These devices were known to spend a large amount of time only to position the <em>arm/head</em> of the disk in the right sector/track to read the desired data. If a disk spins faster, so you can get your data faster.</p>
-<h3 id="flash-storage">Flash Storage</h3>
+<h3 id="flash-storage">Flash Storage<a hidden class="anchor" aria-hidden="true" href="#flash-storage">#</a></h3>
 <p>USB sticks and SSD storage devices are <em>Non-Volatile Memory</em>, which is much faster when compared to the disk storage because  they don’t need a mechanical <em>rotational</em> procedure to find the stored data. Data is stored in an array of transistors, and  the seek time to find the desired data is constant while seek time can vary in <em>rotational devices</em> due to the position of the head needed to be positioned in different places of storage disk.</p>
-<p><img src="/images/ssd-inside.jpg" alt="Inside of a SSD device"></p>
+<p><img loading="lazy" src="/images/ssd-inside.jpg" alt="Inside of a SSD device"  />
+</p>
 <blockquote>
 <p>Inside of a SSD device. Reference: <a href="https://www.backblaze.com/blog/hdd-versus-ssd-whats-the-diff/">https://www.backblaze.com/blog/hdd-versus-ssd-whats-the-diff/</a></p>
 </blockquote>
-<h3 id="back-to-the-bug">Back to the bug</h3>
+<h3 id="back-to-the-bug">Back to the bug<a hidden class="anchor" aria-hidden="true" href="#back-to-the-bug">#</a></h3>
 <p>My idea was to check the kernel code in order to understand how it works. First of all, <a href="https://en.wikipedia.org/wiki/USB_mass_storage_device_class">USB mass storage</a> uses <a href="https://en.wikipedia.org/wiki/SCSI_command">SCSI commands</a> to transfer data between host and USB device. With this in mind, there are two layers in kernel to check: SCSI and USB.</p>
 <p>By looking at Linux kernel code, specifically function <em>sd_revalidate_disk</em> in <a href="https://elixir.bootlin.com/linux/v5.3-rc1/source/drivers/scsi/sd.c#L3129">drivers/scsi/sd.c</a>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#6272a4">/*
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * set the default to rotational. All non-rotational devices
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * support the block characteristics VPD page, which will
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * cause this to be updated correctly and any device which
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * doesn’t support it should be treated as rotational.
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> */</span>
-</span></span><span style="display:flex;"><span>blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * set the default to rotational. All non-rotational devices
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * support the block characteristics VPD page, which will
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * cause this to be updated correctly and any device which
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * doesn’t support it should be treated as rotational.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="n">blk_queue_flag_clear</span><span class="p">(</span><span class="n">QUEUE_FLAG_NONROT</span><span class="p">,</span> <span class="n">q</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>This function is called when a disk is detected. It first sets the disk as <em>rotational</em>, by clearing the <em>NONROT</em> flag (yes, it’s confusing at first glance). A few lines bellow this point, we can see the following code:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (scsi_device_supports_vpd(sdp)) {
-</span></span><span style="display:flex;"><span>	sd_read_block_provisioning(sdkp);
-</span></span><span style="display:flex;"><span>	sd_read_block_limits(sdkp);
-</span></span><span style="display:flex;"><span>	sd_read_block_characteristics(sdkp);
-</span></span><span style="display:flex;"><span>	sd_zbc_read_zones(sdkp, buffer);
-</span></span><span style="display:flex;"><span>}
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">scsi_device_supports_vpd</span><span class="p">(</span><span class="n">sdp</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">sd_read_block_provisioning</span><span class="p">(</span><span class="n">sdkp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">sd_read_block_limits</span><span class="p">(</span><span class="n">sdkp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">sd_read_block_characteristics</span><span class="p">(</span><span class="n">sdkp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">sd_zbc_read_zones</span><span class="p">(</span><span class="n">sdkp</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>We need some background about VPD. VPD stands for <em>Vital Product Data</em>, and presents information and configuration about a device, a SCSI device in this case. VPD was introduced in <strong>SCSI Primary Commands</strong> (SPC) 2 specification, and can be “queried” from any SCSI storage device by using <strong>sg_utils3</strong> package:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>$ sg_vpd <span style="color:#ff79c6">/</span>dev<span style="color:#ff79c6">/</span>sda 
-</span></span><span style="display:flex;"><span>  Supported VPD pages VPD <span style="color:#8be9fd;font-style:italic">page</span>:
-</span></span><span style="display:flex;"><span>   Supported VPD pages [sv]
-</span></span><span style="display:flex;"><span>   Unit serial number [sn]
-</span></span><span style="display:flex;"><span>   Device identification [di]
-</span></span><span style="display:flex;"><span>   ATA information (SAT) [ai]
-</span></span><span style="display:flex;"><span>   Block limits (SBC) [bl]
-</span></span><span style="display:flex;"><span>   Block device characteristics (SBC) [bdc]
-</span></span><span style="display:flex;"><span>   Logical block provisioning (SBC) [lbpv]
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="err">$</span> <span class="n">sg_vpd</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">sda</span> 
+</span></span><span class="line"><span class="cl">  <span class="n">Supported</span> <span class="n">VPD</span> <span class="n">pages</span> <span class="n">VPD</span> <span class="nl">page</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Supported</span> <span class="n">VPD</span> <span class="n">pages</span> <span class="p">[</span><span class="n">sv</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Unit</span> <span class="n">serial</span> <span class="n">number</span> <span class="p">[</span><span class="n">sn</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Device</span> <span class="n">identification</span> <span class="p">[</span><span class="n">di</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">   <span class="n">ATA</span> <span class="n">information</span> <span class="p">(</span><span class="n">SAT</span><span class="p">)</span> <span class="p">[</span><span class="n">ai</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Block</span> <span class="n">limits</span> <span class="p">(</span><span class="n">SBC</span><span class="p">)</span> <span class="p">[</span><span class="n">bl</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Block</span> <span class="n">device</span> <span class="n">characteristics</span> <span class="p">(</span><span class="n">SBC</span><span class="p">)</span> <span class="p">[</span><span class="n">bdc</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Logical</span> <span class="n">block</span> <span class="n">provisioning</span> <span class="p">(</span><span class="n">SBC</span><span class="p">)</span> <span class="p">[</span><span class="n">lbpv</span><span class="p">]</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>This is the output of my SSD device. Going back to our original problem, <em>rotating USB storage</em>, the function <em>sd_read_block_characteristics</em> does something interesting:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>buffer <span style="color:#ff79c6">||</span>
-</span></span><span style="display:flex;"><span>     <span style="color:#6272a4">/* Block Device Characteristics VPD */</span>
-</span></span><span style="display:flex;"><span>     scsi_get_vpd_page(sdkp<span style="color:#ff79c6">-&gt;</span>device, <span style="color:#bd93f9">0xb1</span>, buffer, vpd_len))
-</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">goto</span> out;
-</span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>rot <span style="color:#ff79c6">=</span> get_unaligned_be16(buffer[<span style="color:#bd93f9">4</span>]);
-</span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (rot <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">1</span>) {
-</span></span><span style="display:flex;"><span>	blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
-</span></span><span style="display:flex;"><span>	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, q);
-</span></span><span style="display:flex;"><span>}
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">buffer</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">     <span class="cm">/* Block Device Characteristics VPD */</span>
+</span></span><span class="line"><span class="cl">     <span class="n">scsi_get_vpd_page</span><span class="p">(</span><span class="n">sdkp</span><span class="o">-&gt;</span><span class="n">device</span><span class="p">,</span> <span class="mh">0xb1</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">vpd_len</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">goto</span> <span class="n">out</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="n">rot</span> <span class="o">=</span> <span class="n">get_unaligned_be16</span><span class="p">(</span><span class="n">buffer</span><span class="p">[</span><span class="mi">4</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">rot</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">blk_queue_flag_set</span><span class="p">(</span><span class="n">QUEUE_FLAG_NONROT</span><span class="p">,</span> <span class="n">q</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">blk_queue_flag_clear</span><span class="p">(</span><span class="n">QUEUE_FLAG_ADD_RANDOM</span><span class="p">,</span> <span class="n">q</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>The code above reads the <strong>Block Device Characteristics</strong> VPD page, which is present only in <a href="http://www.t10.org/ftp/t10/document.07/07-203r0.pdf">SPC-3</a> or later. Again, sg_vpd can help us to check BDC:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_vpd — page bdc /dev/sda
-</span></span><span style="display:flex;"><span>  Block device characteristics VPD page <span style="color:#ff79c6">(</span>SBC<span style="color:#ff79c6">)</span>:
-</span></span><span style="display:flex;"><span>   Non-rotating medium <span style="color:#ff79c6">(</span>e.g. solid state<span style="color:#ff79c6">)</span>
-</span></span><span style="display:flex;"><span>   Product type: Not specified
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">WABEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">WACEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   Nominal form factor not reported
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">ZONED</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">RBWZ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">BOCS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">FUAB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">VBULS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">DEPOPULATION_TIME</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#ff79c6">(</span>seconds<span style="color:#ff79c6">)</span>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sg_vpd — page bdc /dev/sda
+</span></span><span class="line"><span class="cl">  Block device characteristics VPD page <span class="o">(</span>SBC<span class="o">)</span>:
+</span></span><span class="line"><span class="cl">   Non-rotating medium <span class="o">(</span>e.g. solid state<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   Product type: Not specified
+</span></span><span class="line"><span class="cl">   <span class="nv">WABEREQ</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">WACEREQ</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   Nominal form factor not reported
+</span></span><span class="line"><span class="cl">   <span class="nv">ZONED</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">RBWZ</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">BOCS</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">FUAB</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">VBULS</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">DEPOPULATION_TIME</span><span class="o">=</span><span class="m">0</span> <span class="o">(</span>seconds<span class="o">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>As you can see, the <strong>Block Device Characteristics</strong> of my SSD device says clearly: <strong>Non-rotation Medium</strong>. Per the function above, the NONROT flag will be set, so <em>sysfs</em> will show when reading the rotational attribute of this device:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat /sys/block/sda/queue/rotational 
-</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0</span>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ cat /sys/block/sda/queue/rotational 
+</span></span><span class="line"><span class="cl"><span class="m">0</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Moving further, I have another storage disk, now an HDD:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_vpd  — page bdc /dev/sdb 
-</span></span><span style="display:flex;"><span>  Block device characteristics VPD page <span style="color:#ff79c6">(</span>SBC<span style="color:#ff79c6">)</span>:
-</span></span><span style="display:flex;"><span>   Nominal rotation rate: <span style="color:#bd93f9">5400</span> rpm
-</span></span><span style="display:flex;"><span>   Product type: Not specified
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">WABEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">WACEREQ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   Nominal form factor not reported
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">ZONED</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">RBWZ</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">BOCS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">FUAB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">VBULS</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">DEPOPULATION_TIME</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span> <span style="color:#ff79c6">(</span>seconds<span style="color:#ff79c6">)</span>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sg_vpd  — page bdc /dev/sdb 
+</span></span><span class="line"><span class="cl">  Block device characteristics VPD page <span class="o">(</span>SBC<span class="o">)</span>:
+</span></span><span class="line"><span class="cl">   Nominal rotation rate: <span class="m">5400</span> rpm
+</span></span><span class="line"><span class="cl">   Product type: Not specified
+</span></span><span class="line"><span class="cl">   <span class="nv">WABEREQ</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">WACEREQ</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   Nominal form factor not reported
+</span></span><span class="line"><span class="cl">   <span class="nv">ZONED</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">RBWZ</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">BOCS</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">FUAB</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">VBULS</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">DEPOPULATION_TIME</span><span class="o">=</span><span class="m">0</span> <span class="o">(</span>seconds<span class="o">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>Nominal rotation rate: 5400 rpm</strong>. Indeed, it’s a rotational device. But, what about USB sticks?</p>
 <p>I’ve tested more than 10 USB sticks and USB SATA adapters, and neither of them have BDC exposed. Let’s use <strong>sg_inq</strong> to check if these which version of SCSI/SPC they implement, and which VPD they expose:</p>
-<h4 id="alcor-micro-corp-flash-drive-058f6387-usb-stick">Alcor Micro Corp. Flash Drive 058f:6387 (USB Stick)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+<h4 id="alcor-micro-corp-flash-drive-058f6387-usb-stick">Alcor Micro Corp. Flash Drive 058f:6387 (USB Stick)<a hidden class="anchor" aria-hidden="true" href="#alcor-micro-corp-flash-drive-058f6387-usb-stick">#</a></h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq -s /dev/sdc
-</span></span><span style="display:flex;"><span>  standard INQUIRY:
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x04  <span style="color:#ff79c6">[</span>SPC-2<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
-</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
-</span></span><span style="display:flex;"><span>    Supported VPD pages <span style="color:#ff79c6">[</span>sv<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>    Unit serial number <span style="color:#ff79c6">[</span>sn<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>    Device identification <span style="color:#ff79c6">[</span>di<span style="color:#ff79c6">]</span>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sg_inq -s /dev/sdc
+</span></span><span class="line"><span class="cl">  standard INQUIRY:
+</span></span><span class="line"><span class="cl">    <span class="nv">PQual</span><span class="o">=</span><span class="m">0</span>  <span class="nv">Device_type</span><span class="o">=</span><span class="m">0</span>  <span class="nv">RMB</span><span class="o">=</span><span class="m">1</span>  <span class="nv">LU_CONG</span><span class="o">=</span><span class="m">0</span>  <span class="nv">version</span><span class="o">=</span>0x04  <span class="o">[</span>SPC-2<span class="o">]</span>
+</span></span><span class="line"><span class="cl">$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span class="line"><span class="cl">  Supported VPD pages VPD page:
+</span></span><span class="line"><span class="cl">    Supported VPD pages <span class="o">[</span>sv<span class="o">]</span>
+</span></span><span class="line"><span class="cl">    Unit serial number <span class="o">[</span>sn<span class="o">]</span>
+</span></span><span class="line"><span class="cl">    Device identification <span class="o">[</span>di<span class="o">]</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h4 id="chipsbank-microelectronics-co-ltd-1e3d2092-usb-stick">Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</div><h4 id="chipsbank-microelectronics-co-ltd-1e3d2092-usb-stick">Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick)<a hidden class="anchor" aria-hidden="true" href="#chipsbank-microelectronics-co-ltd-1e3d2092-usb-stick">#</a></h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc
-</span></span><span style="display:flex;"><span>  invalid VPD response; probably a STANDARD INQUIRY response
-</span></span><span style="display:flex;"><span>  standard INQUIRY:
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x02  <span style="color:#ff79c6">[</span>SCSI-2<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
-</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
-</span></span><span style="display:flex;"><span>  invalid VPD response; probably a STANDARD INQUIRY response
-</span></span><span style="display:flex;"><span>  fetching VPD page failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
-</span></span><span style="display:flex;"><span>  sg_vpd failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sg_inq /dev/sdc
+</span></span><span class="line"><span class="cl">  invalid VPD response<span class="p">;</span> probably a STANDARD INQUIRY response
+</span></span><span class="line"><span class="cl">  standard INQUIRY:
+</span></span><span class="line"><span class="cl">    <span class="nv">PQual</span><span class="o">=</span><span class="m">0</span>  <span class="nv">Device_type</span><span class="o">=</span><span class="m">0</span>  <span class="nv">RMB</span><span class="o">=</span><span class="m">1</span>  <span class="nv">LU_CONG</span><span class="o">=</span><span class="m">0</span>  <span class="nv">version</span><span class="o">=</span>0x02  <span class="o">[</span>SCSI-2<span class="o">]</span>
+</span></span><span class="line"><span class="cl">$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span class="line"><span class="cl">  Supported VPD pages VPD page:
+</span></span><span class="line"><span class="cl">  invalid VPD response<span class="p">;</span> probably a STANDARD INQUIRY response
+</span></span><span class="line"><span class="cl">  fetching VPD page failed: Malformed SCSI <span class="nb">command</span>
+</span></span><span class="line"><span class="cl">  sg_vpd failed: Malformed SCSI <span class="nb">command</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>This device does not even implements VPD.</p>
-<h4 id="hp-inc-4-gb-flash-drive-03f03207-usb-stick">HP, Inc 4 GB flash drive 03f0:3207 (USB stick)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+<h4 id="hp-inc-4-gb-flash-drive-03f03207-usb-stick">HP, Inc 4 GB flash drive 03f0:3207 (USB stick)<a hidden class="anchor" aria-hidden="true" href="#hp-inc-4-gb-flash-drive-03f03207-usb-stick">#</a></h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc
-</span></span><span style="display:flex;"><span>  invalid VPD response; probably a STANDARD INQUIRY response
-</span></span><span style="display:flex;"><span>  standard INQUIRY:
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x00  <span style="color:#ff79c6">[</span>no conformance claimed<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>$ sg_vpd /dev/sdc
-</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
-</span></span><span style="display:flex;"><span>  invalid VPD response; probably a STANDARD INQUIRY response
-</span></span><span style="display:flex;"><span>  fetching VPD page failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
-</span></span><span style="display:flex;"><span>  sg_vpd failed: Malformed SCSI <span style="color:#8be9fd;font-style:italic">command</span>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sg_inq /dev/sdc
+</span></span><span class="line"><span class="cl">  invalid VPD response<span class="p">;</span> probably a STANDARD INQUIRY response
+</span></span><span class="line"><span class="cl">  standard INQUIRY:
+</span></span><span class="line"><span class="cl">    <span class="nv">PQual</span><span class="o">=</span><span class="m">0</span>  <span class="nv">Device_type</span><span class="o">=</span><span class="m">0</span>  <span class="nv">RMB</span><span class="o">=</span><span class="m">1</span>  <span class="nv">LU_CONG</span><span class="o">=</span><span class="m">0</span>  <span class="nv">version</span><span class="o">=</span>0x00  <span class="o">[</span>no conformance claimed<span class="o">]</span>
+</span></span><span class="line"><span class="cl">$ sg_vpd /dev/sdc
+</span></span><span class="line"><span class="cl">  Supported VPD pages VPD page:
+</span></span><span class="line"><span class="cl">  invalid VPD response<span class="p">;</span> probably a STANDARD INQUIRY response
+</span></span><span class="line"><span class="cl">  fetching VPD page failed: Malformed SCSI <span class="nb">command</span>
+</span></span><span class="line"><span class="cl">  sg_vpd failed: Malformed SCSI <span class="nb">command</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>This one is even worse, does not even comply with any specification.</p>
-<h4 id="sandisk-corp-cruzer-blade-07815567-usb-stick">SanDisk Corp. Cruzer Blade 0781:5567 (USB Stick)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+<h4 id="sandisk-corp-cruzer-blade-07815567-usb-stick">SanDisk Corp. Cruzer Blade 0781:5567 (USB Stick)<a hidden class="anchor" aria-hidden="true" href="#sandisk-corp-cruzer-blade-07815567-usb-stick">#</a></h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc
-</span></span><span style="display:flex;"><span>  standard INQUIRY:
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
-</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
-</span></span><span style="display:flex;"><span>    Supported VPD pages <span style="color:#ff79c6">[</span>sv<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>    Unit serial number <span style="color:#ff79c6">[</span>sn<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>    Device identification <span style="color:#ff79c6">[</span>di<span style="color:#ff79c6">]</span>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sg_inq /dev/sdc
+</span></span><span class="line"><span class="cl">  standard INQUIRY:
+</span></span><span class="line"><span class="cl">    <span class="nv">PQual</span><span class="o">=</span><span class="m">0</span>  <span class="nv">Device_type</span><span class="o">=</span><span class="m">0</span>  <span class="nv">RMB</span><span class="o">=</span><span class="m">1</span>  <span class="nv">LU_CONG</span><span class="o">=</span><span class="m">0</span>  <span class="nv">version</span><span class="o">=</span>0x06  <span class="o">[</span>SPC-4<span class="o">]</span>
+</span></span><span class="line"><span class="cl">$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span class="line"><span class="cl">  Supported VPD pages VPD page:
+</span></span><span class="line"><span class="cl">    Supported VPD pages <span class="o">[</span>sv<span class="o">]</span>
+</span></span><span class="line"><span class="cl">    Unit serial number <span class="o">[</span>sn<span class="o">]</span>
+</span></span><span class="line"><span class="cl">    Device identification <span class="o">[</span>di<span class="o">]</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>This one from SanDisk complies with SPC-4, but no BDC supported either.</p>
-<h4 id="super-top-m6116-sata-bridge-14cd6116-usb-sata-adapter">Super Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<h4 id="super-top-m6116-sata-bridge-14cd6116-usb-sata-adapter">Super Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter)<a hidden class="anchor" aria-hidden="true" href="#super-top-m6116-sata-bridge-14cd6116-usb-sata-adapter">#</a></h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc
-</span></span><span style="display:flex;"><span>  standard INQUIRY:
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x00  <span style="color:#ff79c6">[</span>no conformance claimed<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
-</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sg_inq /dev/sdc
+</span></span><span class="line"><span class="cl">  standard INQUIRY:
+</span></span><span class="line"><span class="cl">    <span class="nv">PQual</span><span class="o">=</span><span class="m">0</span>  <span class="nv">Device_type</span><span class="o">=</span><span class="m">0</span>  <span class="nv">RMB</span><span class="o">=</span><span class="m">0</span>  <span class="nv">LU_CONG</span><span class="o">=</span><span class="m">0</span>  <span class="nv">version</span><span class="o">=</span>0x00  <span class="o">[</span>no conformance claimed<span class="o">]</span>
+</span></span><span class="line"><span class="cl">$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span class="line"><span class="cl">  Supported VPD pages VPD page:
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>It doesn’t show any VPD, but apprently understands the SCSI INQ command.</p>
-<h4 id="initio-corporation-13fd3920-usb-sata-adapter">Initio Corporation 13fd:3920 (USB SATA adapter)</h4>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+<h4 id="initio-corporation-13fd3920-usb-sata-adapter">Initio Corporation 13fd:3920 (USB SATA adapter)<a hidden class="anchor" aria-hidden="true" href="#initio-corporation-13fd3920-usb-sata-adapter">#</a></h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sg_inq /dev/sdc           
-</span></span><span style="display:flex;"><span>  standard INQUIRY:
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">PQual</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">Device_type</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">RMB</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">LU_CONG</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>  <span style="color:#8be9fd;font-style:italic">version</span><span style="color:#ff79c6">=</span>0x06  <span style="color:#ff79c6">[</span>SPC-4<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>$ sg_vpd --page 0x0 /dev/sdc
-</span></span><span style="display:flex;"><span>  Supported VPD pages VPD page:
-</span></span><span style="display:flex;"><span>    Supported VPD pages <span style="color:#ff79c6">[</span>sv<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>    Unit serial number <span style="color:#ff79c6">[</span>sn<span style="color:#ff79c6">]</span>
-</span></span><span style="display:flex;"><span>    Device identification <span style="color:#ff79c6">[</span>di<span style="color:#ff79c6">]</span>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sg_inq /dev/sdc           
+</span></span><span class="line"><span class="cl">  standard INQUIRY:
+</span></span><span class="line"><span class="cl">    <span class="nv">PQual</span><span class="o">=</span><span class="m">0</span>  <span class="nv">Device_type</span><span class="o">=</span><span class="m">0</span>  <span class="nv">RMB</span><span class="o">=</span><span class="m">0</span>  <span class="nv">LU_CONG</span><span class="o">=</span><span class="m">0</span>  <span class="nv">version</span><span class="o">=</span>0x06  <span class="o">[</span>SPC-4<span class="o">]</span>
+</span></span><span class="line"><span class="cl">$ sg_vpd --page 0x0 /dev/sdc
+</span></span><span class="line"><span class="cl">  Supported VPD pages VPD page:
+</span></span><span class="line"><span class="cl">    Supported VPD pages <span class="o">[</span>sv<span class="o">]</span>
+</span></span><span class="line"><span class="cl">    Unit serial number <span class="o">[</span>sn<span class="o">]</span>
+</span></span><span class="line"><span class="cl">    Device identification <span class="o">[</span>di<span class="o">]</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Another device which implements SPC-4 and does not expose BDC.</p>
-<h3 id="conclusion">Conclusion</h3>
+<h3 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h3>
 <p>Without Block Device Characteristics, the kernel cannot say for sure if the device is rotational or not, so the <em>NONROT</em> flag keeps cleared.</p>
 <p>The <em>rotational</em> information can be used to change the IO scheduler related to the device, as openSUSE currently does:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat /usr/lib/udev/rules.d/60-io-scheduler.rules
-</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Set optimal IO schedulers for HDD and SSD</span>
-</span></span><span style="display:flex;"><span>  ACTION!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;add&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
-</span></span><span style="display:flex;"><span>  SUBSYSTEM!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;block&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Do not change scheduler if `elevator` cmdline parameter is set</span>
-</span></span><span style="display:flex;"><span>  IMPORT<span style="color:#ff79c6">{</span>cmdline<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;elevator&#34;</span>
-</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>elevator<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;?*&#34;</span>, <span style="color:#8be9fd;font-style:italic">GOTO</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Determine if BLK-MQ is enabled</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">TEST</span><span style="color:#ff79c6">==</span><span style="color:#f1fa8c">&#34;%S%p/mq&#34;</span>, ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;1&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># MQ: BFQ scheduler for HDD</span>
-</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;bfq&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># MQ: deadline scheduler for SSD</span>
-</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;mq-deadline&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Non-MQ: CFQ scheduler for HDD</span>
-</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;cfq&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Non-MQ: deadline scheduler for SSD</span>
-</span></span><span style="display:flex;"><span>  ENV<span style="color:#ff79c6">{</span>.IS_MQ<span style="color:#ff79c6">}</span>!<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;1&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/rotational<span style="color:#ff79c6">}==</span><span style="color:#f1fa8c">&#34;0&#34;</span>, ATTR<span style="color:#ff79c6">{</span>queue/scheduler<span style="color:#ff79c6">}=</span><span style="color:#f1fa8c">&#34;deadline&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">LABEL</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;scheduler_end&#34;</span>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ cat /usr/lib/udev/rules.d/60-io-scheduler.rules
+</span></span><span class="line"><span class="cl">  <span class="c1"># Set optimal IO schedulers for HDD and SSD</span>
+</span></span><span class="line"><span class="cl">  ACTION!<span class="o">=</span><span class="s2">&#34;add&#34;</span>, <span class="nv">GOTO</span><span class="o">=</span><span class="s2">&#34;scheduler_end&#34;</span>
+</span></span><span class="line"><span class="cl">  SUBSYSTEM!<span class="o">=</span><span class="s2">&#34;block&#34;</span>, <span class="nv">GOTO</span><span class="o">=</span><span class="s2">&#34;scheduler_end&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># Do not change scheduler if `elevator` cmdline parameter is set</span>
+</span></span><span class="line"><span class="cl">  IMPORT<span class="o">{</span>cmdline<span class="o">}=</span><span class="s2">&#34;elevator&#34;</span>
+</span></span><span class="line"><span class="cl">  ENV<span class="o">{</span>elevator<span class="o">}==</span><span class="s2">&#34;?*&#34;</span>, <span class="nv">GOTO</span><span class="o">=</span><span class="s2">&#34;scheduler_end&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># Determine if BLK-MQ is enabled</span>
+</span></span><span class="line"><span class="cl">  <span class="nv">TEST</span><span class="o">==</span><span class="s2">&#34;%S%p/mq&#34;</span>, ENV<span class="o">{</span>.IS_MQ<span class="o">}=</span><span class="s2">&#34;1&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># MQ: BFQ scheduler for HDD</span>
+</span></span><span class="line"><span class="cl">  ENV<span class="o">{</span>.IS_MQ<span class="o">}==</span><span class="s2">&#34;1&#34;</span>, ATTR<span class="o">{</span>queue/rotational<span class="o">}</span>!<span class="o">=</span><span class="s2">&#34;0&#34;</span>, ATTR<span class="o">{</span>queue/scheduler<span class="o">}=</span><span class="s2">&#34;bfq&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># MQ: deadline scheduler for SSD</span>
+</span></span><span class="line"><span class="cl">  ENV<span class="o">{</span>.IS_MQ<span class="o">}==</span><span class="s2">&#34;1&#34;</span>, ATTR<span class="o">{</span>queue/rotational<span class="o">}==</span><span class="s2">&#34;0&#34;</span>, ATTR<span class="o">{</span>queue/scheduler<span class="o">}=</span><span class="s2">&#34;mq-deadline&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># Non-MQ: CFQ scheduler for HDD</span>
+</span></span><span class="line"><span class="cl">  ENV<span class="o">{</span>.IS_MQ<span class="o">}</span>!<span class="o">=</span><span class="s2">&#34;1&#34;</span>, ATTR<span class="o">{</span>queue/rotational<span class="o">}</span>!<span class="o">=</span><span class="s2">&#34;0&#34;</span>, ATTR<span class="o">{</span>queue/scheduler<span class="o">}=</span><span class="s2">&#34;cfq&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># Non-MQ: deadline scheduler for SSD</span>
+</span></span><span class="line"><span class="cl">  ENV<span class="o">{</span>.IS_MQ<span class="o">}</span>!<span class="o">=</span><span class="s2">&#34;1&#34;</span>, ATTR<span class="o">{</span>queue/rotational<span class="o">}==</span><span class="s2">&#34;0&#34;</span>, ATTR<span class="o">{</span>queue/scheduler<span class="o">}=</span><span class="s2">&#34;deadline&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nv">LABEL</span><span class="o">=</span><span class="s2">&#34;scheduler_end&#34;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Picking the right IO scheduler helps to extract the best performancee of your storage device. For example BFQ IO scheduler would reorder <em>read</em>/<em>write</em> requests, trying to make them contiguous in order to extract the best of performance from an HDD disk. Remember, HDD devices have the <em>head</em> that needs to be positioned in the right place to get your data, and avoiding it to be moved randomly helps to improve performance.</p>
 <p>The above is true for HDD devices but doesn’t help much SSD devices which don’t have the performance penalty of the seek time, so <em>mq-deadline</em> would be a better solution for this cases. This scheduler prefer <em>reads</em> over <em>writes</em> not reordering requests, and that’s all, making it perform better in SSD devices.</p>
 <p>Stay tuned for our next topic about IO schedulers and other things related to block layer. See you next time!</p>
-</div>
-    <div class="post-footer">
-      <div class="info">
-        
 
-        
-      </div>
-    </div>
 
-    
   </div>
 
-
-          </div>
-        </div>
-      </main>
-    </div><footer class="footer footer--base">
-  <div class="by_farbox">
-    <ul class="footer__list">
-      <li class="footer__item">
-        &copy;
-        
-          2020-2022
-
-        
-      </li>
-      
+  <footer class="post-footer">
+    <ul class="post-tags">
     </ul>
-  </div>
+<nav class="paginav">
+  <a class="prev" href="https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/">
+    <span class="title">« Prev Page</span>
+    <br>
+    <span>Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs</span>
+  </a>
+  <a class="next" href="https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>NO_NEW_PRIVS: avoiding privilege escalation</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Kernel Adventures: Are USB Sticks Rotational Devices? on twitter"
+        href="https://twitter.com/intent/tweet/?text=Kernel%20Adventures%3a%20Are%20USB%20Sticks%20Rotational%20Devices%3f&amp;url=https%3a%2f%2fmpdesouza.com%2fblog%2fkernel-adventures-are-usb-sticks-rotational-devices%2f&amp;hashtags=">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Kernel Adventures: Are USB Sticks Rotational Devices? on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fmpdesouza.com%2fblog%2fkernel-adventures-are-usb-sticks-rotational-devices%2f&amp;title=Kernel%20Adventures%3a%20Are%20USB%20Sticks%20Rotational%20Devices%3f&amp;summary=Kernel%20Adventures%3a%20Are%20USB%20Sticks%20Rotational%20Devices%3f&amp;source=https%3a%2f%2fmpdesouza.com%2fblog%2fkernel-adventures-are-usb-sticks-rotational-devices%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Kernel Adventures: Are USB Sticks Rotational Devices? on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fmpdesouza.com%2fblog%2fkernel-adventures-are-usb-sticks-rotational-devices%2f&title=Kernel%20Adventures%3a%20Are%20USB%20Sticks%20Rotational%20Devices%3f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Kernel Adventures: Are USB Sticks Rotational Devices? on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fmpdesouza.com%2fblog%2fkernel-adventures-are-usb-sticks-rotational-devices%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Kernel Adventures: Are USB Sticks Rotational Devices? on whatsapp"
+        href="https://api.whatsapp.com/send?text=Kernel%20Adventures%3a%20Are%20USB%20Sticks%20Rotational%20Devices%3f%20-%20https%3a%2f%2fmpdesouza.com%2fblog%2fkernel-adventures-are-usb-sticks-rotational-devices%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Kernel Adventures: Are USB Sticks Rotational Devices? on telegram"
+        href="https://telegram.me/share/url?text=Kernel%20Adventures%3a%20Are%20USB%20Sticks%20Rotational%20Devices%3f&amp;url=https%3a%2f%2fmpdesouza.com%2fblog%2fkernel-adventures-are-usb-sticks-rotational-devices%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://mpdesouza.com">Marcos&#39; Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
-  
-  <script
-    type="text/javascript"
-    src="/js/medium-zoom.min.80b0768059c89e2a2180578a3e0e18ede16635e5fedabcccfba6479f60c40bbb.js"
-    integrity="sha256-gLB2gFnIniohgFeKPg4Y7eFmNeX&#43;2rzM&#43;6ZHn2DEC7s="
-    crossorigin="anonymous"
-  ></script>
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-114151448-3', 'auto');
-	
-	ga('send', 'pageview');
-}
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
 </body>
+
 </html>

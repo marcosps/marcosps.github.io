@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Blog on Marcos&#39; Blog</title>
     <link>https://mpdesouza.com/blog/</link>
     <description>Recent content in Blog on Marcos&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
     <lastBuildDate>Sat, 27 Feb 2021 12:12:52 +0000</lastBuildDate><atom:link href="https://mpdesouza.com/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Btrfs: Resolving the logical-resolve</title>
@@ -13,9 +12,7 @@
       <pubDate>Sat, 27 Feb 2021 12:12:52 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</guid>
-      
-        <description>Tools like fsck and smartctl are usually used when something bad happens on your disk. But, what if such tools have a problem and also need to be fixed? Well, that&amp;rsquo;s what we are going to see today.</description>
-      
+      <description>Explaining how the logical-resolve works</description>
     </item>
     
     <item>
@@ -24,9 +21,7 @@
       <pubDate>Tue, 16 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/</guid>
-      
-        <description>The btrfs inspect-internal logical-resolve command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file.</description>
-      
+      <description>Explaining how to differentiate bind mounts on btrfs subvolumes</description>
     </item>
     
     <item>
@@ -35,9 +30,7 @@
       <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-making-send-more-capable/</guid>
-      
-        <description>The send/receive is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.</description>
-      
+      <description>Post fixing an issue in btrfs send/receive.</description>
     </item>
     
     <item>
@@ -46,9 +39,7 @@
       <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</guid>
-      
-        <description>Btrfs is a very versatile filesystem, and it has a lot of features that don&amp;rsquo;t exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes.</description>
-      
+      <description>Post about adding a new feature to btrfs to delete subvolumes based in their id.</description>
     </item>
     
     <item>
@@ -57,9 +48,7 @@
       <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</guid>
-      
-        <description>After chasing the problem of rotational sysfs property of USB flash drives, I started to check another sysfs attributes of USB storage devices, and I noted two missing attributes: vpd_pg80 and vpd_pg83.</description>
-      
+      <description>Sample article showcasing basic Markdown syntax and formatting for HTML elements.</description>
     </item>
     
     <item>
@@ -68,9 +57,7 @@
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/</guid>
-      
-        <description>A while ago I’ve found this kernel bug entry about USB mass storage being shown as a rotational device. This is wrong because a USB stick is a flash device, and does not rotate.</description>
-      
+      <description>Post about understanding why USB devices are usually set as rotational devices on linux.</description>
     </item>
     
     <item>
@@ -79,9 +66,7 @@
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/</guid>
-      
-        <description>Proposed in 2012, the NO_NEW_PRIVS flag made possible to any process to avoid privilege escalation when this behavior is not desired. After the flag is set, it persists across execve, clone and fork syscalls, and cannot be cleared.</description>
-      
+      <description>Sample article showcasing basic Markdown syntax and formatting for HTML elements.</description>
     </item>
     
   </channel>
