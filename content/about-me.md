@@ -8,8 +8,16 @@ aliases:
   - about
 ---
 
-Hi, I am Marcos
+I'm Marcos, a [Kernel
+Livepatch](https://www.kernel.org/doc/html/latest/livepatch/livepatch.html)
+developer at [SUSE](https://suse.com).
 
-I am a software developer focused on Linux and open source. I had the pleasure to contribute to some very nice open source projects, like Linux kernel, libvirt, LibreOffice, btrfs, among others.
+I have contributed to some interesting projects, like
+[Linux Kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=author&q=Marcos+Paulo+de+Souza),
+[libvirt](https://gitlab.com/search?group_id=130330&project_id=192693&repository_ref=master&scope=commits&search=Marcos+Paulo+de+Souza),
+[LibreOffice](https://cgit.freedesktop.org/libreoffice/core/log/?qt=author&q=Marcos+Paulo+de+Souza),
+among others.
 
-Here I will share some issues that I had to fix and/or understand, and share the knowledge that I aquired in the process.
+Feel free to reach me out on [Twitter](https://twitter.com/omarcossouza),
+[LinkedIn](https://www.linkedin.com/in/marcospsouza/) or
+[email](mailto:marcos.souza.org@gmail.com).
