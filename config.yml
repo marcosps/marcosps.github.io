@@ -9,7 +9,7 @@ buildFuture: false
 buildExpired: false
 enableEmoji: true
 pygmentsUseClasses: true
-googleAnalytics: UA-114151448-3
+googleAnalytics: G-LWD0KKCW2G
 
 outputs:
     home:
