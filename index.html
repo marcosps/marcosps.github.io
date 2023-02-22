@@ -2,7 +2,7 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.98.0" /><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.109.0"><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -192,7 +192,7 @@ if (!doNotTrack) {
   <div class="entry-content">
     <p>It’s known that btrfs behaves differently from other Linux filesystems. There are some fascinating aspects of how btrfs manages its internal structures and how common tools are not prepared to handle it.
 This goal of this post is to demystify why ext4 can report the number of available inodes while btrfs always reports 0:
-1 2 3 4 5 6 7 8 9 10 11 12 13 14  $ file ext4....</p>
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 $ file ext4....</p>
   </div>
   <footer class="entry-footer"><span title='2022-04-25 13:30:25 -0300 -0300'>April 25, 2022</span>&nbsp;·&nbsp;19 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to Btrfs for mere mortals: inode allocation" href="https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/"></a>
@@ -206,7 +206,7 @@ This goal of this post is to demystify why ext4 can report the number of availab
   <div class="entry-content">
     <p>Tools like fsck and smartctl are usually used when something bad happens on your disk. But, what if such tools have a problem and also need to be fixed? Well, that’s what we are going to see today.
 The command btrfs inspect-internal logical-resolve, as stated in a previous post, is useful when the btrfs filesystem reports a problem related to data consistency, for example:
-1 2  [2349645.383479] BTRFS error (device sda): bdev /dev/sda errs: wr 0, rd 0, flush 0, corrupt 19, gen 0 [2349645....</p>
+1 2 [2349645.383479] BTRFS error (device sda): bdev /dev/sda errs: wr 0, rd 0, flush 0, corrupt 19, gen 0 [2349645....</p>
   </div>
   <footer class="entry-footer"><span title='2021-02-27 12:12:52 +0000 UTC'>February 27, 2021</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to Btrfs: Resolving the logical-resolve" href="https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/"></a>
@@ -219,7 +219,7 @@ The command btrfs inspect-internal logical-resolve, as stated in a previous post
   </header>
   <div class="entry-content">
     <p>The btrfs inspect-internal logical-resolve command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file. But, for all current users of openSUSE/SUSE Enterprise Linux, this command was failing as shown below:
-1 2  btrfs inspect-internal logical-resolve 5085913088 / ERROR: cannot access &#39;//@/home&#39;: No such file or directory   An openSUSE/SLE installation would create a set of subvolumes, starting from /@....</p>
+1 2 btrfs inspect-internal logical-resolve 5085913088 / ERROR: cannot access &#39;//@/home&#39;: No such file or directory An openSUSE/SLE installation would create a set of subvolumes, starting from /@....</p>
   </div>
   <footer class="entry-footer"><span title='2021-02-16 00:00:00 +0000 UTC'>February 16, 2021</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to btrfs: Differentiating bind mounts on subvolumes" href="https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/"></a>
@@ -293,7 +293,7 @@ The NO_NEW_PRIVS flag is already beeng used by some projects that try to make th
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://mpdesouza.com">Marcos&#39; Blog</a></span>
+    <span>&copy; 2023 <a href="https://mpdesouza.com">Marcos&#39; Blog</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
