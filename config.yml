@@ -35,6 +35,8 @@ params:
     Content: "Welcome to my personal homepage"
 
   socialIcons:
+    - name: mastodon
+      url: https://floss.social/@mpdesouza
     - name: linkedin
       url: https://www.linkedin.com/in/marcospsouza/
     - name: github
