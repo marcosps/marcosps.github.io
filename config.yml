@@ -41,8 +41,6 @@ params:
       url: https://www.linkedin.com/in/marcospsouza/
     - name: github
       url: https://github.com/marcosps
-    - name: twitter
-      url: https://twitter.com/omarcossouza
 
 menu:
   main:
