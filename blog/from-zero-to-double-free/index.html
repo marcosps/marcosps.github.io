@@ -690,7 +690,7 @@ directly to release the swapped <strong>rx_owner_map</strong> that was already r
 running the code above can <strong>crash</strong> your system.</p>
 <p>Is a common practice in SUSE to check with QA if a reproducer can be adapted and merged
 into LTP. In my case, Martin Doucha was kind enough to adapt the code using the LTP API and
-<a href="https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/setsockopt/setsockopt09.c">merge it</a>.</p>
+<a href="https://github.com/linux-test-project/ltp/commit/416029cef77509fc8ac27aa2c7001a23ea624b3f">merge it</a>.</p>
 <h1 id="considerations">Considerations<a hidden class="anchor" aria-hidden="true" href="#considerations">#</a></h1>
 <p>The entire process of checking the bug, understanding the problem, checking for reproducer
 and triggering it reliably was gratifying. The kernel samples and the LTP are interesting
@@ -699,7 +699,7 @@ check if a kernel is vulnerable to a known problem that already contains a repro
 <p>Thanks for reading until the end. See you in the next post!</p>
 <h1 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
 <p><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ec6af094ea28f0f2dda1a6a33b14cd57e36a9755">CVE commit fix</a></p>
-<p><a href="https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/setsockopt/setsockopt09.c">LTP reproducer</a></p>
+<p><a href="https://github.com/linux-test-project/ltp/commit/416029cef77509fc8ac27aa2c7001a23ea624b3f">LTP reproducer</a></p>
 
 
   </div>
