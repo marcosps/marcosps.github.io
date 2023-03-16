@@ -5,7 +5,17 @@
     <link>https://mpdesouza.com/blog/</link>
     <description>Recent content in Blog on Marcos&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 25 Apr 2022 13:30:25 -0300</lastBuildDate><atom:link href="https://mpdesouza.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Mar 2023 23:21:25 -0300</lastBuildDate><atom:link href="https://mpdesouza.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>From zero to double free: The process of creating a reproducer for a kernel vulnerability</title>
+      <link>https://mpdesouza.com/blog/from-zero-to-double-free/</link>
+      <pubDate>Thu, 09 Mar 2023 23:21:25 -0300</pubDate>
+      
+      <guid>https://mpdesouza.com/blog/from-zero-to-double-free/</guid>
+      <description>The main responsibility of the Kernel Livepatching team at SUSE is to create livepatches for critical security bugs. More important than fixing the bug itself is to guarantee that the livepatch will solve the original problem and not create new ones, so testing the fix properly is crucial.
+To test a livepatch, you need a way to reproduce the original bug, but how to test a livepatch when you don&amp;rsquo;t have a reproducer?</description>
+    </item>
+    
     <item>
       <title>Btrfs for mere mortals: inode allocation</title>
       <link>https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/</link>
