@@ -59,7 +59,7 @@ To test a livepatch, you need a way to reproduce the original bug, but how to te
       
       <guid>https://mpdesouza.com/about-me/</guid>
       <description>I&amp;rsquo;m Marcos, a Kernel Livepatch developer at SUSE.
-I have contributed to some very interesting projects, like Linux Kernel, libvirt, LibreOffice, among others.
+I have contributed to some very interesting projects, like Linux Kernel, btrfs-progs, libvirt, LibreOffice, LXC, bubblewrap, and supportutils.
 Feel free to reach me out on Mastodon, LinkedIn or email.</description>
     </item>
     
