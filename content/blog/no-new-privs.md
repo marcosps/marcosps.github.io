@@ -4,6 +4,8 @@ date: "2018-05-22"
 summary: "... or how to avoid turning your app into an exploit."
 slug: "no_new_privs-avoiding-privilege-escalation"
 aliases: ["/no_new_privs-avoiding-privilege-escalation"]
+cover:
+    image: "/images/gandalf.jpg"
 ---
 
 Proposed in [2012](https://lwn.net/Articles/475362), the [*NO_NEW_PRIVS*](https://www.kernel.org/doc/Documentation/prctl/no_new_privs.txt) flag made possible to any process to avoid privilege escalation when this behavior is not desired. After the flag is set, it persists across [execve](http://man7.org/linux/man-pages/man2/execve.2.html), [clone](http://man7.org/linux/man-pages/man2/clone.2.html) and [fork](http://man7.org/linux/man-pages/man2/fork.2.html) syscalls, and cannot be cleared. This can help you to avoid exploitation of vulnerable software, since the attacker will be running as an ordinary user.
