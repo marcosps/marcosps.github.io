@@ -4,6 +4,8 @@ date: 2019-08-16
 summary: "USB with VPD on sysfs"
 slug: kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs
 aliases: ["/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs"]
+cover:
+    image: "/images/usb-hd.jpg"
 ---
 
 After chasing the problem of [rotational sysfs property of USB flash drives](/kernel-adventures-are-usb-sticks-rotational-devices), I started to check another *sysfs* attributes of USB storage devices, and I noted two missing attributes: *vpd_pg80* and *vpd_pg83*.

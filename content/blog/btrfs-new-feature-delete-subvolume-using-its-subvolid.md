@@ -4,6 +4,8 @@ date: 2020-01-23
 summary: "Literally, btrfs subvolume delete 2.0"
 slug: new-btrfs-feature-delete-subvolumes-using-subvolume-ids
 aliases: ["/new-btrfs-feature-delete-subvolumes-using-subvolume-ids"]
+cover:
+    image: "/images/delete.jpg"
 ---
 
 Btrfs is a very versatile filesystem, and it has a lot of features that don't exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes. A subvolume can be compared to a *disk partition* since each subvolume can contain it's own filesystem tree and size limits. When created, subvolumes are shown as directories in the directory they were created.

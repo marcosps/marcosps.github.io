@@ -4,6 +4,8 @@ date: 2020-05-14
 summary: "The tale of fixing a problem of send/receive on btrfs."
 slug: btrfs-making-send-more-capable
 aliases: ["/btrfs-making-send-more-capable"]
+cover:
+    image: "/images/mailbox.jpg"
 ---
 
 The **send/receive** is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.

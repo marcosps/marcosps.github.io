@@ -18,5 +18,5 @@ ShowWordCount: true
 ShowRssButtonInSectionTermList: true
 UseHugoToc: true
 cover:
-    image: "<image path/url>"
+    image: "/images/"
 ---

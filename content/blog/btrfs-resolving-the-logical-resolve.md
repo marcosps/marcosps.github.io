@@ -3,6 +3,8 @@ title: "Btrfs: Resolving the logical-resolve"
 summary: "logical-resolve inside out"
 date: 2021-02-27T12:12:52Z
 slug: btrfs-resolving-the-logical-resolve
+cover:
+    image: "/images/compass.jpg"
 ---
 
 Tools like [fsck](https://linux.die.net/man/8/fsck) and [smartctl](https://linux.die.net/man/8/smartctl) are usually used when something bad happens on your disk. But, what if such tools have a problem and also need to be fixed? Well, that's what we are going to see today.

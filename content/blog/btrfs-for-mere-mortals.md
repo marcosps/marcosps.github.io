@@ -3,6 +3,8 @@ title: "Btrfs for mere mortals: inode allocation"
 date: 2022-04-25T13:30:25-03:00
 summary: "... or how btrfs manages its inodes when compared to other Linux filesystems, from the inside."
 slug: btrfs-for-mere-mortals-inode-allocation
+cover:
+    image: "/images/archive.jpg"
 ---
 
 It's known that btrfs behaves differently from other Linux filesystems. There
