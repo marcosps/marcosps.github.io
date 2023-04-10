@@ -28,7 +28,14 @@ params:
   ShowPostNavLinks: true
   ShowBreadCrumbs: true
   ShowCodeCopyButtons: true
-  ShowToc: true
+  ShowToc: false
+  ShowWordCount: true
+  ShowRssButtonInSectionTermList: true
+  comments: false
+  disableShare: false
+  disableHLJS: true
+  searchHidden: true
+  hidemeta: false
 
   homeInfoParams:
     Title: "Hi, I'm Marcos"
