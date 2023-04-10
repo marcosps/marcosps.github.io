@@ -36,11 +36,13 @@ params:
 
   socialIcons:
     - name: mastodon
-      url: https://floss.social/@mpdesouza
+      url: "https://floss.social/@mpdesouza"
     - name: linkedin
-      url: https://www.linkedin.com/in/marcospsouza/
+      url: "https://www.linkedin.com/in/marcospsouza"
+    - name: RSS
+      url: "index.xml"
     - name: github
-      url: https://github.com/marcosps
+      url: "https://github.com/marcosps"
 
 menu:
   main:
