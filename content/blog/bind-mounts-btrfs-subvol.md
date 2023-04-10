@@ -2,7 +2,9 @@
 title: "btrfs: Differentiating bind mounts on subvolumes"
 date: 2021-02-16
 description: "Explaining how to differentiate bind mounts on btrfs subvolumes"
-images: ["images/btrfs-logo.png"]
+cover:
+    image: "images/btrfs-logo.png"
+    relative: false # when using page bundles set this to true
 aliases: ["/btrfs-differentiating-bind-mounts-on-subvolumes"]
 slug: btrfs-differentiating-bind-mounts-on-subvolumes
 ---
