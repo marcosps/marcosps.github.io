@@ -7,7 +7,7 @@
 <meta name="robots" content="index, follow">
 <title>Btrfs for mere mortals: inode allocation | Marcos&#39; Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="Describe how btrfs manages its inodes when compared to other Linux filesystems, from the inside.">
+<meta name="description" content="&hellip; or how btrfs manages its inodes when compared to other Linux filesystems, from the inside.">
 <meta name="author" content="Marcos Paulo de Souza">
 <link rel="canonical" href="https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
@@ -68,7 +68,7 @@ if (!doNotTrack) {
 }
 </script>
 <meta property="og:title" content="Btrfs for mere mortals: inode allocation" />
-<meta property="og:description" content="Describe how btrfs manages its inodes when compared to other Linux filesystems, from the inside." />
+<meta property="og:description" content="&hellip; or how btrfs manages its inodes when compared to other Linux filesystems, from the inside." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/" /><meta property="article:section" content="blog" />
 <meta property="article:published_time" content="2022-04-25T13:30:25-03:00" />
@@ -76,7 +76,7 @@ if (!doNotTrack) {
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Btrfs for mere mortals: inode allocation"/>
-<meta name="twitter:description" content="Describe how btrfs manages its inodes when compared to other Linux filesystems, from the inside."/>
+<meta name="twitter:description" content="&hellip; or how btrfs manages its inodes when compared to other Linux filesystems, from the inside."/>
 
 
 <script type="application/ld+json">
@@ -105,7 +105,7 @@ if (!doNotTrack) {
   "@type": "BlogPosting",
   "headline": "Btrfs for mere mortals: inode allocation",
   "name": "Btrfs for mere mortals: inode allocation",
-  "description": "Describe how btrfs manages its inodes when compared to other Linux filesystems, from the inside.",
+  "description": "\u0026hellip; or how btrfs manages its inodes when compared to other Linux filesystems, from the inside.",
   "keywords": [
     
   ],
@@ -195,9 +195,6 @@ if (!doNotTrack) {
     <h1 class="post-title">
       Btrfs for mere mortals: inode allocation
     </h1>
-    <div class="post-description">
-      Describe how btrfs manages its inodes when compared to other Linux filesystems, from the inside.
-    </div>
     <div class="post-meta"><span title='2022-04-25 13:30:25 -0300 -0300'>April 25, 2022</span>&nbsp;·&nbsp;19 min&nbsp;·&nbsp;Marcos Paulo de Souza
 
 </div>
@@ -262,11 +259,11 @@ available inodes while btrfs always reports 0:</p>
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ file ext4.disk                                                               
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ file ext4.disk
 </span></span><span class="line"><span class="cl">ext4.disk: Linux rev 1.0 ext4 filesystem data, <span class="nv">UUID</span><span class="o">=</span>3f21312b-412a-4b1a-8561-5704eaf39d22 <span class="o">(</span>extents<span class="o">)</span> <span class="o">(</span>64bit<span class="o">)</span> <span class="o">(</span>large files<span class="o">)</span> <span class="o">(</span>huge files<span class="o">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">$ mount ext4.disk /mnt
-</span></span><span class="line"><span class="cl">$ df -i /mnt    
+</span></span><span class="line"><span class="cl">$ df -i /mnt
 </span></span><span class="line"><span class="cl">Filesystem     Inodes IUsed  IFree IUse% Mounted on
 </span></span><span class="line"><span class="cl">/dev/loop0     <span class="m">327680</span>    <span class="m">11</span> <span class="m">327669</span>    1% /mnt
 </span></span><span class="line"><span class="cl">

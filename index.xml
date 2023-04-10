@@ -12,8 +12,7 @@
       <pubDate>Thu, 09 Mar 2023 23:21:25 -0300</pubDate>
       
       <guid>https://mpdesouza.com/blog/from-zero-to-double-free/</guid>
-      <description>The main responsibility of the Kernel Livepatching team at SUSE is to create livepatches for critical security bugs. More important than fixing the bug itself is to guarantee that the livepatch will solve the original problem and not create new ones, so testing the fix properly is crucial.
-To test a livepatch, you need a way to reproduce the original bug, but how to test a livepatch when you don&amp;rsquo;t have a reproducer?</description>
+      <description>&amp;hellip; or my personal journey of reading code and triggering behaviors.</description>
     </item>
     
     <item>
@@ -22,7 +21,7 @@ To test a livepatch, you need a way to reproduce the original bug, but how to te
       <pubDate>Mon, 25 Apr 2022 13:30:25 -0300</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/</guid>
-      <description>Describe how btrfs manages its inodes when compared to other Linux filesystems, from the inside.</description>
+      <description>&amp;hellip; or how btrfs manages its inodes when compared to other Linux filesystems, from the inside.</description>
     </item>
     
     <item>
@@ -31,7 +30,7 @@ To test a livepatch, you need a way to reproduce the original bug, but how to te
       <pubDate>Sat, 27 Feb 2021 12:12:52 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</guid>
-      <description>Explaining how the logical-resolve works</description>
+      <description>logical-resolve inside out</description>
     </item>
     
     <item>
@@ -49,7 +48,7 @@ To test a livepatch, you need a way to reproduce the original bug, but how to te
       <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/btrfs-making-send-more-capable/</guid>
-      <description>Post fixing an issue in btrfs send/receive.</description>
+      <description>The tale of fixing a problem of send/receive on btrfs.</description>
     </item>
     
     <item>
@@ -69,7 +68,7 @@ Feel free to reach me out on Mastodon, LinkedIn or email.</description>
       <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</guid>
-      <description>Post about adding a new feature to btrfs to delete subvolumes based in their id.</description>
+      <description>Literally, btrfs subvolume delete 2.0</description>
     </item>
     
     <item>
@@ -78,7 +77,7 @@ Feel free to reach me out on Mastodon, LinkedIn or email.</description>
       <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</guid>
-      <description>Sample article showcasing basic Markdown syntax and formatting for HTML elements.</description>
+      <description>USB with VPD on sysfs</description>
     </item>
     
     <item>
@@ -87,7 +86,7 @@ Feel free to reach me out on Mastodon, LinkedIn or email.</description>
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/</guid>
-      <description>Post about understanding why USB devices are usually set as rotational devices on linux.</description>
+      <description>Understanding why USB devices are usually set as rotational devices on linux.</description>
     </item>
     
     <item>
@@ -96,7 +95,7 @@ Feel free to reach me out on Mastodon, LinkedIn or email.</description>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/</guid>
-      <description>Sample article showcasing basic Markdown syntax and formatting for HTML elements.</description>
+      <description>&amp;hellip; or how to avoid turning your app into an exploit.</description>
     </item>
     
   </channel>

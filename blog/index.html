@@ -153,13 +153,14 @@ if (!doNotTrack) {
 </header>
 
 <article class="post-entry"> 
+<figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/320px-Atom_Bomb_Nuclear_Explosion.jpg" alt="">
+</figure>
   <header class="entry-header">
     <h2>From zero to double free: The process of creating a reproducer for a kernel vulnerability
     </h2>
   </header>
   <div class="entry-content">
-    <p>The main responsibility of the Kernel Livepatching team at SUSE is to create livepatches for critical security bugs. More important than fixing the bug itself is to guarantee that the livepatch will solve the original problem and not create new ones, so testing the fix properly is crucial.
-To test a livepatch, you need a way to reproduce the original bug, but how to test a livepatch when you don’t have a reproducer?...</p>
+    <p>… or my personal journey of reading code and triggering behaviors.</p>
   </div>
   <footer class="entry-footer"><span title='2023-03-09 23:21:25 -0300 -0300'>March 9, 2023</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to From zero to double free: The process of creating a reproducer for a kernel vulnerability" href="https://mpdesouza.com/blog/from-zero-to-double-free/"></a>
@@ -171,9 +172,7 @@ To test a livepatch, you need a way to reproduce the original bug, but how to te
     </h2>
   </header>
   <div class="entry-content">
-    <p>It’s known that btrfs behaves differently from other Linux filesystems. There are some fascinating aspects of how btrfs manages its internal structures and how common tools are not prepared to handle it.
-This goal of this post is to demystify why ext4 can report the number of available inodes while btrfs always reports 0:
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 $ file ext4....</p>
+    <p>… or how btrfs manages its inodes when compared to other Linux filesystems, from the inside.</p>
   </div>
   <footer class="entry-footer"><span title='2022-04-25 13:30:25 -0300 -0300'>April 25, 2022</span>&nbsp;·&nbsp;19 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to Btrfs for mere mortals: inode allocation" href="https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/"></a>
@@ -185,9 +184,7 @@ This goal of this post is to demystify why ext4 can report the number of availab
     </h2>
   </header>
   <div class="entry-content">
-    <p>Tools like fsck and smartctl are usually used when something bad happens on your disk. But, what if such tools have a problem and also need to be fixed? Well, that’s what we are going to see today.
-The command btrfs inspect-internal logical-resolve, as stated in a previous post, is useful when the btrfs filesystem reports a problem related to data consistency, for example:
-1 2 [2349645.383479] BTRFS error (device sda): bdev /dev/sda errs: wr 0, rd 0, flush 0, corrupt 19, gen 0 [2349645....</p>
+    <p>logical-resolve inside out</p>
   </div>
   <footer class="entry-footer"><span title='2021-02-27 12:12:52 +0000 UTC'>February 27, 2021</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to Btrfs: Resolving the logical-resolve" href="https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/"></a>
@@ -201,8 +198,7 @@ The command btrfs inspect-internal logical-resolve, as stated in a previous post
     </h2>
   </header>
   <div class="entry-content">
-    <p>The btrfs inspect-internal logical-resolve command is used to find a file related to a logical-address. This can be useful when btrfs reports a corruption at an specific logical address, making it easy for the user to find the corrupted file. But, for all current users of openSUSE/SUSE Enterprise Linux, this command was failing as shown below:
-1 2 btrfs inspect-internal logical-resolve 5085913088 / ERROR: cannot access &#39;//@/home&#39;: No such file or directory An openSUSE/SLE installation would create a set of subvolumes, starting from /@....</p>
+    <p>Explaining how to differentiate bind mounts on btrfs subvolumes</p>
   </div>
   <footer class="entry-footer"><span title='2021-02-16 00:00:00 +0000 UTC'>February 16, 2021</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to btrfs: Differentiating bind mounts on subvolumes" href="https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/"></a>
@@ -214,8 +210,7 @@ The command btrfs inspect-internal logical-resolve, as stated in a previous post
     </h2>
   </header>
   <div class="entry-content">
-    <p>The send/receive is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.
-The receive feature receives a stream of data, applying the it in the filesystem. As the stream can be a file, it’s easy even to transfer the output of send over the network and receive in the other side....</p>
+    <p>The tale of fixing a problem of send/receive on btrfs.</p>
   </div>
   <footer class="entry-footer"><span title='2020-05-14 00:00:00 +0000 UTC'>May 14, 2020</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to btrfs: making &#34;send&#34; more &#34;capable&#34;" href="https://mpdesouza.com/blog/btrfs-making-send-more-capable/"></a>
@@ -227,8 +222,7 @@ The receive feature receives a stream of data, applying the it in the filesystem
     </h2>
   </header>
   <div class="entry-content">
-    <p>Btrfs is a very versatile filesystem, and it has a lot of features that don’t exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes. A subvolume can be compared to a disk partition since each subvolume can contain it’s own filesystem tree and size limits. When created, subvolumes are shown as directories in the directory they were created.
-Creating a subvolume is as easy as creating a directory:...</p>
+    <p>Literally, btrfs subvolume delete 2.0</p>
   </div>
   <footer class="entry-footer"><span title='2020-01-23 00:00:00 +0000 UTC'>January 23, 2020</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to New btrfs feature: Delete subvolumes using subvolume ids" href="https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/"></a>
@@ -240,8 +234,7 @@ Creating a subvolume is as easy as creating a directory:...</p>
     </h2>
   </header>
   <div class="entry-content">
-    <p>After chasing the problem of rotational sysfs property of USB flash drives, I started to check another sysfs attributes of USB storage devices, and I noted two missing attributes: vpd_pg80 and vpd_pg83.
-As explained here, VPD pages contain data related to the device. In special, page 80 is Unit Serial Number (sn) and page 83 is Device Information (di), which are present in any SCSI device that complies with SPC-2 or later....</p>
+    <p>USB with VPD on sysfs</p>
   </div>
   <footer class="entry-footer"><span title='2019-08-16 00:00:00 +0000 UTC'>August 16, 2019</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs" href="https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/"></a>
@@ -253,9 +246,7 @@ As explained here, VPD pages contain data related to the device. In special, pag
     </h2>
   </header>
   <div class="entry-content">
-    <p>A while ago I’ve found this kernel bug entry about USB mass storage being shown as a rotational device. This is wrong because a USB stick is a flash device, and does not rotate.
-About rotational devices Let’s take a minute to discuss about the evolution from disk to flash storage.
-Older storage devices, HDD in this example, were called Disk Storage because these devices recorded data into one or more rotating disks....</p>
+    <p>Understanding why USB devices are usually set as rotational devices on linux.</p>
   </div>
   <footer class="entry-footer"><span title='2019-08-07 00:00:00 +0000 UTC'>August 7, 2019</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to Kernel Adventures: Are USB Sticks Rotational Devices?" href="https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/"></a>
@@ -267,8 +258,7 @@ Older storage devices, HDD in this example, were called Disk Storage because the
     </h2>
   </header>
   <div class="entry-content">
-    <p>Proposed in 2012, the NO_NEW_PRIVS flag made possible to any process to avoid privilege escalation when this behavior is not desired. After the flag is set, it persists across execve, clone and fork syscalls, and cannot be cleared. This can help you to avoid exploitation of vulnerable software, since the attacker will be running as an ordinary user.
-The NO_NEW_PRIVS flag is already beeng used by some projects that try to make the running environment more secure, specially container engines and sandbox applications....</p>
+    <p>… or how to avoid turning your app into an exploit.</p>
   </div>
   <footer class="entry-footer"><span title='2018-05-22 00:00:00 +0000 UTC'>May 22, 2018</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Marcos Paulo de Souza</footer>
   <a class="entry-link" aria-label="post link to NO_NEW_PRIVS: avoiding privilege escalation" href="https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/"></a>
