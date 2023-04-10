@@ -1,7 +1,7 @@
 ---
 title: "btrfs: making \"send\" more \"capable\""
 date: 2020-05-14
-description: "Post fixing an issue in btrfs send/receive."
+summary: "The tale of fixing a problem of send/receive on btrfs."
 slug: btrfs-making-send-more-capable
 aliases: ["/btrfs-making-send-more-capable"]
 ---

@@ -1,7 +1,7 @@
 ---
 title: "New btrfs feature: Delete subvolumes using subvolume ids"
 date: 2020-01-23
-description: "Post about adding a new feature to btrfs to delete subvolumes based in their id."
+summary: "Literally, btrfs subvolume delete 2.0"
 slug: new-btrfs-feature-delete-subvolumes-using-subvolume-ids
 aliases: ["/new-btrfs-feature-delete-subvolumes-using-subvolume-ids"]
 ---

@@ -1,7 +1,7 @@
 ---
 title: "NO_NEW_PRIVS: avoiding privilege escalation"
 date: "2018-05-22"
-description: "Sample article showcasing basic Markdown syntax and formatting for HTML elements."
+summary: "... or how to avoid turning your app into an exploit."
 slug: "no_new_privs-avoiding-privilege-escalation"
 aliases: ["/no_new_privs-avoiding-privilege-escalation"]
 ---

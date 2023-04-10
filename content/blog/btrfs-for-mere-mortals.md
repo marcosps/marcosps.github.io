@@ -1,7 +1,7 @@
 ---
 title: "Btrfs for mere mortals: inode allocation"
 date: 2022-04-25T13:30:25-03:00
-description: "Describe how btrfs manages its inodes when compared to other Linux filesystems, from the inside."
+summary: "... or how btrfs manages its inodes when compared to other Linux filesystems, from the inside."
 slug: btrfs-for-mere-mortals-inode-allocation
 ---
 
@@ -14,11 +14,11 @@ This goal of this post is to demystify why ext4 can report the number of
 available inodes while btrfs always reports 0:
 
 ```sh
-$ file ext4.disk                                                               
+$ file ext4.disk
 ext4.disk: Linux rev 1.0 ext4 filesystem data, UUID=3f21312b-412a-4b1a-8561-5704eaf39d22 (extents) (64bit) (large files) (huge files)
 
 $ mount ext4.disk /mnt
-$ df -i /mnt    
+$ df -i /mnt
 Filesystem     Inodes IUsed  IFree IUse% Mounted on
 /dev/loop0     327680    11 327669    1% /mnt
 

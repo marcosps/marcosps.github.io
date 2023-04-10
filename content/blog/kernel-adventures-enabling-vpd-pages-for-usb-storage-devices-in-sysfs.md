@@ -1,13 +1,13 @@
 ---
 title: "Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs"
 date: 2019-08-16
-description: "Sample article showcasing basic Markdown syntax and formatting for HTML elements."
+summary: "USB with VPD on sysfs"
 slug: kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs
 aliases: ["/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs"]
 ---
 
 After chasing the problem of [rotational sysfs property of USB flash drives](/kernel-adventures-are-usb-sticks-rotational-devices), I started to check another *sysfs* attributes of USB storage devices, and I noted two missing attributes: *vpd_pg80* and *vpd_pg83*.
-  
+
 As explained [here](/kernel-adventures-are-usb-sticks-rotational-devices), VPD pages contain data related to the device. In special, page 80 is *Unit Serial Number* (sn) and page 83 is *Device Information* (di), which are present in any SCSI device that complies with *SPC-2* or later.
 
 Check an example of my *sn* and *di* of my *SSD* using **sg_vpd** from sg3_utils package:
@@ -16,13 +16,13 @@ Check an example of my *sn* and *di* of my *SSD* using **sg_vpd** from sg3_utils
 $ sg_vpd --page 0x80 /dev/sda
   Unit serial number VPD page:
     Unit serial number: FS71N654610101U37
-$ sg_vpd --page 0x83 /dev/sda                                                                                        
+$ sg_vpd --page 0x83 /dev/sda
   Device Identification VPD page:
     Addressed logical unit:
       designator type: vendor specific [0x0],  code set: ASCII
-        vendor specific: FS71N654610101U37   
+        vendor specific: FS71N654610101U37
       designator type: T10 vendor identification,  code set: ASCII
-        vendor id: ATA     
+        vendor id: ATA
         vendor specific: SK hynix SC300 SATA 512GB               FS71N654610101U37
 ```
 
@@ -48,26 +48,26 @@ $ sg_vpd --page 0x83 /dev/sdc
       designator type: T10 vendor identification,  code set: ASCII
         vendor id: SanDisk
         vendor specific: Cruzer Blade
-$ ls /sys/block/sdc/device/vpd*    
+$ ls /sys/block/sdc/device/vpd*
   zsh: no matches found: /sys/block/sdc/device/vpd*
 ```
 
-I’ve tested a bunch of different USB flash devices and USB to SATA adapters [in my previous post](/kernel-adventures-are-usb-sticks-rotational-devices), and neither of them had *vpd_pg80* and *vpd_pg83* in *sysfs*, although all *SanDisk Cruzer Blade* devices tested expose these VPD pages (thanks to my friend [Alexandre Vicenzi](https://twitter.com/alxvicenzi) who also had a *Cruzer Blades* to test).
-  
+I've tested a bunch of different USB flash devices and USB to SATA adapters [in my previous post](/kernel-adventures-are-usb-sticks-rotational-devices), and neither of them had *vpd_pg80* and *vpd_pg83* in *sysfs*, although all *SanDisk Cruzer Blade* devices tested expose these VPD pages (thanks to my friend [Alexandre Vicenzi](https://twitter.com/alxvicenzi) who also had a *Cruzer Blades* to test).
+
 In order to understand the problem, I decided to look at the kernel code. By using *grep*, I found a couple of interesting files:
 
 ```sh
-$ git grep -l pg80       
+$ git grep -l pg80
 drivers/scsi/scsi.c
 drivers/scsi/scsi_sysfs.c
 include/scsi/scsi_device.h
 ```
 
 At first glance, *scsi_sysfs.c* seems the best place to start. This file describes the *sysfs* attributes of SCSI devices, like *vpd_pg80* and how the values of this properly is presented. So far, no information from where it is assigned.
-  
+
 File *scsi.c* had some answers. Looking at function *scsi_attach_vpd*, we can clearly see where the SCSI layer checks for *Device Information* and *Serial Number*.
-  
-But, let’s look at the first function that [*scsi_attach_vpd*](https://elixir.bootlin.com/linux/v5.3-rc4/source/drivers/scsi/scsi.c#L454) calls:
+
+But, let's look at the first function that [*scsi_attach_vpd*](https://elixir.bootlin.com/linux/v5.3-rc4/source/drivers/scsi/scsi.c#L454) calls:
 
 ```c
 /**
@@ -106,10 +106,10 @@ $ sg_inq /dev/sdc | head -2
 ```
 
 By looking at the comment of *scsi_device_supports_vpd*, some USB devices crash after checking their VPD pages, in this case, it makes sense to not enable VPD for all devices. Although, our *SanDisk Cruzer Blade* device clearly supports VPD and does not crash.
-  
+
 *scsi_device_supports_vpd* is called in two places: *scsi_add_lun* and *scsi_rescan_device*. These callers are common path of device setup, so fixing *skip_vpd_pages* should be enough.
 
-Let’s *grep* again in the kernel source code to check where **skip_vpd_pages** is being set:
+Let's *grep* again in the kernel source code to check where **skip_vpd_pages** is being set:
 
 ```sh
 $ git grep -l skip_vpd_pages
@@ -127,7 +127,7 @@ sdev->skip_vpd_pages = 1;
 ```
 
 By the code above, which belongs to *slave_configure* function, USB layer disables VPD for all USB storage devices. Makes sense, since some devices are reported to crash when checking for VPD, as stated before.
-  
+
 But, shouldn’t we add support for *SanDisk Cruzer Blade* at least? There is a per device mapping with specific flags in SCSI layer that should help to fix this situation, specially regarding **try_vpd_pages**. To add support for *SanDisk Cruzer Blade** devices, I submited this [patch](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bc022145c939dd3938771535a8074a884aec0f9) to the kernel mailing list and it’s now merged:
 
 ```diff
@@ -162,8 +162,8 @@ Cruzer Blade
 $ cat /sys/block/sda/device/vpd_pg80
 4C530001300722111594
 
-$ cat /sys/block/sda/device/vpd_pg83 
+$ cat /sys/block/sda/device/vpd_pg83
 0,SanDiskCruzer Blade4C530001300722111594
 ```
 
-That’s all for today. Stay tuned for more posts about Kernel and whatnot, see ya!
+That's all for today. Stay tuned for more posts about Kernel and whatnot, see ya!

@@ -1,6 +1,6 @@
 ---
 title: "Btrfs: Resolving the logical-resolve"
-description: "Explaining how the logical-resolve works"
+summary: "logical-resolve inside out"
 date: 2021-02-27T12:12:52Z
 slug: btrfs-resolving-the-logical-resolve
 ---
@@ -28,7 +28,7 @@ As we can see, the command returned **-ENOENT** and reported an odd path: **'//@
 By looking at the problematic path returned we can assume that *logical-resolve* is using the full subvolume path when searching for the file. This won't work because the subvolume **@** is not mounted, only it's child subvolume **home**:
 
 ```sh
-$ mount -l | grep home 
+$ mount -l | grep home
 /dev/sda2 on /home type btrfs (rw,relatime,ssd,space_cache,subvolid=263,subvol=/@/home)
 ```
 

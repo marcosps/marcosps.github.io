@@ -1,12 +1,12 @@
 ---
 title: "Kernel Adventures: Are USB Sticks Rotational Devices?"
 date: "2019-08-07"
-description: "Post about understanding why USB devices are usually set as rotational devices on linux."
+summary: "Understanding why USB devices are usually set as rotational devices on linux."
 slug: kernel-adventures-are-usb-sticks-rotational-devices
 aliases: ["/kernel-adventures-are-usb-sticks-rotational-devices"]
 ---
 
-A while ago I’ve found this [kernel bug entry](https://bugzilla.kernel.org/show_bug.cgi?id=90761) about USB mass storage being shown as a *rotational device*. This is wrong because a USB stick is a flash device, and does not *rotate*.
+A while ago I've found this [kernel bug entry](https://bugzilla.kernel.org/show_bug.cgi?id=90761) about USB mass storage being shown as a *rotational device*. This is wrong because a USB stick is a flash device, and does not *rotate*.
 
 ### About rotational devices
 
