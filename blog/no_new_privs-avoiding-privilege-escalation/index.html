@@ -70,11 +70,13 @@ if (!doNotTrack) {
 <meta property="og:title" content="NO_NEW_PRIVS: avoiding privilege escalation" />
 <meta property="og:description" content="&hellip; or how to avoid turning your app into an exploit." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/" /><meta property="article:section" content="blog" />
+<meta property="og:url" content="https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/" />
+<meta property="og:image" content="https://mpdesouza.com/images/gandalf.jpg" /><meta property="article:section" content="blog" />
 <meta property="article:published_time" content="2018-05-22T00:00:00+00:00" />
 <meta property="article:modified_time" content="2018-05-22T00:00:00+00:00" />
 
-<meta name="twitter:card" content="summary"/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://mpdesouza.com/images/gandalf.jpg" />
 <meta name="twitter:title" content="NO_NEW_PRIVS: avoiding privilege escalation"/>
 <meta name="twitter:description" content="&hellip; or how to avoid turning your app into an exploit."/>
 
@@ -112,7 +114,7 @@ if (!doNotTrack) {
   "articleBody": "Proposed in 2012, the NO_NEW_PRIVS flag made possible to any process to avoid privilege escalation when this behavior is not desired. After the flag is set, it persists across execve, clone and fork syscalls, and cannot be cleared. This can help you to avoid exploitation of vulnerable software, since the attacker will be running as an ordinary user.\nThe NO_NEW_PRIVS flag is already beeng used by some projects that try to make the running environment more secure, specially container engines and sandbox applications. Some examples are Docker, Bullewrap, and Firejail.\nThere are cases where privilege escalation is necessary, for example, to execute a small task that can’t be done by an unprivileged user. This can be achieved by creating a new binary, that only do a very specific task, and have the setuid bit set (which change the current uid by the owner of the binary) or file capabilities(which can hold CAP_SYS_ADMIN for example, and so the current uid becomes practically root).\nAnother important note for NO_NEW_PRIVS is, after this flag is set, an unprivileged process can install seccomp_filters.\nAs described by the official kernel documentation about NO_NEW_PRIVS, this flag is set by using prctl, as exemplified below:\n1 prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0); Let’s check how this works. First, we create a new binary called caller, which will be responsible for executing another binary, simply called getuid. The second binary will just print the current effective user. Let’s take a look in both binaries, starting from caller:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 #include #include #include int main(int argc, char **argv) { if (argc != 3) errx(0, \"Usage: %s \u003c0|1\u003e \", argv[0]); if (!strncmp(argv[1], \"1\", 1) \u0026\u0026 prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) == -1) errx(1, \"no_new_privs failed\"); execlp(argv[2], argv[2], NULL); err(1, \"execlp\"); } The first binary, caller, will receive two parameters, the first one specifies if the user wants to set the NO_NEW_PRIVS flag, and the second one receives a path to the binary we want to execute. After compiling getuid, we need to change the owner, and turn on the setuid bit of the resulting binary:\n1 2 3 $ gcc getuid.c -o getuid $ sudo chown root:root getuid $ sudo chmod +s getuid Now, let’s make use of both binaries. Let’s assume you have them in the same directory. First, without setting NO_NEW_PRIVS:\n1 2 $ ./caller 0 ./getuid euid: 0 As expected, the printed effective user id is 0, meaning that we are root, thanks to the setuid bit being set and the owner of the binary being root. What happens when we turn on the NO_NEW_PRIVS flag in caller?\n1 2 $ ./caller 1 ./getuid euid: 1000 As expected, the effective user id is the one who executes caller, so, no privileges were escalated.\nWe can also exemplify this behavior using setpriv, which is part of util-linux, to test the NO_NEW_PRIVS flag. Take a look below:\n1 2 3 4 $ setpriv ./getuid euid: 0 $ setpriv --no-new-privs ./getuid euid: 1000 As you can see, the output is the same from the caller, as it uses the same feature to avoid privilege escalation.\nSo, the general suggestion is: always set NO_NEW_PRIVS whenever you don’t need “new privileges” to be added to your process.\nSee you next time!\n",
   "wordCount" : "556",
   "inLanguage": "en",
-  "datePublished": "2018-05-22T00:00:00Z",
+  "image":"https://mpdesouza.com/images/gandalf.jpg","datePublished": "2018-05-22T00:00:00Z",
   "dateModified": "2018-05-22T00:00:00Z",
   "author":{
     "@type": "Person",
@@ -199,6 +201,9 @@ if (!doNotTrack) {
 
 </div>
   </header> 
+<figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/gandalf.jpg" alt="">
+        
+</figure>
 
   <div class="post-content"><p>Proposed in <a href="https://lwn.net/Articles/475362">2012</a>, the <a href="https://www.kernel.org/doc/Documentation/prctl/no_new_privs.txt"><em>NO_NEW_PRIVS</em></a> flag made possible to any process to avoid privilege escalation when this behavior is not desired. After the flag is set, it persists across <a href="http://man7.org/linux/man-pages/man2/execve.2.html">execve</a>, <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a> and <a href="http://man7.org/linux/man-pages/man2/fork.2.html">fork</a> syscalls, and cannot be cleared. This can help you to avoid exploitation of vulnerable software, since the attacker will be running as an ordinary user.</p>
 <p>The <em>NO_NEW_PRIVS</em> flag is already beeng used by some projects that try to make the running environment more secure, specially container engines and sandbox applications. Some examples are <a href="https://www.projectatomic.io/blog/2016/03/no-new-privs-docker">Docker</a>, <a href="https://github.com/projectatomic/bubblewrap">Bullewrap</a>, and <a href="https://github.com/netblue30/firejail">Firejail</a>.</p>
