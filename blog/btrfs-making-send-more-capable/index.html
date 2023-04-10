@@ -197,27 +197,13 @@ if (!doNotTrack) {
     <h1 class="post-title">
       btrfs: making &#34;send&#34; more &#34;capable&#34;
     </h1>
-    <div class="post-meta"><span title='2020-05-14 00:00:00 +0000 UTC'>May 14, 2020</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;Marcos Paulo de Souza
+    <div class="post-meta"><span title='2020-05-14 00:00:00 +0000 UTC'>May 14, 2020</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;1197 words&nbsp;·&nbsp;Marcos Paulo de Souza
 
 </div>
   </header> 
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/mailbox.jpg" alt="">
         
-</figure><div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#what-is-the-problem-with-capabilities" aria-label="What is the problem with capabilities?">What is the problem with capabilities?</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
+</figure>
   <div class="post-content"><p>The <strong>send/receive</strong> is a feature from btrfs where you can generate a stream of changes between two snapshots and then apply to any btrfs system, being a different disk on the host or over the network.</p>
 <p>The receive feature <em>receives</em> a stream of data, applying the it in the filesystem. As the stream can be a file, it&rsquo;s easy even to transfer the output of <strong>send</strong> over the network and <strong>receive</strong> in the other side. Here is an example of how this works:</p>
 <div class="highlight"><div class="chroma">

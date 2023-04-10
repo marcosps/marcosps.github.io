@@ -197,47 +197,13 @@ if (!doNotTrack) {
     <h1 class="post-title">
       Kernel Adventures: Are USB Sticks Rotational Devices?
     </h1>
-    <div class="post-meta"><span title='2019-08-07 00:00:00 +0000 UTC'>August 7, 2019</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Marcos Paulo de Souza
+    <div class="post-meta"><span title='2019-08-07 00:00:00 +0000 UTC'>August 7, 2019</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;1435 words&nbsp;·&nbsp;Marcos Paulo de Souza
 
 </div>
   </header> 
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/usb-stick.png" alt="">
         
-</figure><div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#about-rotational-devices" aria-label="About rotational devices">About rotational devices</a></li>
-                <li>
-                    <a href="#flash-storage" aria-label="Flash Storage">Flash Storage</a></li>
-                <li>
-                    <a href="#back-to-the-bug" aria-label="Back to the bug">Back to the bug</a><ul>
-                        
-                <li>
-                    <a href="#alcor-micro-corp-flash-drive-058f6387-usb-stick" aria-label="Alcor Micro Corp. Flash Drive 058f:6387 (USB Stick)">Alcor Micro Corp. Flash Drive 058f:6387 (USB Stick)</a></li>
-                <li>
-                    <a href="#chipsbank-microelectronics-co-ltd-1e3d2092-usb-stick" aria-label="Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick)">Chipsbank Microelectronics Co., Ltd 1e3d:2092 (USB Stick)</a></li>
-                <li>
-                    <a href="#hp-inc-4-gb-flash-drive-03f03207-usb-stick" aria-label="HP, Inc 4 GB flash drive 03f0:3207 (USB stick)">HP, Inc 4 GB flash drive 03f0:3207 (USB stick)</a></li>
-                <li>
-                    <a href="#sandisk-corp-cruzer-blade-07815567-usb-stick" aria-label="SanDisk Corp. Cruzer Blade 0781:5567 (USB Stick)">SanDisk Corp. Cruzer Blade 0781:5567 (USB Stick)</a></li>
-                <li>
-                    <a href="#super-top-m6116-sata-bridge-14cd6116-usb-sata-adapter" aria-label="Super Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter)">Super Top M6116 SATA Bridge 14cd:6116 (USB SATA adapter)</a></li>
-                <li>
-                    <a href="#initio-corporation-13fd3920-usb-sata-adapter" aria-label="Initio Corporation 13fd:3920 (USB SATA adapter)">Initio Corporation 13fd:3920 (USB SATA adapter)</a></li></ul>
-                </li>
-                <li>
-                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
+</figure>
   <div class="post-content"><p>A while ago I&rsquo;ve found this <a href="https://bugzilla.kernel.org/show_bug.cgi?id=90761">kernel bug entry</a> about USB mass storage being shown as a <em>rotational device</em>. This is wrong because a USB stick is a flash device, and does not <em>rotate</em>.</p>
 <h3 id="about-rotational-devices">About rotational devices<a hidden class="anchor" aria-hidden="true" href="#about-rotational-devices">#</a></h3>
 <p>Let’s take a minute to discuss about the evolution from disk to flash storage.</p>

@@ -197,27 +197,13 @@ if (!doNotTrack) {
     <h1 class="post-title">
       Btrfs: Resolving the logical-resolve
     </h1>
-    <div class="post-meta"><span title='2021-02-27 12:12:52 +0000 UTC'>February 27, 2021</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Marcos Paulo de Souza
+    <div class="post-meta"><span title='2021-02-27 12:12:52 +0000 UTC'>February 27, 2021</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;747 words&nbsp;·&nbsp;Marcos Paulo de Souza
 
 </div>
   </header> 
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/compass.jpg" alt="">
         
-</figure><div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#resolving-the-resolver" aria-label="Resolving the resolver">Resolving the resolver</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
+</figure>
   <div class="post-content"><p>Tools like <a href="https://linux.die.net/man/8/fsck">fsck</a> and <a href="https://linux.die.net/man/8/smartctl">smartctl</a> are usually used when something bad happens on your disk. But, what if such tools have a problem and also need to be fixed? Well, that&rsquo;s what we are going to see today.</p>
 <p>The command <strong>btrfs inspect-internal logical-resolve</strong>, as stated in a <a href="/blog/btrfs-differentiating-bind-mounts-on-subvolumes">previous</a> post, is useful when the btrfs filesystem reports a problem related to data consistency, for example:</p>
 <div class="highlight"><div class="chroma">

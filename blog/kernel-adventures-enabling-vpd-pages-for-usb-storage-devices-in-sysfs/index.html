@@ -197,14 +197,13 @@ if (!doNotTrack) {
     <h1 class="post-title">
       Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs
     </h1>
-    <div class="post-meta"><span title='2019-08-16 00:00:00 +0000 UTC'>August 16, 2019</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Marcos Paulo de Souza
+    <div class="post-meta"><span title='2019-08-16 00:00:00 +0000 UTC'>August 16, 2019</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;1052 words&nbsp;·&nbsp;Marcos Paulo de Souza
 
 </div>
   </header> 
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/usb-hd.jpg" alt="">
         
 </figure>
-
   <div class="post-content"><p>After chasing the problem of <a href="/kernel-adventures-are-usb-sticks-rotational-devices">rotational sysfs property of USB flash drives</a>, I started to check another <em>sysfs</em> attributes of USB storage devices, and I noted two missing attributes: <em>vpd_pg80</em> and <em>vpd_pg83</em>.</p>
 <p>As explained <a href="/kernel-adventures-are-usb-sticks-rotational-devices">here</a>, VPD pages contain data related to the device. In special, page 80 is <em>Unit Serial Number</em> (sn) and page 83 is <em>Device Information</em> (di), which are present in any SCSI device that complies with <em>SPC-2</em> or later.</p>
 <p>Check an example of my <em>sn</em> and <em>di</em> of my <em>SSD</em> using <strong>sg_vpd</strong> from sg3_utils package:</p>

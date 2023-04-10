@@ -197,35 +197,13 @@ if (!doNotTrack) {
     <h1 class="post-title">
       From zero to double free: The process of creating a reproducer for a kernel vulnerability
     </h1>
-    <div class="post-meta"><span title='2023-03-09 23:21:25 -0300 -0300'>March 9, 2023</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Marcos Paulo de Souza
+    <div class="post-meta"><span title='2023-03-09 23:21:25 -0300 -0300'>March 9, 2023</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;1463 words&nbsp;·&nbsp;Marcos Paulo de Souza
 
 </div>
   </header> 
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/pow-1601674_960_720.png" alt="">
         
-</figure><div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#the-security-bug" aria-label="The security bug">The security bug</a></li>
-                <li>
-                    <a href="#packet-sockets" aria-label="Packet sockets">Packet sockets</a></li>
-                <li>
-                    <a href="#reproducer" aria-label="Reproducer">Reproducer</a></li>
-                <li>
-                    <a href="#considerations" aria-label="Considerations">Considerations</a></li>
-                <li>
-                    <a href="#references" aria-label="References">References</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
+</figure>
   <div class="post-content"><p>The main responsibility of the Kernel Livepatching team at <a href="https://suse.com">SUSE</a> is to create livepatches for critical
 security bugs. More important than fixing the bug itself is to guarantee that the livepatch will solve
 the original problem and not create new ones, so testing the fix properly is crucial.</p>

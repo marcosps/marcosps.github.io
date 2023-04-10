@@ -197,50 +197,13 @@ if (!doNotTrack) {
     <h1 class="post-title">
       Btrfs for mere mortals: inode allocation
     </h1>
-    <div class="post-meta"><span title='2022-04-25 13:30:25 -0300 -0300'>April 25, 2022</span>&nbsp;·&nbsp;19 min&nbsp;·&nbsp;Marcos Paulo de Souza
+    <div class="post-meta"><span title='2022-04-25 13:30:25 -0300 -0300'>April 25, 2022</span>&nbsp;·&nbsp;19 min&nbsp;·&nbsp;3941 words&nbsp;·&nbsp;Marcos Paulo de Souza
 
 </div>
   </header> 
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/archive.jpg" alt="">
         
-</figure><div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#why-btrfs-always-shows-the-number-of-available-inodes-as-zero" aria-label="Why btrfs always shows the number of available inodes as zero?">Why btrfs always shows the number of available inodes as zero?</a><ul>
-                        
-                <li>
-                    <a href="#ext4-block-sizes-and-block-groups" aria-label="Ext4: block sizes and block groups">Ext4: block sizes and block groups</a></li>
-                <li>
-                    <a href="#ext4-inodes" aria-label="Ext4: inodes">Ext4: inodes</a></li></ul>
-                </li>
-                <li>
-                    <a href="#what-about-btrfs" aria-label="What about btrfs?">What about btrfs?</a><ul>
-                        
-                <li>
-                    <a href="#btrfs-block-groups" aria-label="Btrfs: block groups">Btrfs: block groups</a></li>
-                <li>
-                    <a href="#btrfs-inodes" aria-label="Btrfs: inodes">Btrfs: inodes</a></li>
-                <li>
-                    <a href="#why-cant-btrfs-show-how-many-inodes-it-can-hold" aria-label="Why can&amp;rsquo;t btrfs show how many inodes it can hold?"><em>Why can&rsquo;t btrfs show how many inodes it can hold?</em></a></li></ul>
-                </li>
-                <li>
-                    <a href="#btrfs-inodes-and-subvolumes" aria-label="Btrfs: Inodes and subvolumes">Btrfs: Inodes and subvolumes</a><ul>
-                        
-                <li>
-                    <a href="#considerations" aria-label="Considerations">Considerations</a>
-                </li>
-            </ul>
-            </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
+</figure>
   <div class="post-content"><p>It&rsquo;s known that btrfs behaves differently from other Linux filesystems. There
 are some fascinating aspects of how btrfs manages its internal structures and
 how common tools are not prepared to handle it.</p>

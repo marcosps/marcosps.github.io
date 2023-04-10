@@ -197,14 +197,13 @@ if (!doNotTrack) {
     <h1 class="post-title">
       NO_NEW_PRIVS: avoiding privilege escalation
     </h1>
-    <div class="post-meta"><span title='2018-05-22 00:00:00 +0000 UTC'>May 22, 2018</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Marcos Paulo de Souza
+    <div class="post-meta"><span title='2018-05-22 00:00:00 +0000 UTC'>May 22, 2018</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;556 words&nbsp;·&nbsp;Marcos Paulo de Souza
 
 </div>
   </header> 
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/gandalf.jpg" alt="">
         
 </figure>
-
   <div class="post-content"><p>Proposed in <a href="https://lwn.net/Articles/475362">2012</a>, the <a href="https://www.kernel.org/doc/Documentation/prctl/no_new_privs.txt"><em>NO_NEW_PRIVS</em></a> flag made possible to any process to avoid privilege escalation when this behavior is not desired. After the flag is set, it persists across <a href="http://man7.org/linux/man-pages/man2/execve.2.html">execve</a>, <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a> and <a href="http://man7.org/linux/man-pages/man2/fork.2.html">fork</a> syscalls, and cannot be cleared. This can help you to avoid exploitation of vulnerable software, since the attacker will be running as an ordinary user.</p>
 <p>The <em>NO_NEW_PRIVS</em> flag is already beeng used by some projects that try to make the running environment more secure, specially container engines and sandbox applications. Some examples are <a href="https://www.projectatomic.io/blog/2016/03/no-new-privs-docker">Docker</a>, <a href="https://github.com/projectatomic/bubblewrap">Bullewrap</a>, and <a href="https://github.com/netblue30/firejail">Firejail</a>.</p>
 <p>There are cases where privilege escalation is necessary, for example, to execute a small task that can’t be done by an unprivileged user. This can be achieved by creating a new binary, that only do a very specific task, and have the <a href="https://en.wikipedia.org/wiki/Setuid">setuid</a> bit set (which change the current uid by the owner of the binary) or file <a href="http://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities</a>(which can hold <em>CAP_SYS_ADMIN</em> for example, and so the current uid becomes practically root).</p>
