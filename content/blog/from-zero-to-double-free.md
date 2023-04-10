@@ -4,7 +4,7 @@ summary: "... or my personal journey of reading code and triggering behaviors."
 date: 2023-03-09T23:21:25-03:00
 slug: from-zero-to-double-free
 cover:
-    image: "images/320px-Atom_Bomb_Nuclear_Explosion.jpg"
+    image: "/images/320px-Atom_Bomb_Nuclear_Explosion.jpg"
 ---
 
 The main responsibility of the Kernel Livepatching team at [SUSE](https://suse.com) is to create livepatches for critical
