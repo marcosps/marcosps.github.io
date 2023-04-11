@@ -8,7 +8,6 @@ buildDrafts: false
 buildFuture: false
 buildExpired: false
 enableEmoji: true
-pygmentsUseClasses: true
 googleAnalytics: G-LWD0KKCW2G
 
 outputs:
@@ -33,9 +32,11 @@ params:
   ShowRssButtonInSectionTermList: true
   comments: false
   disableShare: false
-  disableHLJS: true
   searchHidden: true
   hidemeta: false
+
+  assets:
+    disableHLJS: true
 
   homeInfoParams:
     Title: "Hi, I'm Marcos"
@@ -65,4 +66,4 @@ menu:
 markup:
   highlight:
     lineNos: true
-    style: dracula
+    style: catppuccin-macchiato
