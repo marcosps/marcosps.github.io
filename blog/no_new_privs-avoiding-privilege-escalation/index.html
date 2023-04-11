@@ -10,9 +10,7 @@
 <meta name="description" content="&hellip; or how to avoid turning your app into an exploit.">
 <meta name="author" content="Marcos Paulo de Souza">
 <link rel="canonical" href="https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7140587df96a2b1a49eb723fa7063dc0c641a6cb638f3140e8d3beb4deae4f5c.css" integrity="sha256-cUBYfflqKxpJ63I/pwY9wMZBpstjjzFA6NO&#43;tN6uT1w=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://mpdesouza.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://mpdesouza.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://mpdesouza.com/favicon-32x32.png">
@@ -209,100 +207,100 @@ if (!doNotTrack) {
 <p>There are cases where privilege escalation is necessary, for example, to execute a small task that can’t be done by an unprivileged user. This can be achieved by creating a new binary, that only do a very specific task, and have the <a href="https://en.wikipedia.org/wiki/Setuid">setuid</a> bit set (which change the current uid by the owner of the binary) or file <a href="http://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities</a>(which can hold <em>CAP_SYS_ADMIN</em> for example, and so the current uid becomes practically root).</p>
 <p>Another important note for <em>NO_NEW_PRIVS</em> is, after this flag is set, an unprivileged process can install <a href="https://www.kernel.org/doc/Documentation/prctl/seccomp_filter.txt">seccomp_filters</a>.</p>
 <p>As described by the official kernel documentation about <em>NO_NEW_PRIVS</em>, this flag is set by using <a href="http://man7.org/linux/man-pages/man2/prctl.2.html">prctl</a>, as exemplified below:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">prctl<span class="o">(</span>PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0<span class="o">)</span><span class="p">;</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>prctl<span style="color:#91d7e3">(</span>PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0<span style="color:#91d7e3">)</span><span style="color:#cad3f5">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Let’s check how this works. First, we create a new binary called <em>caller</em>, which will be responsible for executing another binary, simply called <em>getuid</em>. The second binary will just print the current <a href="https://en.wikipedia.org/wiki/User_identifier#Effective_user_ID">effective user</a>. Let’s take a look in both binaries, starting from <em>caller</em>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/prctl.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">errx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#34;Usage: %s &lt;0|1&gt; &lt;path to binary&gt;&#34;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">strncmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#34;1&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
-</span></span><span class="line"><span class="cl">	    <span class="nf">prctl</span><span class="p">(</span><span class="n">PR_SET_NO_NEW_PRIVS</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">errx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#34;no_new_privs failed&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="nf">execlp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">err</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#34;execlp&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic">#include</span> <span style="color:#8aadf4;font-style:italic">&lt;string.h&gt;</span><span style="color:#8aadf4;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic">#include</span> <span style="color:#8aadf4;font-style:italic">&lt;sys/prctl.h&gt;</span><span style="color:#8aadf4;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic">#include</span> <span style="color:#8aadf4;font-style:italic">&lt;unistd.h&gt;</span><span style="color:#8aadf4;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic"></span>
+</span></span><span style="display:flex;"><span><span style="color:#eed49f">int</span> <span style="color:#91d7e3">main</span><span style="color:#cad3f5">(</span><span style="color:#eed49f">int</span> <span style="color:#b7bdf8">argc</span><span style="color:#cad3f5">,</span> <span style="color:#eed49f">char</span> <span style="color:#91d7e3">**</span><span style="color:#b7bdf8">argv</span><span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#b7bdf8">argc</span> <span style="color:#91d7e3">!=</span> 3<span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">errx</span><span style="color:#cad3f5">(</span>0<span style="color:#cad3f5">,</span> <span style="color:#a6da95">&#34;Usage: %s &lt;0|1&gt; &lt;path to binary&gt;&#34;</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">argv</span><span style="color:#cad3f5">[</span>0<span style="color:#cad3f5">]);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#91d7e3">!</span><span style="color:#91d7e3">strncmp</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">argv</span><span style="color:#cad3f5">[</span>1<span style="color:#cad3f5">],</span> <span style="color:#a6da95">&#34;1&#34;</span><span style="color:#cad3f5">,</span> 1<span style="color:#cad3f5">)</span> <span style="color:#91d7e3">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#91d7e3">prctl</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">PR_SET_NO_NEW_PRIVS</span><span style="color:#cad3f5">,</span> 1<span style="color:#cad3f5">,</span> 0<span style="color:#cad3f5">,</span> 0<span style="color:#cad3f5">,</span> 0<span style="color:#cad3f5">)</span> <span style="color:#91d7e3">==</span> <span style="color:#91d7e3">-</span>1<span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">errx</span><span style="color:#cad3f5">(</span>1<span style="color:#cad3f5">,</span> <span style="color:#a6da95">&#34;no_new_privs failed&#34;</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#91d7e3">execlp</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">argv</span><span style="color:#cad3f5">[</span>2<span style="color:#cad3f5">],</span> <span style="color:#b7bdf8">argv</span><span style="color:#cad3f5">[</span>2<span style="color:#cad3f5">],</span> <span style="font-style:italic">NULL</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#91d7e3">err</span><span style="color:#cad3f5">(</span>1<span style="color:#cad3f5">,</span> <span style="color:#a6da95">&#34;execlp&#34;</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>The first binary, <em>caller</em>, will receive two parameters, the first one specifies if the user wants to set the <em>NO_NEW_PRIVS</em> flag, and the second one receives a path to the binary we want to execute. After compiling getuid, we need to change the owner, and turn on the <a href="https://en.wikipedia.org/wiki/Setuid">setuid</a> bit of the resulting binary:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">3
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ gcc getuid.c -o getuid
-</span></span><span class="line"><span class="cl">$ sudo chown root:root getuid
-</span></span><span class="line"><span class="cl">$ sudo chmod +s getuid
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ gcc getuid.c -o getuid
+</span></span><span style="display:flex;"><span>$ sudo chown root:root getuid
+</span></span><span style="display:flex;"><span>$ sudo chmod +s getuid
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Now, let’s make use of both binaries. Let’s assume you have them in the same directory. First, without setting <em>NO_NEW_PRIVS</em>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">2
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ./caller <span class="m">0</span> ./getuid
-</span></span><span class="line"><span class="cl">euid: <span class="m">0</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ ./caller 0 ./getuid
+</span></span><span style="display:flex;"><span>euid: 0
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>As expected, the printed effective user id is 0, meaning that we are root, thanks to the setuid bit being set and the owner of the binary being root. What happens when we turn on the <em>NO_NEW_PRIVS</em> flag in <em>caller</em>?</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">2
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ./caller <span class="m">1</span> ./getuid
-</span></span><span class="line"><span class="cl">euid: <span class="m">1000</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ ./caller 1 ./getuid
+</span></span><span style="display:flex;"><span>euid: 1000
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>As expected, the effective user id is the one who executes <em>caller</em>, so, no privileges were escalated.</p>
 <p>We can also exemplify this behavior using <a href="http://man7.org/linux/man-pages/man1/setpriv.1.html">setpriv</a>, which is part of <a href="https://en.wikipedia.org/wiki/Util-linux">util-linux</a>, to test the <em>NO_NEW_PRIVS</em> flag. Take a look below:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">4
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ setpriv ./getuid 
-</span></span><span class="line"><span class="cl">euid: <span class="m">0</span>
-</span></span><span class="line"><span class="cl">$ setpriv --no-new-privs ./getuid 
-</span></span><span class="line"><span class="cl">euid: <span class="m">1000</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ setpriv ./getuid 
+</span></span><span style="display:flex;"><span>euid: 0
+</span></span><span style="display:flex;"><span>$ setpriv --no-new-privs ./getuid 
+</span></span><span style="display:flex;"><span>euid: 1000
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>As you can see, the output is the same from the <em>caller</em>, as it uses the same feature to avoid privilege escalation.</p>

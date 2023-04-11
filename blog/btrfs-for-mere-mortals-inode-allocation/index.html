@@ -10,9 +10,7 @@
 <meta name="description" content="&hellip; or how btrfs manages its inodes when compared to other Linux filesystems, from the inside.">
 <meta name="author" content="Marcos Paulo de Souza">
 <link rel="canonical" href="https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7140587df96a2b1a49eb723fa7063dc0c641a6cb638f3140e8d3beb4deae4f5c.css" integrity="sha256-cUBYfflqKxpJ63I/pwY9wMZBpstjjzFA6NO&#43;tN6uT1w=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://mpdesouza.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://mpdesouza.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://mpdesouza.com/favicon-32x32.png">
@@ -209,38 +207,38 @@ are some fascinating aspects of how btrfs manages its internal structures and
 how common tools are not prepared to handle it.</p>
 <p>This goal of this post is to demystify why ext4 can report the number of
 available inodes while btrfs always reports 0:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ file ext4.disk
-</span></span><span class="line"><span class="cl">ext4.disk: Linux rev 1.0 ext4 filesystem data, <span class="nv">UUID</span><span class="o">=</span>3f21312b-412a-4b1a-8561-5704eaf39d22 <span class="o">(</span>extents<span class="o">)</span> <span class="o">(</span>64bit<span class="o">)</span> <span class="o">(</span>large files<span class="o">)</span> <span class="o">(</span>huge files<span class="o">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$ mount ext4.disk /mnt
-</span></span><span class="line"><span class="cl">$ df -i /mnt
-</span></span><span class="line"><span class="cl">Filesystem     Inodes IUsed  IFree IUse% Mounted on
-</span></span><span class="line"><span class="cl">/dev/loop0     <span class="m">327680</span>    <span class="m">11</span> <span class="m">327669</span>    1% /mnt
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$ mount -l <span class="p">|</span> grep sda2
-</span></span><span class="line"><span class="cl">/dev/sda2 on / <span class="nb">type</span> btrfs <span class="o">(</span>rw,relatime,ssd,space_cache<span class="o">=</span>v2,subvolid<span class="o">=</span>266,subvol<span class="o">=</span>/@/.snapshots/1/snapshot<span class="o">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$ df -i /
-</span></span><span class="line"><span class="cl">Filesystem     Inodes IUsed IFree IUse% Mounted on
-</span></span><span class="line"><span class="cl">/dev/sda2           <span class="m">0</span>     <span class="m">0</span>     <span class="m">0</span>     - /
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ file ext4.disk
+</span></span><span style="display:flex;"><span>ext4.disk: Linux rev 1.0 ext4 filesystem data, <span style="color:#b7bdf8">UUID</span><span style="color:#91d7e3">=</span>3f21312b-412a-4b1a-8561-5704eaf39d22 <span style="color:#91d7e3">(</span>extents<span style="color:#91d7e3">)</span> <span style="color:#91d7e3">(</span>64bit<span style="color:#91d7e3">)</span> <span style="color:#91d7e3">(</span>large files<span style="color:#91d7e3">)</span> <span style="color:#91d7e3">(</span>huge files<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ mount ext4.disk /mnt
+</span></span><span style="display:flex;"><span>$ df -i /mnt
+</span></span><span style="display:flex;"><span>Filesystem     Inodes IUsed  IFree IUse% Mounted on
+</span></span><span style="display:flex;"><span>/dev/loop0     327680    11 327669    1% /mnt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ mount -l <span style="color:#cad3f5">|</span> grep sda2
+</span></span><span style="display:flex;"><span>/dev/sda2 on / <span style="font-style:italic">type</span> btrfs <span style="color:#91d7e3">(</span>rw,relatime,ssd,space_cache<span style="color:#91d7e3">=</span>v2,subvolid<span style="color:#91d7e3">=</span>266,subvol<span style="color:#91d7e3">=</span>/@/.snapshots/1/snapshot<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ df -i /
+</span></span><span style="display:flex;"><span>Filesystem     Inodes IUsed IFree IUse% Mounted on
+</span></span><span style="display:flex;"><span>/dev/sda2           0     0     0     - /
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h1 id="why-btrfs-always-shows-the-number-of-available-inodes-as-zero">Why btrfs always shows the number of available inodes as zero?<a hidden class="anchor" aria-hidden="true" href="#why-btrfs-always-shows-the-number-of-available-inodes-as-zero">#</a></h1>
@@ -272,166 +270,166 @@ can map up to 128mb of space:</p>
 32768 * 4k: 134217728 bytes: 128Mb
 </code></pre><p>Let&rsquo;s take a look in how ext4 divides a 5G disk, using the default 4k block
 sizes:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span><span class="lnt">64
-</span><span class="lnt">65
-</span><span class="lnt">66
-</span><span class="lnt">67
-</span><span class="lnt">68
-</span><span class="lnt">69
-</span><span class="lnt">70
-</span><span class="lnt">71
-</span><span class="lnt">72
-</span><span class="lnt">73
-</span><span class="lnt">74
-</span><span class="lnt">75
-</span><span class="lnt">76
-</span><span class="lnt">77
-</span><span class="lnt">78
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">47
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">48
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">49
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">50
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">51
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">52
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">53
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">54
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">55
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">56
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">57
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">58
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">59
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">60
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">61
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">62
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">63
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">64
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">65
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">66
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">67
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">68
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">69
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">70
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">71
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">72
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">73
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">74
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">75
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">76
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">77
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">78
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># create a 5G file to be used as disk</span>
-</span></span><span class="line"><span class="cl">$ fallocate -l5g ext4.disk
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># create the ext4 filesystem on it</span>
-</span></span><span class="line"><span class="cl">$ mkfs.ext4 ext4.disk
-</span></span><span class="line"><span class="cl">mke2fs 1.43.8 <span class="o">(</span>1-Jan-2018<span class="o">)</span>
-</span></span><span class="line"><span class="cl">Discarding device blocks: <span class="k">done</span>
-</span></span><span class="line"><span class="cl">Creating filesystem with <span class="m">1310720</span> 4k blocks and <span class="m">327680</span> inodes
-</span></span><span class="line"><span class="cl">Filesystem UUID: e408e28f-f275-49c6-87e8-18104fe31ba4
-</span></span><span class="line"><span class="cl">Superblock backups stored on blocks:
-</span></span><span class="line"><span class="cl">        32768, 98304, 163840, 229376, 294912, 819200, <span class="m">884736</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Allocating group tables: <span class="k">done</span>
-</span></span><span class="line"><span class="cl">Writing inode tables: <span class="k">done</span>
-</span></span><span class="line"><span class="cl">Creating journal <span class="o">(</span><span class="m">16384</span> blocks<span class="o">)</span>: <span class="k">done</span>
-</span></span><span class="line"><span class="cl">Writing superblocks and filesystem accounting information: <span class="k">done</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># print some information about the created filesystem</span>
-</span></span><span class="line"><span class="cl">$ dumpe2fs ext4.disk
-</span></span><span class="line"><span class="cl">dumpe2fs 1.43.8 <span class="o">(</span>1-Jan-2018<span class="o">)</span>
-</span></span><span class="line"><span class="cl">Filesystem volume name:   &lt;none&gt;
-</span></span><span class="line"><span class="cl">Last mounted on:          &lt;not available&gt;
-</span></span><span class="line"><span class="cl">Filesystem UUID:          e408e28f-f275-49c6-87e8-18104fe31ba4
-</span></span><span class="line"><span class="cl">Filesystem magic number:  0xEF53
-</span></span><span class="line"><span class="cl">Filesystem revision <span class="c1">#:    1 (dynamic)</span>
-</span></span><span class="line"><span class="cl">Filesystem features:      has_journal ext_attr resize_inode dir_index filetype extent 64bit flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
-</span></span><span class="line"><span class="cl">Filesystem flags:         signed_directory_hash
-</span></span><span class="line"><span class="cl">Default mount options:    user_xattr acl
-</span></span><span class="line"><span class="cl">Filesystem state:         clean
-</span></span><span class="line"><span class="cl">Errors behavior:          Continue
-</span></span><span class="line"><span class="cl">Filesystem OS type:       Linux
-</span></span><span class="line"><span class="cl">Inode count:              <span class="m">327680</span>
-</span></span><span class="line"><span class="cl">Block count:              <span class="m">1310720</span>
-</span></span><span class="line"><span class="cl">Reserved block count:     <span class="m">65536</span>
-</span></span><span class="line"><span class="cl">Free blocks:              <span class="m">1268642</span>
-</span></span><span class="line"><span class="cl">Free inodes:              <span class="m">327669</span>
-</span></span><span class="line"><span class="cl">First block:              <span class="m">0</span>
-</span></span><span class="line"><span class="cl">Block size:               <span class="m">4096</span>
-</span></span><span class="line"><span class="cl">Fragment size:            <span class="m">4096</span>
-</span></span><span class="line"><span class="cl">Group descriptor size:    <span class="m">64</span>
-</span></span><span class="line"><span class="cl">Reserved GDT blocks:      <span class="m">639</span>
-</span></span><span class="line"><span class="cl">Blocks per group:         <span class="m">32768</span>
-</span></span><span class="line"><span class="cl">Fragments per group:      <span class="m">32768</span>
-</span></span><span class="line"><span class="cl">Inodes per group:         <span class="m">8192</span>
-</span></span><span class="line"><span class="cl">Inode blocks per group:   <span class="m">512</span>
-</span></span><span class="line"><span class="cl">Flex block group size:    <span class="m">16</span>
-</span></span><span class="line"><span class="cl">Filesystem created:       Wed Aug  <span class="m">4</span> 00:24:49 <span class="m">2021</span>
-</span></span><span class="line"><span class="cl">...
-</span></span><span class="line"><span class="cl">First inode:              <span class="m">11</span>
-</span></span><span class="line"><span class="cl">Inode size:               <span class="m">256</span>
-</span></span><span class="line"><span class="cl">...
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Group 0: <span class="o">(</span>Blocks 0-32767<span class="o">)</span> csum 0xcef6 <span class="o">[</span>ITABLE_ZEROED<span class="o">]</span>
-</span></span><span class="line"><span class="cl">  Primary superblock at 0, Group descriptors at 1-1
-</span></span><span class="line"><span class="cl">  Reserved GDT blocks at 2-640
-</span></span><span class="line"><span class="cl">  Block bitmap at <span class="m">641</span> <span class="o">(</span>+641<span class="o">)</span>
-</span></span><span class="line"><span class="cl">  Inode bitmap at <span class="m">657</span> <span class="o">(</span>+657<span class="o">)</span>
-</span></span><span class="line"><span class="cl">  Inode table at 673-1184 <span class="o">(</span>+673<span class="o">)</span>
-</span></span><span class="line"><span class="cl">  <span class="m">23897</span> free blocks, <span class="m">8181</span> free inodes, <span class="m">2</span> directories, <span class="m">8181</span> unused inodes
-</span></span><span class="line"><span class="cl">  Free blocks: 8871-32767
-</span></span><span class="line"><span class="cl">  Free inodes: 12-8192
-</span></span><span class="line"><span class="cl">Group 1: <span class="o">(</span>Blocks 32768-65535<span class="o">)</span> csum 0x4873 <span class="o">[</span>INODE_UNINIT, BLOCK_UNINIT, ITABLE_ZEROED<span class="o">]</span>
-</span></span><span class="line"><span class="cl">  Backup superblock at 32768, Group descriptors at 32769-32769
-</span></span><span class="line"><span class="cl">  Reserved GDT blocks at 32770-33408
-</span></span><span class="line"><span class="cl">  Block bitmap at <span class="m">642</span> <span class="o">(</span><span class="nb">bg</span> <span class="c1">#0 + 642)</span>
-</span></span><span class="line"><span class="cl">  Inode bitmap at <span class="m">658</span> <span class="o">(</span><span class="nb">bg</span> <span class="c1">#0 + 658)</span>
-</span></span><span class="line"><span class="cl">  Inode table at 1185-1696 <span class="o">(</span><span class="nb">bg</span> <span class="c1">#0 + 1185)</span>
-</span></span><span class="line"><span class="cl">  <span class="m">32127</span> free blocks, <span class="m">8192</span> free inodes, <span class="m">0</span> directories, <span class="m">8192</span> unused inodes
-</span></span><span class="line"><span class="cl">  Free blocks: 33409-65535
-</span></span><span class="line"><span class="cl">  Free inodes: 8193-16384
-</span></span><span class="line"><span class="cl">...
-</span></span><span class="line"><span class="cl">Group 39: <span class="o">(</span>Blocks 1277952-1310719<span class="o">)</span> csum 0x71eb <span class="o">[</span>INODE_UNINIT, ITABLE_ZEROED<span class="o">]</span>
-</span></span><span class="line"><span class="cl">  Block bitmap at <span class="m">1048583</span> <span class="o">(</span><span class="nb">bg</span> <span class="c1">#32 + 7)</span>
-</span></span><span class="line"><span class="cl">  Inode bitmap at <span class="m">1048591</span> <span class="o">(</span><span class="nb">bg</span> <span class="c1">#32 + 15)</span>
-</span></span><span class="line"><span class="cl">  Inode table at 1052176-1052687 <span class="o">(</span><span class="nb">bg</span> <span class="c1">#32 + 3600)</span>
-</span></span><span class="line"><span class="cl">  <span class="m">32768</span> free blocks, <span class="m">8192</span> free inodes, <span class="m">0</span> directories, <span class="m">8192</span> unused inodes
-</span></span><span class="line"><span class="cl">  Free blocks: 1277952-1310719
-</span></span><span class="line"><span class="cl">  Free inodes: 319489-327680
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># create a 5G file to be used as disk</span>
+</span></span><span style="display:flex;"><span>$ fallocate -l5g ext4.disk
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># create the ext4 filesystem on it</span>
+</span></span><span style="display:flex;"><span>$ mkfs.ext4 ext4.disk
+</span></span><span style="display:flex;"><span>mke2fs 1.43.8 <span style="color:#91d7e3">(</span>1-Jan-2018<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>Discarding device blocks: <span style="color:#c6a0f6">done</span>
+</span></span><span style="display:flex;"><span>Creating filesystem with 1310720 4k blocks and 327680 inodes
+</span></span><span style="display:flex;"><span>Filesystem UUID: e408e28f-f275-49c6-87e8-18104fe31ba4
+</span></span><span style="display:flex;"><span>Superblock backups stored on blocks:
+</span></span><span style="display:flex;"><span>        32768, 98304, 163840, 229376, 294912, 819200, 884736
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Allocating group tables: <span style="color:#c6a0f6">done</span>
+</span></span><span style="display:flex;"><span>Writing inode tables: <span style="color:#c6a0f6">done</span>
+</span></span><span style="display:flex;"><span>Creating journal <span style="color:#91d7e3">(</span>16384 blocks<span style="color:#91d7e3">)</span>: <span style="color:#c6a0f6">done</span>
+</span></span><span style="display:flex;"><span>Writing superblocks and filesystem accounting information: <span style="color:#c6a0f6">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># print some information about the created filesystem</span>
+</span></span><span style="display:flex;"><span>$ dumpe2fs ext4.disk
+</span></span><span style="display:flex;"><span>dumpe2fs 1.43.8 <span style="color:#91d7e3">(</span>1-Jan-2018<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>Filesystem volume name:   &lt;none&gt;
+</span></span><span style="display:flex;"><span>Last mounted on:          &lt;not available&gt;
+</span></span><span style="display:flex;"><span>Filesystem UUID:          e408e28f-f275-49c6-87e8-18104fe31ba4
+</span></span><span style="display:flex;"><span>Filesystem magic number:  0xEF53
+</span></span><span style="display:flex;"><span>Filesystem revision <span style="color:#5b6078;font-style:italic">#:    1 (dynamic)</span>
+</span></span><span style="display:flex;"><span>Filesystem features:      has_journal ext_attr resize_inode dir_index filetype extent 64bit flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+</span></span><span style="display:flex;"><span>Filesystem flags:         signed_directory_hash
+</span></span><span style="display:flex;"><span>Default mount options:    user_xattr acl
+</span></span><span style="display:flex;"><span>Filesystem state:         clean
+</span></span><span style="display:flex;"><span>Errors behavior:          Continue
+</span></span><span style="display:flex;"><span>Filesystem OS type:       Linux
+</span></span><span style="display:flex;"><span>Inode count:              327680
+</span></span><span style="display:flex;"><span>Block count:              1310720
+</span></span><span style="display:flex;"><span>Reserved block count:     65536
+</span></span><span style="display:flex;"><span>Free blocks:              1268642
+</span></span><span style="display:flex;"><span>Free inodes:              327669
+</span></span><span style="display:flex;"><span>First block:              0
+</span></span><span style="display:flex;"><span>Block size:               4096
+</span></span><span style="display:flex;"><span>Fragment size:            4096
+</span></span><span style="display:flex;"><span>Group descriptor size:    64
+</span></span><span style="display:flex;"><span>Reserved GDT blocks:      639
+</span></span><span style="display:flex;"><span>Blocks per group:         32768
+</span></span><span style="display:flex;"><span>Fragments per group:      32768
+</span></span><span style="display:flex;"><span>Inodes per group:         8192
+</span></span><span style="display:flex;"><span>Inode blocks per group:   512
+</span></span><span style="display:flex;"><span>Flex block group size:    16
+</span></span><span style="display:flex;"><span>Filesystem created:       Wed Aug  4 00:24:49 2021
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>First inode:              11
+</span></span><span style="display:flex;"><span>Inode size:               256
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Group 0: <span style="color:#91d7e3">(</span>Blocks 0-32767<span style="color:#91d7e3">)</span> csum 0xcef6 <span style="color:#91d7e3">[</span>ITABLE_ZEROED<span style="color:#91d7e3">]</span>
+</span></span><span style="display:flex;"><span>  Primary superblock at 0, Group descriptors at 1-1
+</span></span><span style="display:flex;"><span>  Reserved GDT blocks at 2-640
+</span></span><span style="display:flex;"><span>  Block bitmap at 641 <span style="color:#91d7e3">(</span>+641<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>  Inode bitmap at 657 <span style="color:#91d7e3">(</span>+657<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>  Inode table at 673-1184 <span style="color:#91d7e3">(</span>+673<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>  23897 free blocks, 8181 free inodes, 2 directories, 8181 unused inodes
+</span></span><span style="display:flex;"><span>  Free blocks: 8871-32767
+</span></span><span style="display:flex;"><span>  Free inodes: 12-8192
+</span></span><span style="display:flex;"><span>Group 1: <span style="color:#91d7e3">(</span>Blocks 32768-65535<span style="color:#91d7e3">)</span> csum 0x4873 <span style="color:#91d7e3">[</span>INODE_UNINIT, BLOCK_UNINIT, ITABLE_ZEROED<span style="color:#91d7e3">]</span>
+</span></span><span style="display:flex;"><span>  Backup superblock at 32768, Group descriptors at 32769-32769
+</span></span><span style="display:flex;"><span>  Reserved GDT blocks at 32770-33408
+</span></span><span style="display:flex;"><span>  Block bitmap at 642 <span style="color:#91d7e3">(</span><span style="font-style:italic">bg</span> <span style="color:#5b6078;font-style:italic">#0 + 642)</span>
+</span></span><span style="display:flex;"><span>  Inode bitmap at 658 <span style="color:#91d7e3">(</span><span style="font-style:italic">bg</span> <span style="color:#5b6078;font-style:italic">#0 + 658)</span>
+</span></span><span style="display:flex;"><span>  Inode table at 1185-1696 <span style="color:#91d7e3">(</span><span style="font-style:italic">bg</span> <span style="color:#5b6078;font-style:italic">#0 + 1185)</span>
+</span></span><span style="display:flex;"><span>  32127 free blocks, 8192 free inodes, 0 directories, 8192 unused inodes
+</span></span><span style="display:flex;"><span>  Free blocks: 33409-65535
+</span></span><span style="display:flex;"><span>  Free inodes: 8193-16384
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>Group 39: <span style="color:#91d7e3">(</span>Blocks 1277952-1310719<span style="color:#91d7e3">)</span> csum 0x71eb <span style="color:#91d7e3">[</span>INODE_UNINIT, ITABLE_ZEROED<span style="color:#91d7e3">]</span>
+</span></span><span style="display:flex;"><span>  Block bitmap at 1048583 <span style="color:#91d7e3">(</span><span style="font-style:italic">bg</span> <span style="color:#5b6078;font-style:italic">#32 + 7)</span>
+</span></span><span style="display:flex;"><span>  Inode bitmap at 1048591 <span style="color:#91d7e3">(</span><span style="font-style:italic">bg</span> <span style="color:#5b6078;font-style:italic">#32 + 15)</span>
+</span></span><span style="display:flex;"><span>  Inode table at 1052176-1052687 <span style="color:#91d7e3">(</span><span style="font-style:italic">bg</span> <span style="color:#5b6078;font-style:italic">#32 + 3600)</span>
+</span></span><span style="display:flex;"><span>  32768 free blocks, 8192 free inodes, 0 directories, 8192 unused inodes
+</span></span><span style="display:flex;"><span>  Free blocks: 1277952-1310719
+</span></span><span style="display:flex;"><span>  Free inodes: 319489-327680
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>The output of mkfs.ext4 was reduced because it&rsquo;s too long. The output above
@@ -474,24 +472,24 @@ so for each block group it will use 2Mb of space for the <em>inode table</em>:</
 <pre tabindex="0"><code>8192 inodes x 256 bytes per inode: 2Mb (2097152 bytes)
 </code></pre><p>To compare the numbers, just mount the filesystem created before and use df to
 show the maximum number of inodes:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">7
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mount ext4.disk /tmp/ext4
-</span></span><span class="line"><span class="cl">$ df -i /tmp/ext4 
-</span></span><span class="line"><span class="cl">Filesystem     Inodes IUsed  IFree IUse% Mounted on
-</span></span><span class="line"><span class="cl">/dev/loop0     <span class="m">327680</span>    <span class="m">11</span> <span class="m">327669</span>    1% /tmp/ext4
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$ ls -i /tmp/ext4
-</span></span><span class="line"><span class="cl"><span class="m">11</span> lost+found
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ mount ext4.disk /tmp/ext4
+</span></span><span style="display:flex;"><span>$ df -i /tmp/ext4 
+</span></span><span style="display:flex;"><span>Filesystem     Inodes IUsed  IFree IUse% Mounted on
+</span></span><span style="display:flex;"><span>/dev/loop0     327680    11 327669    1% /tmp/ext4
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ ls -i /tmp/ext4
+</span></span><span style="display:flex;"><span>11 lost+found
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Ext4 reserves the inode numbers from 0 to 10 for special purposes, and the first
@@ -520,62 +518,62 @@ is focused on data (bigger files), more data block groups will be allocated from
 the free space. In the same way, if the workload is creating more metadata
 (doing snapshots for example) more metadata block groups will be allocated.</p>
 <p>Let&rsquo;s see an example:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">26
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># create a 55G file to be used as disk</span>
-</span></span><span class="line"><span class="cl">$ fallocate -l55g btrfs.disk
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># Create the filesystem on top of it</span>
-</span></span><span class="line"><span class="cl">$ mkfs.btrfs -f /storage/btrfs.disk 
-</span></span><span class="line"><span class="cl">btrfs-progs v5.10.1 
-</span></span><span class="line"><span class="cl">See http://btrfs.wiki.kernel.org <span class="k">for</span> more information.
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Label:              <span class="o">(</span>null<span class="o">)</span>
-</span></span><span class="line"><span class="cl">UUID:               8f9303a9-15cd-4709-848e-38f80b5b2985
-</span></span><span class="line"><span class="cl">Node size:          <span class="m">16384</span>
-</span></span><span class="line"><span class="cl">Sector size:        <span class="m">4096</span>
-</span></span><span class="line"><span class="cl">Filesystem size:    55.00GiB
-</span></span><span class="line"><span class="cl">Block group profiles:
-</span></span><span class="line"><span class="cl">  Data:             single            1.00GiB
-</span></span><span class="line"><span class="cl">  Metadata:         DUP               1.00GiB
-</span></span><span class="line"><span class="cl">  System:           DUP               8.00MiB
-</span></span><span class="line"><span class="cl">SSD detected:       no
-</span></span><span class="line"><span class="cl">Zoned device:       no
-</span></span><span class="line"><span class="cl">Incompat features:  extref, skinny-metadata
-</span></span><span class="line"><span class="cl">Runtime features:   
-</span></span><span class="line"><span class="cl">Checksum:           crc32c
-</span></span><span class="line"><span class="cl">Number of devices:  <span class="m">1</span>
-</span></span><span class="line"><span class="cl">Devices:
-</span></span><span class="line"><span class="cl">   ID        SIZE  PATH
-</span></span><span class="line"><span class="cl">    <span class="m">1</span>    55.00GiB  /storage/btrfs.disk
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># create a 55G file to be used as disk</span>
+</span></span><span style="display:flex;"><span>$ fallocate -l55g btrfs.disk
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># Create the filesystem on top of it</span>
+</span></span><span style="display:flex;"><span>$ mkfs.btrfs -f /storage/btrfs.disk 
+</span></span><span style="display:flex;"><span>btrfs-progs v5.10.1 
+</span></span><span style="display:flex;"><span>See http://btrfs.wiki.kernel.org <span style="color:#c6a0f6">for</span> more information.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Label:              <span style="color:#91d7e3">(</span>null<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>UUID:               8f9303a9-15cd-4709-848e-38f80b5b2985
+</span></span><span style="display:flex;"><span>Node size:          16384
+</span></span><span style="display:flex;"><span>Sector size:        4096
+</span></span><span style="display:flex;"><span>Filesystem size:    55.00GiB
+</span></span><span style="display:flex;"><span>Block group profiles:
+</span></span><span style="display:flex;"><span>  Data:             single            1.00GiB
+</span></span><span style="display:flex;"><span>  Metadata:         DUP               1.00GiB
+</span></span><span style="display:flex;"><span>  System:           DUP               8.00MiB
+</span></span><span style="display:flex;"><span>SSD detected:       no
+</span></span><span style="display:flex;"><span>Zoned device:       no
+</span></span><span style="display:flex;"><span>Incompat features:  extref, skinny-metadata
+</span></span><span style="display:flex;"><span>Runtime features:   
+</span></span><span style="display:flex;"><span>Checksum:           crc32c
+</span></span><span style="display:flex;"><span>Number of devices:  1
+</span></span><span style="display:flex;"><span>Devices:
+</span></span><span style="display:flex;"><span>   ID        SIZE  PATH
+</span></span><span style="display:flex;"><span>    1    55.00GiB  /storage/btrfs.disk
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>If your filesystem reports a different data block group as being of 8M, it&rsquo;s
@@ -587,26 +585,26 @@ setups, these numbers can be different.</p>
 <p>Also, the block group sizes doesn&rsquo;t affect the number of maximum number of
 inodes that can be created, as we&rsquo;ll see later.</p>
 <p>We can inspect the block groups by using the <strong>btrfs</strong> tool:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">8
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ btrfs inspect-internal dump-tree -t extent /storage/btrfs.disk <span class="p">|</span> grep -A1 BLOCK_GROUP
-</span></span><span class="line"><span class="cl">        item <span class="m">0</span> key <span class="o">(</span><span class="m">1078984704</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">16259</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">0</span> chunk_objectid <span class="m">256</span> flags DATA
-</span></span><span class="line"><span class="cl">        item <span class="m">1</span> key <span class="o">(</span><span class="m">2152726528</span> BLOCK_GROUP_ITEM 8388608<span class="o">)</span> itemoff <span class="m">16235</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">16384</span> chunk_objectid <span class="m">256</span> flags SYSTEM<span class="p">|</span>DUP
-</span></span><span class="line"><span class="cl">...
-</span></span><span class="line"><span class="cl">        item <span class="m">4</span> key <span class="o">(</span><span class="m">2161115136</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">16145</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">114688</span> chunk_objectid <span class="m">256</span> flags METADATA<span class="p">|</span>DUP
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ btrfs inspect-internal dump-tree -t extent /storage/btrfs.disk <span style="color:#cad3f5">|</span> grep -A1 BLOCK_GROUP
+</span></span><span style="display:flex;"><span>        item 0 key <span style="color:#91d7e3">(</span>1078984704 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 16259 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 0 chunk_objectid 256 flags DATA
+</span></span><span style="display:flex;"><span>        item 1 key <span style="color:#91d7e3">(</span>2152726528 BLOCK_GROUP_ITEM 8388608<span style="color:#91d7e3">)</span> itemoff 16235 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 16384 chunk_objectid 256 flags SYSTEM<span style="color:#cad3f5">|</span>DUP
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>        item 4 key <span style="color:#91d7e3">(</span>2161115136 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 16145 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 114688 chunk_objectid 256 flags METADATA<span style="color:#cad3f5">|</span>DUP
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>The above command used the <em>inspect-internal</em> subcommand to dump the entire
@@ -616,114 +614,114 @@ profiles are also dumped and can be verified, being DUP for <em>system</em> and
 <em>metadata</em>.</p>
 <p>When we write more files, or if a file occupies more than 1G of data, more data
 block groups are created (the <em>flags</em> field shows the type of the block group):</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># Creating a 2.5G file</span>
-</span></span><span class="line"><span class="cl">$ dd <span class="k">if</span><span class="o">=</span>/dev/urandom <span class="nv">of</span><span class="o">=</span>/mnt/testing/file.bin <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span><span class="m">2500</span>
-</span></span><span class="line"><span class="cl">$ sync
-</span></span><span class="line"><span class="cl"><span class="c1"># Check the new data block groups</span>
-</span></span><span class="line"><span class="cl">$ btrfs inspect-internal dump-tree -t extent /storage/btrfs.disk<span class="p">|</span> grep -A1 BLOCK_GROUP 
-</span></span><span class="line"><span class="cl">        item <span class="m">0</span> key <span class="o">(</span><span class="m">1078984704</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">16259</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">940572672</span> chunk_objectid <span class="m">256</span> flags DATA
-</span></span><span class="line"><span class="cl">..
-</span></span><span class="line"><span class="cl">        item <span class="m">13</span> key <span class="o">(</span><span class="m">2152726528</span> BLOCK_GROUP_ITEM 8388608<span class="o">)</span> itemoff <span class="m">15619</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">16384</span> chunk_objectid <span class="m">256</span> flags SYSTEM<span class="p">|</span>DUP
-</span></span><span class="line"><span class="cl">        item <span class="m">14</span> key <span class="o">(</span><span class="m">2161115136</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">15595</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">2899968</span> chunk_objectid <span class="m">256</span> flags METADATA<span class="p">|</span>DUP
-</span></span><span class="line"><span class="cl">..
-</span></span><span class="line"><span class="cl">        item <span class="m">192</span> key <span class="o">(</span><span class="m">3234856960</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">9730</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">939524096</span> chunk_objectid <span class="m">256</span> flags DATA
-</span></span><span class="line"><span class="cl">..
-</span></span><span class="line"><span class="cl">        item <span class="m">201</span> key <span class="o">(</span><span class="m">4308598784</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">9282</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">742391808</span> chunk_objectid <span class="m">256</span> flags DATA
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># Creating a 2.5G file</span>
+</span></span><span style="display:flex;"><span>$ dd <span style="color:#c6a0f6">if</span><span style="color:#91d7e3">=</span>/dev/urandom <span style="color:#b7bdf8">of</span><span style="color:#91d7e3">=</span>/mnt/testing/file.bin <span style="color:#b7bdf8">bs</span><span style="color:#91d7e3">=</span>1M <span style="color:#b7bdf8">count</span><span style="color:#91d7e3">=</span>2500
+</span></span><span style="display:flex;"><span>$ sync
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># Check the new data block groups</span>
+</span></span><span style="display:flex;"><span>$ btrfs inspect-internal dump-tree -t extent /storage/btrfs.disk<span style="color:#cad3f5">|</span> grep -A1 BLOCK_GROUP 
+</span></span><span style="display:flex;"><span>        item 0 key <span style="color:#91d7e3">(</span>1078984704 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 16259 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 940572672 chunk_objectid 256 flags DATA
+</span></span><span style="display:flex;"><span>..
+</span></span><span style="display:flex;"><span>        item 13 key <span style="color:#91d7e3">(</span>2152726528 BLOCK_GROUP_ITEM 8388608<span style="color:#91d7e3">)</span> itemoff 15619 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 16384 chunk_objectid 256 flags SYSTEM<span style="color:#cad3f5">|</span>DUP
+</span></span><span style="display:flex;"><span>        item 14 key <span style="color:#91d7e3">(</span>2161115136 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 15595 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 2899968 chunk_objectid 256 flags METADATA<span style="color:#cad3f5">|</span>DUP
+</span></span><span style="display:flex;"><span>..
+</span></span><span style="display:flex;"><span>        item 192 key <span style="color:#91d7e3">(</span>3234856960 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 9730 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 939524096 chunk_objectid 256 flags DATA
+</span></span><span style="display:flex;"><span>..
+</span></span><span style="display:flex;"><span>        item 201 key <span style="color:#91d7e3">(</span>4308598784 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 9282 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 742391808 chunk_objectid 256 flags DATA
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>We can see that new data block groups were created. If we remove the file, the
 used space is updated to reflect the file removal:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ rm /mnt/testing/file.bin
-</span></span><span class="line"><span class="cl">$ sync
-</span></span><span class="line"><span class="cl">$ btrfs inspect-internal dump-tree -t extent /storage/btrfs.disk<span class="p">|</span> grep -A1 BLOCK_GROUP
-</span></span><span class="line"><span class="cl">        item <span class="m">1</span> key <span class="o">(</span><span class="m">1078984704</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">16206</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">1048576</span> chunk_objectid <span class="m">256</span> flags DATA
-</span></span><span class="line"><span class="cl">..
-</span></span><span class="line"><span class="cl">        item <span class="m">6</span> key <span class="o">(</span><span class="m">2152726528</span> BLOCK_GROUP_ITEM 8388608<span class="o">)</span> itemoff <span class="m">15990</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">16384</span> chunk_objectid <span class="m">256</span> flags SYSTEM<span class="p">|</span>DUP
-</span></span><span class="line"><span class="cl">        item <span class="m">7</span> key <span class="o">(</span><span class="m">2161115136</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">15966</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">147456</span> chunk_objectid <span class="m">256</span> flags METADATA<span class="p">|</span>DUP
-</span></span><span class="line"><span class="cl">..
-</span></span><span class="line"><span class="cl">        item <span class="m">17</span> key <span class="o">(</span><span class="m">3234856960</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">15645</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">0</span> chunk_objectid <span class="m">256</span> flags DATA
-</span></span><span class="line"><span class="cl">        item <span class="m">18</span> key <span class="o">(</span><span class="m">4308598784</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">15621</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">0</span> chunk_objectid <span class="m">256</span> flags DATA
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ rm /mnt/testing/file.bin
+</span></span><span style="display:flex;"><span>$ sync
+</span></span><span style="display:flex;"><span>$ btrfs inspect-internal dump-tree -t extent /storage/btrfs.disk<span style="color:#cad3f5">|</span> grep -A1 BLOCK_GROUP
+</span></span><span style="display:flex;"><span>        item 1 key <span style="color:#91d7e3">(</span>1078984704 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 16206 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 1048576 chunk_objectid 256 flags DATA
+</span></span><span style="display:flex;"><span>..
+</span></span><span style="display:flex;"><span>        item 6 key <span style="color:#91d7e3">(</span>2152726528 BLOCK_GROUP_ITEM 8388608<span style="color:#91d7e3">)</span> itemoff 15990 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 16384 chunk_objectid 256 flags SYSTEM<span style="color:#cad3f5">|</span>DUP
+</span></span><span style="display:flex;"><span>        item 7 key <span style="color:#91d7e3">(</span>2161115136 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 15966 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 147456 chunk_objectid 256 flags METADATA<span style="color:#cad3f5">|</span>DUP
+</span></span><span style="display:flex;"><span>..
+</span></span><span style="display:flex;"><span>        item 17 key <span style="color:#91d7e3">(</span>3234856960 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 15645 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 0 chunk_objectid 256 flags DATA
+</span></span><span style="display:flex;"><span>        item 18 key <span style="color:#91d7e3">(</span>4308598784 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 15621 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 0 chunk_objectid 256 flags DATA
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Take a look in the <em>block group use</em> field, they are now zeroed. The block
 groups are still allocated, but a balance can remove the non used ones:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ btrfs balance start -dusage<span class="o">=</span><span class="m">0</span> /mnt/testing
-</span></span><span class="line"><span class="cl">Done, had to relocate <span class="m">0</span> out of <span class="m">3</span> chunks
-</span></span><span class="line"><span class="cl">$ btrfs inspect-internal dump-tree -textent /storage/btrfs.disk <span class="p">|</span> grep -A <span class="m">1</span> BLOCK_GROUP 
-</span></span><span class="line"><span class="cl">        item <span class="m">0</span> key <span class="o">(</span><span class="m">1078984704</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">16259</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">524288</span> chunk_objectid <span class="m">256</span> flags DATA
-</span></span><span class="line"><span class="cl">..
-</span></span><span class="line"><span class="cl">        item <span class="m">3</span> key <span class="o">(</span><span class="m">2152726528</span> BLOCK_GROUP_ITEM 8388608<span class="o">)</span> itemoff <span class="m">16129</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">16384</span> chunk_objectid <span class="m">256</span> flags SYSTEM<span class="p">|</span>DUP
-</span></span><span class="line"><span class="cl">..
-</span></span><span class="line"><span class="cl">        item <span class="m">5</span> key <span class="o">(</span><span class="m">2161115136</span> BLOCK_GROUP_ITEM 1073741824<span class="o">)</span> itemoff <span class="m">16072</span> itemsize <span class="m">24</span>
-</span></span><span class="line"><span class="cl">                block group used <span class="m">147456</span> chunk_objectid <span class="m">256</span> flags METADATA<span class="p">|</span>DUP
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ btrfs balance start -dusage<span style="color:#91d7e3">=</span>0 /mnt/testing
+</span></span><span style="display:flex;"><span>Done, had to relocate 0 out of 3 chunks
+</span></span><span style="display:flex;"><span>$ btrfs inspect-internal dump-tree -textent /storage/btrfs.disk <span style="color:#cad3f5">|</span> grep -A 1 BLOCK_GROUP 
+</span></span><span style="display:flex;"><span>        item 0 key <span style="color:#91d7e3">(</span>1078984704 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 16259 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 524288 chunk_objectid 256 flags DATA
+</span></span><span style="display:flex;"><span>..
+</span></span><span style="display:flex;"><span>        item 3 key <span style="color:#91d7e3">(</span>2152726528 BLOCK_GROUP_ITEM 8388608<span style="color:#91d7e3">)</span> itemoff 16129 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 16384 chunk_objectid 256 flags SYSTEM<span style="color:#cad3f5">|</span>DUP
+</span></span><span style="display:flex;"><span>..
+</span></span><span style="display:flex;"><span>        item 5 key <span style="color:#91d7e3">(</span>2161115136 BLOCK_GROUP_ITEM 1073741824<span style="color:#91d7e3">)</span> itemoff 16072 itemsize 24
+</span></span><span style="display:flex;"><span>                block group used 147456 chunk_objectid 256 flags METADATA<span style="color:#cad3f5">|</span>DUP
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>It shows only one data block group.</p>
@@ -733,44 +731,44 @@ btrfs allocates internal <strong>items</strong> to manage its metadata. Each ite
 addressed by three values that together compose a <strong>key</strong>. These values are
 described as <strong>objectid</strong>, <strong>type</strong> and <strong>offset</strong>.</p>
 <p>This is the fs tree right after the filesystem is created:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ btrfs inspect-internal dump-tree -t fs /storage/btrfs.disk
-</span></span><span class="line"><span class="cl">btrfs-progs v5.16.1 
-</span></span><span class="line"><span class="cl">fs tree key <span class="o">(</span>FS_TREE ROOT_ITEM 0<span class="o">)</span> 
-</span></span><span class="line"><span class="cl">leaf <span class="m">30474240</span> items <span class="m">2</span> free space <span class="m">16061</span> generation <span class="m">5</span> owner FS_TREE
-</span></span><span class="line"><span class="cl">leaf <span class="m">30474240</span> flags 0x1<span class="o">(</span>WRITTEN<span class="o">)</span> backref revision <span class="m">1</span>
-</span></span><span class="line"><span class="cl">fs uuid b62385e4-e0cc-497f-a220-29ae6465510d
-</span></span><span class="line"><span class="cl">chunk uuid b3e0fa4d-fddb-40b3-bd9c-349df8095b39
-</span></span><span class="line"><span class="cl">        item <span class="m">0</span> key <span class="o">(</span><span class="m">256</span> INODE_ITEM 0<span class="o">)</span> itemoff <span class="m">16123</span> itemsize <span class="m">160</span>
-</span></span><span class="line"><span class="cl">                generation <span class="m">3</span> transid <span class="m">0</span> size <span class="m">0</span> nbytes <span class="m">16384</span>
-</span></span><span class="line"><span class="cl">                block group <span class="m">0</span> mode <span class="m">40755</span> links <span class="m">1</span> uid <span class="m">0</span> gid <span class="m">0</span> rdev <span class="m">0</span>
-</span></span><span class="line"><span class="cl">                sequence <span class="m">0</span> flags 0x0<span class="o">(</span>none<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                atime 1650811378.0 <span class="o">(</span>2022-04-24 11:42:58<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                ctime 1650811378.0 <span class="o">(</span>2022-04-24 11:42:58<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                mtime 1650811378.0 <span class="o">(</span>2022-04-24 11:42:58<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                otime 1650811378.0 <span class="o">(</span>2022-04-24 11:42:58<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        item <span class="m">1</span> key <span class="o">(</span><span class="m">256</span> INODE_REF 256<span class="o">)</span> itemoff <span class="m">16111</span> itemsize <span class="m">12</span>
-</span></span><span class="line"><span class="cl">                index <span class="m">0</span> namelen <span class="m">2</span> name: ..
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ btrfs inspect-internal dump-tree -t fs /storage/btrfs.disk
+</span></span><span style="display:flex;"><span>btrfs-progs v5.16.1 
+</span></span><span style="display:flex;"><span>fs tree key <span style="color:#91d7e3">(</span>FS_TREE ROOT_ITEM 0<span style="color:#91d7e3">)</span> 
+</span></span><span style="display:flex;"><span>leaf 30474240 items 2 free space 16061 generation 5 owner FS_TREE
+</span></span><span style="display:flex;"><span>leaf 30474240 flags 0x1<span style="color:#91d7e3">(</span>WRITTEN<span style="color:#91d7e3">)</span> backref revision 1
+</span></span><span style="display:flex;"><span>fs uuid b62385e4-e0cc-497f-a220-29ae6465510d
+</span></span><span style="display:flex;"><span>chunk uuid b3e0fa4d-fddb-40b3-bd9c-349df8095b39
+</span></span><span style="display:flex;"><span>        item 0 key <span style="color:#91d7e3">(</span>256 INODE_ITEM 0<span style="color:#91d7e3">)</span> itemoff 16123 itemsize 160
+</span></span><span style="display:flex;"><span>                generation 3 transid 0 size 0 nbytes 16384
+</span></span><span style="display:flex;"><span>                block group 0 mode 40755 links 1 uid 0 gid 0 rdev 0
+</span></span><span style="display:flex;"><span>                sequence 0 flags 0x0<span style="color:#91d7e3">(</span>none<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                atime 1650811378.0 <span style="color:#91d7e3">(</span>2022-04-24 11:42:58<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                ctime 1650811378.0 <span style="color:#91d7e3">(</span>2022-04-24 11:42:58<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                mtime 1650811378.0 <span style="color:#91d7e3">(</span>2022-04-24 11:42:58<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                otime 1650811378.0 <span style="color:#91d7e3">(</span>2022-04-24 11:42:58<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>        item 1 key <span style="color:#91d7e3">(</span>256 INODE_REF 256<span style="color:#91d7e3">)</span> itemoff 16111 itemsize 12
+</span></span><span style="display:flex;"><span>                index 0 namelen 2 name: ..
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>There are two items in the listing, and the two refer to the top level
@@ -781,54 +779,54 @@ number used in a filesystem tree.</p>
 INODE_REF parent_dir_inode). In this case it points to itself since the top
 level directory ancestor is itself.</p>
 <p>By creating a file, we can see more structures being allocated:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">22
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ touch /mnt/testing/file.txt
-</span></span><span class="line"><span class="cl">$ sync
-</span></span><span class="line"><span class="cl">$ btrfs inspect-internal dump-tree -t fs /storage/btrfs.disk
-</span></span><span class="line"><span class="cl">...
-</span></span><span class="line"><span class="cl">        item <span class="m">2</span> key <span class="o">(</span><span class="m">256</span> DIR_ITEM 3956591618<span class="o">)</span> itemoff <span class="m">16073</span> itemsize <span class="m">38</span>
-</span></span><span class="line"><span class="cl">                location key <span class="o">(</span><span class="m">257</span> INODE_ITEM 0<span class="o">)</span> <span class="nb">type</span> FILE
-</span></span><span class="line"><span class="cl">                transid <span class="m">9</span> data_len <span class="m">0</span> name_len <span class="m">8</span>
-</span></span><span class="line"><span class="cl">                name: file.txt
-</span></span><span class="line"><span class="cl">        item <span class="m">3</span> key <span class="o">(</span><span class="m">256</span> DIR_INDEX 2<span class="o">)</span> itemoff <span class="m">16035</span> itemsize <span class="m">38</span>
-</span></span><span class="line"><span class="cl">                location key <span class="o">(</span><span class="m">257</span> INODE_ITEM 0<span class="o">)</span> <span class="nb">type</span> FILE
-</span></span><span class="line"><span class="cl">                transid <span class="m">9</span> data_len <span class="m">0</span> name_len <span class="m">8</span>
-</span></span><span class="line"><span class="cl">                name: file.txt
-</span></span><span class="line"><span class="cl">        item <span class="m">4</span> key <span class="o">(</span><span class="m">257</span> INODE_ITEM 0<span class="o">)</span> itemoff <span class="m">15875</span> itemsize <span class="m">160</span>
-</span></span><span class="line"><span class="cl">                generation <span class="m">9</span> transid <span class="m">9</span> size <span class="m">0</span> nbytes <span class="m">0</span>
-</span></span><span class="line"><span class="cl">                block group <span class="m">0</span> mode <span class="m">100644</span> links <span class="m">1</span> uid <span class="m">0</span> gid <span class="m">0</span> rdev <span class="m">0</span>
-</span></span><span class="line"><span class="cl">                sequence <span class="m">10</span> flags 0x0<span class="o">(</span>none<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                atime 1650811865.463886516 <span class="o">(</span>2022-04-24 11:51:05<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                ctime 1650811865.463886516 <span class="o">(</span>2022-04-24 11:51:05<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                mtime 1650811865.463886516 <span class="o">(</span>2022-04-24 11:51:05<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                otime 1650811865.463886516 <span class="o">(</span>2022-04-24 11:51:05<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        item <span class="m">5</span> key <span class="o">(</span><span class="m">257</span> INODE_REF 256<span class="o">)</span> itemoff <span class="m">15857</span> itemsize <span class="m">18</span>
-</span></span><span class="line"><span class="cl">                index <span class="m">2</span> namelen <span class="m">8</span> name: file.txt
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ touch /mnt/testing/file.txt
+</span></span><span style="display:flex;"><span>$ sync
+</span></span><span style="display:flex;"><span>$ btrfs inspect-internal dump-tree -t fs /storage/btrfs.disk
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>        item 2 key <span style="color:#91d7e3">(</span>256 DIR_ITEM 3956591618<span style="color:#91d7e3">)</span> itemoff 16073 itemsize 38
+</span></span><span style="display:flex;"><span>                location key <span style="color:#91d7e3">(</span>257 INODE_ITEM 0<span style="color:#91d7e3">)</span> <span style="font-style:italic">type</span> FILE
+</span></span><span style="display:flex;"><span>                transid 9 data_len 0 name_len 8
+</span></span><span style="display:flex;"><span>                name: file.txt
+</span></span><span style="display:flex;"><span>        item 3 key <span style="color:#91d7e3">(</span>256 DIR_INDEX 2<span style="color:#91d7e3">)</span> itemoff 16035 itemsize 38
+</span></span><span style="display:flex;"><span>                location key <span style="color:#91d7e3">(</span>257 INODE_ITEM 0<span style="color:#91d7e3">)</span> <span style="font-style:italic">type</span> FILE
+</span></span><span style="display:flex;"><span>                transid 9 data_len 0 name_len 8
+</span></span><span style="display:flex;"><span>                name: file.txt
+</span></span><span style="display:flex;"><span>        item 4 key <span style="color:#91d7e3">(</span>257 INODE_ITEM 0<span style="color:#91d7e3">)</span> itemoff 15875 itemsize 160
+</span></span><span style="display:flex;"><span>                generation 9 transid 9 size 0 nbytes 0
+</span></span><span style="display:flex;"><span>                block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
+</span></span><span style="display:flex;"><span>                sequence 10 flags 0x0<span style="color:#91d7e3">(</span>none<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                atime 1650811865.463886516 <span style="color:#91d7e3">(</span>2022-04-24 11:51:05<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                ctime 1650811865.463886516 <span style="color:#91d7e3">(</span>2022-04-24 11:51:05<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                mtime 1650811865.463886516 <span style="color:#91d7e3">(</span>2022-04-24 11:51:05<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                otime 1650811865.463886516 <span style="color:#91d7e3">(</span>2022-04-24 11:51:05<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>        item 5 key <span style="color:#91d7e3">(</span>257 INODE_REF 256<span style="color:#91d7e3">)</span> itemoff 15857 itemsize 18
+</span></span><span style="display:flex;"><span>                index 2 namelen 8 name: file.txt
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>A new INODE_ITEM was allocated for file.txt, using the inode number 257. The
@@ -841,80 +839,80 @@ file created in the directory, as values 1 and 2 are related to &lsquo;.&rsquo; 
 respectively. DIR_ITEM is used for searching. Its <strong>offset</strong> value is the
 filename hashed, making it quick to find a file by name inside a directory.</p>
 <p>As the file grows, more item are created:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">35
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ dd <span class="k">if</span><span class="o">=</span>/dev/urandom <span class="nv">of</span><span class="o">=</span>/mnt/testing/file.txt <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span><span class="m">500</span>
-</span></span><span class="line"><span class="cl">$ sync
-</span></span><span class="line"><span class="cl">$ btrfs inspect-internal dump-tree -t fs btrfs.disk
-</span></span><span class="line"><span class="cl">...
-</span></span><span class="line"><span class="cl">        item <span class="m">6</span> key <span class="o">(</span><span class="m">257</span> EXTENT_DATA 0<span class="o">)</span> itemoff <span class="m">15804</span> itemsize <span class="m">53</span>
-</span></span><span class="line"><span class="cl">                generation <span class="m">12</span> <span class="nb">type</span> <span class="m">1</span> <span class="o">(</span>regular<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                extent data disk byte <span class="m">1104150528</span> nr <span class="m">134217728</span>
-</span></span><span class="line"><span class="cl">                extent data offset <span class="m">0</span> nr <span class="m">134217728</span> ram <span class="m">134217728</span>
-</span></span><span class="line"><span class="cl">                extent compression <span class="m">0</span> <span class="o">(</span>none<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        item <span class="m">7</span> key <span class="o">(</span><span class="m">257</span> EXTENT_DATA 134217728<span class="o">)</span> itemoff <span class="m">15751</span> itemsize <span class="m">53</span>
-</span></span><span class="line"><span class="cl">                generation <span class="m">12</span> <span class="nb">type</span> <span class="m">1</span> <span class="o">(</span>regular<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                extent data disk byte <span class="m">1238368256</span> nr <span class="m">134217728</span>
-</span></span><span class="line"><span class="cl">                extent data offset <span class="m">0</span> nr <span class="m">134217728</span> ram <span class="m">134217728</span>
-</span></span><span class="line"><span class="cl">                extent compression <span class="m">0</span> <span class="o">(</span>none<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        item <span class="m">8</span> key <span class="o">(</span><span class="m">257</span> EXTENT_DATA 268435456<span class="o">)</span> itemoff <span class="m">15698</span> itemsize <span class="m">53</span>
-</span></span><span class="line"><span class="cl">                generation <span class="m">12</span> <span class="nb">type</span> <span class="m">1</span> <span class="o">(</span>regular<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                extent data disk byte <span class="m">1372585984</span> nr <span class="m">134217728</span>
-</span></span><span class="line"><span class="cl">                extent data offset <span class="m">0</span> nr <span class="m">134217728</span> ram <span class="m">134217728</span>
-</span></span><span class="line"><span class="cl">                extent compression <span class="m">0</span> <span class="o">(</span>none<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        item <span class="m">9</span> key <span class="o">(</span><span class="m">257</span> EXTENT_DATA 402653184<span class="o">)</span> itemoff <span class="m">15645</span> itemsize <span class="m">53</span>
-</span></span><span class="line"><span class="cl">                generation <span class="m">12</span> <span class="nb">type</span> <span class="m">1</span> <span class="o">(</span>regular<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                extent data disk byte <span class="m">1506803712</span> nr <span class="m">90177536</span>
-</span></span><span class="line"><span class="cl">                extent data offset <span class="m">0</span> nr <span class="m">90177536</span> ram <span class="m">90177536</span>
-</span></span><span class="line"><span class="cl">                extent compression <span class="m">0</span> <span class="o">(</span>none<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        item <span class="m">10</span> key <span class="o">(</span><span class="m">257</span> EXTENT_DATA 492830720<span class="o">)</span> itemoff <span class="m">15592</span> itemsize <span class="m">53</span>
-</span></span><span class="line"><span class="cl">                generation <span class="m">12</span> <span class="nb">type</span> <span class="m">1</span> <span class="o">(</span>regular<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                extent data disk byte <span class="m">1596981248</span> nr <span class="m">1048576</span>
-</span></span><span class="line"><span class="cl">                extent data offset <span class="m">0</span> nr <span class="m">1048576</span> ram <span class="m">1048576</span>
-</span></span><span class="line"><span class="cl">                extent compression <span class="m">0</span> <span class="o">(</span>none<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        item <span class="m">11</span> key <span class="o">(</span><span class="m">257</span> EXTENT_DATA 493879296<span class="o">)</span> itemoff <span class="m">15539</span> itemsize <span class="m">53</span>
-</span></span><span class="line"><span class="cl">                generation <span class="m">12</span> <span class="nb">type</span> <span class="m">1</span> <span class="o">(</span>regular<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                extent data disk byte <span class="m">1598029824</span> nr <span class="m">30408704</span>
-</span></span><span class="line"><span class="cl">                extent data offset <span class="m">0</span> nr <span class="m">30408704</span> ram <span class="m">30408704</span>
-</span></span><span class="line"><span class="cl">                extent compression <span class="m">0</span> <span class="o">(</span>none<span class="o">)</span>
-</span></span><span class="line"><span class="cl">...
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ dd <span style="color:#c6a0f6">if</span><span style="color:#91d7e3">=</span>/dev/urandom <span style="color:#b7bdf8">of</span><span style="color:#91d7e3">=</span>/mnt/testing/file.txt <span style="color:#b7bdf8">bs</span><span style="color:#91d7e3">=</span>1M <span style="color:#b7bdf8">count</span><span style="color:#91d7e3">=</span>500
+</span></span><span style="display:flex;"><span>$ sync
+</span></span><span style="display:flex;"><span>$ btrfs inspect-internal dump-tree -t fs btrfs.disk
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>        item 6 key <span style="color:#91d7e3">(</span>257 EXTENT_DATA 0<span style="color:#91d7e3">)</span> itemoff 15804 itemsize 53
+</span></span><span style="display:flex;"><span>                generation 12 <span style="font-style:italic">type</span> 1 <span style="color:#91d7e3">(</span>regular<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                extent data disk byte 1104150528 nr 134217728
+</span></span><span style="display:flex;"><span>                extent data offset 0 nr 134217728 ram 134217728
+</span></span><span style="display:flex;"><span>                extent compression 0 <span style="color:#91d7e3">(</span>none<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>        item 7 key <span style="color:#91d7e3">(</span>257 EXTENT_DATA 134217728<span style="color:#91d7e3">)</span> itemoff 15751 itemsize 53
+</span></span><span style="display:flex;"><span>                generation 12 <span style="font-style:italic">type</span> 1 <span style="color:#91d7e3">(</span>regular<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                extent data disk byte 1238368256 nr 134217728
+</span></span><span style="display:flex;"><span>                extent data offset 0 nr 134217728 ram 134217728
+</span></span><span style="display:flex;"><span>                extent compression 0 <span style="color:#91d7e3">(</span>none<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>        item 8 key <span style="color:#91d7e3">(</span>257 EXTENT_DATA 268435456<span style="color:#91d7e3">)</span> itemoff 15698 itemsize 53
+</span></span><span style="display:flex;"><span>                generation 12 <span style="font-style:italic">type</span> 1 <span style="color:#91d7e3">(</span>regular<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                extent data disk byte 1372585984 nr 134217728
+</span></span><span style="display:flex;"><span>                extent data offset 0 nr 134217728 ram 134217728
+</span></span><span style="display:flex;"><span>                extent compression 0 <span style="color:#91d7e3">(</span>none<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>        item 9 key <span style="color:#91d7e3">(</span>257 EXTENT_DATA 402653184<span style="color:#91d7e3">)</span> itemoff 15645 itemsize 53
+</span></span><span style="display:flex;"><span>                generation 12 <span style="font-style:italic">type</span> 1 <span style="color:#91d7e3">(</span>regular<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                extent data disk byte 1506803712 nr 90177536
+</span></span><span style="display:flex;"><span>                extent data offset 0 nr 90177536 ram 90177536
+</span></span><span style="display:flex;"><span>                extent compression 0 <span style="color:#91d7e3">(</span>none<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>        item 10 key <span style="color:#91d7e3">(</span>257 EXTENT_DATA 492830720<span style="color:#91d7e3">)</span> itemoff 15592 itemsize 53
+</span></span><span style="display:flex;"><span>                generation 12 <span style="font-style:italic">type</span> 1 <span style="color:#91d7e3">(</span>regular<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                extent data disk byte 1596981248 nr 1048576
+</span></span><span style="display:flex;"><span>                extent data offset 0 nr 1048576 ram 1048576
+</span></span><span style="display:flex;"><span>                extent compression 0 <span style="color:#91d7e3">(</span>none<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>        item 11 key <span style="color:#91d7e3">(</span>257 EXTENT_DATA 493879296<span style="color:#91d7e3">)</span> itemoff 15539 itemsize 53
+</span></span><span style="display:flex;"><span>                generation 12 <span style="font-style:italic">type</span> 1 <span style="color:#91d7e3">(</span>regular<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>                extent data disk byte 1598029824 nr 30408704
+</span></span><span style="display:flex;"><span>                extent data offset 0 nr 30408704 ram 30408704
+</span></span><span style="display:flex;"><span>                extent compression 0 <span style="color:#91d7e3">(</span>none<span style="color:#91d7e3">)</span>
+</span></span><span style="display:flex;"><span>...
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>New EXTENT_DATA items are created to manage the data related to user files. The
@@ -948,112 +946,112 @@ each subvolume can be mounted separately. It can be compared to a disk
 partition, but having much more features, like creating snapshots. openSUSE and
 SUSE Linux Enterprise (SLE) uses subvolumes to divide the filesystem into logic
 structures, and also to manage snapshots after each upgrade:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">20
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ btrfs subvolume list /
-</span></span><span class="line"><span class="cl"><span class="o">[</span>sudo<span class="o">]</span> password <span class="k">for</span> root: 
-</span></span><span class="line"><span class="cl">ID <span class="m">256</span> gen <span class="m">31</span> top level <span class="m">5</span> path @
-</span></span><span class="line"><span class="cl">ID <span class="m">257</span> gen <span class="m">161195</span> top level <span class="m">256</span> path @/var
-</span></span><span class="line"><span class="cl">ID <span class="m">258</span> gen <span class="m">161097</span> top level <span class="m">256</span> path @/usr/local
-</span></span><span class="line"><span class="cl">ID <span class="m">259</span> gen <span class="m">64676</span> top level <span class="m">256</span> path @/srv
-</span></span><span class="line"><span class="cl">ID <span class="m">260</span> gen <span class="m">149398</span> top level <span class="m">256</span> path @/root
-</span></span><span class="line"><span class="cl">ID <span class="m">261</span> gen <span class="m">146119</span> top level <span class="m">256</span> path @/opt
-</span></span><span class="line"><span class="cl">ID <span class="m">262</span> gen <span class="m">161195</span> top level <span class="m">256</span> path @/home
-</span></span><span class="line"><span class="cl">ID <span class="m">263</span> gen <span class="m">150062</span> top level <span class="m">256</span> path @/boot/grub2/x86_64-efi
-</span></span><span class="line"><span class="cl">ID <span class="m">264</span> gen <span class="m">27</span> top level <span class="m">256</span> path @/boot/grub2/i386-pc
-</span></span><span class="line"><span class="cl">ID <span class="m">265</span> gen <span class="m">160386</span> top level <span class="m">256</span> path @/.snapshots
-</span></span><span class="line"><span class="cl">ID <span class="m">266</span> gen <span class="m">161162</span> top level <span class="m">265</span> path @/.snapshots/1/snapshot
-</span></span><span class="line"><span class="cl">ID <span class="m">342</span> gen <span class="m">110017</span> top level <span class="m">265</span> path @/.snapshots/77/snapshot
-</span></span><span class="line"><span class="cl">ID <span class="m">343</span> gen <span class="m">110254</span> top level <span class="m">265</span> path @/.snapshots/78/snapshot
-</span></span><span class="line"><span class="cl">ID <span class="m">346</span> gen <span class="m">112147</span> top level <span class="m">265</span> path @/.snapshots/81/snapshot
-</span></span><span class="line"><span class="cl">ID <span class="m">347</span> gen <span class="m">112149</span> top level <span class="m">265</span> path @/.snapshots/82/snapshot
-</span></span><span class="line"><span class="cl">ID <span class="m">352</span> gen <span class="m">113071</span> top level <span class="m">265</span> path @/.snapshots/87/snapshot
-</span></span><span class="line"><span class="cl">ID <span class="m">353</span> gen <span class="m">113100</span> top level <span class="m">257</span> path @/var/lib/machines
-</span></span><span class="line"><span class="cl">...
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ btrfs subvolume list /
+</span></span><span style="display:flex;"><span><span style="color:#91d7e3">[</span>sudo<span style="color:#91d7e3">]</span> password <span style="color:#c6a0f6">for</span> root: 
+</span></span><span style="display:flex;"><span>ID 256 gen 31 top level 5 path @
+</span></span><span style="display:flex;"><span>ID 257 gen 161195 top level 256 path @/var
+</span></span><span style="display:flex;"><span>ID 258 gen 161097 top level 256 path @/usr/local
+</span></span><span style="display:flex;"><span>ID 259 gen 64676 top level 256 path @/srv
+</span></span><span style="display:flex;"><span>ID 260 gen 149398 top level 256 path @/root
+</span></span><span style="display:flex;"><span>ID 261 gen 146119 top level 256 path @/opt
+</span></span><span style="display:flex;"><span>ID 262 gen 161195 top level 256 path @/home
+</span></span><span style="display:flex;"><span>ID 263 gen 150062 top level 256 path @/boot/grub2/x86_64-efi
+</span></span><span style="display:flex;"><span>ID 264 gen 27 top level 256 path @/boot/grub2/i386-pc
+</span></span><span style="display:flex;"><span>ID 265 gen 160386 top level 256 path @/.snapshots
+</span></span><span style="display:flex;"><span>ID 266 gen 161162 top level 265 path @/.snapshots/1/snapshot
+</span></span><span style="display:flex;"><span>ID 342 gen 110017 top level 265 path @/.snapshots/77/snapshot
+</span></span><span style="display:flex;"><span>ID 343 gen 110254 top level 265 path @/.snapshots/78/snapshot
+</span></span><span style="display:flex;"><span>ID 346 gen 112147 top level 265 path @/.snapshots/81/snapshot
+</span></span><span style="display:flex;"><span>ID 347 gen 112149 top level 265 path @/.snapshots/82/snapshot
+</span></span><span style="display:flex;"><span>ID 352 gen 113071 top level 265 path @/.snapshots/87/snapshot
+</span></span><span style="display:flex;"><span>ID 353 gen 113100 top level 257 path @/var/lib/machines
+</span></span><span style="display:flex;"><span>...
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>An interesting fact about subvolumes is that files always start from inode 257,
 and the same inode numbers are used in different subvolumes. Since each
 subvolume is a different tree inside btrfs, it&rsquo;s not a problem for the end
 user. Let&rsquo;s see an example of this happening:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">26
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mount /storage/btrfs.disk /mnt/testing
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$ btrfs subvolume create /mnt/testing/vol1
-</span></span><span class="line"><span class="cl">Create subvolume <span class="s1">&#39;/mnt/testing/vol1&#39;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$ btrfs subvolume create /mnt/testing/vol2
-</span></span><span class="line"><span class="cl">Create subvolume <span class="s1">&#39;/mnt/testing/vol2&#39;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># let&#39;s create directories and files inside each subvolume</span>
-</span></span><span class="line"><span class="cl">$ touch /mnt/testing/vol1/file1
-</span></span><span class="line"><span class="cl">$ touch /mnt/testing/vol1/file2
-</span></span><span class="line"><span class="cl">$ mkdir /mnt/testing/vol2/dir1
-</span></span><span class="line"><span class="cl">$ touch /mnt/testing/vol2/filexx
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># let&#39;s list the inodes of there files/direcotry</span>
-</span></span><span class="line"><span class="cl">$ ls -iR /mnt/testing
-</span></span><span class="line"><span class="cl">/mnt/testing:
-</span></span><span class="line"><span class="cl"><span class="m">256</span> vol1  <span class="m">256</span> vol2
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/mnt/testing/vol1:
-</span></span><span class="line"><span class="cl"><span class="m">257</span> file1  <span class="m">258</span> file2
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/mnt/testing/vol2:
-</span></span><span class="line"><span class="cl"><span class="m">257</span> dir1  <span class="m">258</span> filexx
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/mnt/testing/vol2/dir1:
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ mount /storage/btrfs.disk /mnt/testing
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/testing/vol1
+</span></span><span style="display:flex;"><span>Create subvolume <span style="color:#a6da95">&#39;/mnt/testing/vol1&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/testing/vol2
+</span></span><span style="display:flex;"><span>Create subvolume <span style="color:#a6da95">&#39;/mnt/testing/vol2&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># let&#39;s create directories and files inside each subvolume</span>
+</span></span><span style="display:flex;"><span>$ touch /mnt/testing/vol1/file1
+</span></span><span style="display:flex;"><span>$ touch /mnt/testing/vol1/file2
+</span></span><span style="display:flex;"><span>$ mkdir /mnt/testing/vol2/dir1
+</span></span><span style="display:flex;"><span>$ touch /mnt/testing/vol2/filexx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># let&#39;s list the inodes of there files/direcotry</span>
+</span></span><span style="display:flex;"><span>$ ls -iR /mnt/testing
+</span></span><span style="display:flex;"><span>/mnt/testing:
+</span></span><span style="display:flex;"><span>256 vol1  256 vol2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>/mnt/testing/vol1:
+</span></span><span style="display:flex;"><span>257 file1  258 file2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>/mnt/testing/vol2:
+</span></span><span style="display:flex;"><span>257 dir1  258 filexx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>/mnt/testing/vol2/dir1:
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>From the output above we can see that both <em>file1</em> and <em>dir</em>, and <em>file2</em> and

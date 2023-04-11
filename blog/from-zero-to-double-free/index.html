@@ -10,9 +10,7 @@
 <meta name="description" content="&hellip; or my personal journey of reading code and triggering behaviors.">
 <meta name="author" content="Marcos Paulo de Souza">
 <link rel="canonical" href="https://mpdesouza.com/blog/from-zero-to-double-free/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7140587df96a2b1a49eb723fa7063dc0c641a6cb638f3140e8d3beb4deae4f5c.css" integrity="sha256-cUBYfflqKxpJ63I/pwY9wMZBpstjjzFA6NO&#43;tN6uT1w=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://mpdesouza.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://mpdesouza.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://mpdesouza.com/favicon-32x32.png">
@@ -236,204 +234,204 @@ mentioned that <strong>rx_owner_map</strong> can be stale when changing the prot
 <strong>packet_set_ring</strong> function. This function is called whenever a userspace program calls
 <a href="https://man7.org/linux/man-pages/man3/setsockopt.3p.html">setsockopt</a> with a packet socket,
 as we can see below:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span><span class="lnt">64
-</span><span class="lnt">65
-</span><span class="lnt">66
-</span><span class="lnt">67
-</span><span class="lnt">68
-</span><span class="lnt">69
-</span><span class="lnt">70
-</span><span class="lnt">71
-</span><span class="lnt">72
-</span><span class="lnt">73
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">47
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">48
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">49
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">50
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">51
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">52
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">53
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">54
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">55
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">56
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">57
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">58
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">59
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">60
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">61
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">62
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">63
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">64
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">65
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">66
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">67
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">68
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">69
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">70
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">71
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">72
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">73
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">int</span> <span class="nf">packet_set_ring</span><span class="p">(</span><span class="k">struct</span> <span class="n">sock</span> <span class="o">*</span><span class="n">sk</span><span class="p">,</span> <span class="k">union</span> <span class="n">tpacket_req_u</span> <span class="o">*</span><span class="n">req_u</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                  <span class="kt">int</span> <span class="n">closing</span><span class="p">,</span> <span class="kt">int</span> <span class="n">tx_ring</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">          <span class="k">struct</span> <span class="n">pgv</span> <span class="o">*</span><span class="n">pg_vec</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="k">struct</span> <span class="n">packet_sock</span> <span class="o">*</span><span class="n">po</span> <span class="o">=</span> <span class="nf">pkt_sk</span><span class="p">(</span><span class="n">sk</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">          <span class="kt">unsigned</span> <span class="kt">long</span> <span class="o">*</span><span class="n">rx_owner_map</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="kt">int</span> <span class="n">was_running</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="k">struct</span> <span class="n">packet_ring_buffer</span> <span class="o">*</span><span class="n">rb</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="k">struct</span> <span class="n">sk_buff_head</span> <span class="o">*</span><span class="n">rb_queue</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="n">__be16</span> <span class="n">num</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="cm">/* Added to avoid minimal code churn */</span>
-</span></span><span class="line"><span class="cl">          <span class="k">struct</span> <span class="n">tpacket_req</span> <span class="o">*</span><span class="n">req</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">req_u</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="p">...</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="n">req</span><span class="o">-&gt;</span><span class="n">tp_block_nr</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="p">...</span>
-</span></span><span class="line"><span class="cl">                  <span class="n">order</span> <span class="o">=</span> <span class="nf">get_order</span><span class="p">(</span><span class="n">req</span><span class="o">-&gt;</span><span class="n">tp_block_size</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                  <span class="n">pg_vec</span> <span class="o">=</span> <span class="nf">alloc_pg_vec</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">order</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                  <span class="k">if</span> <span class="p">(</span><span class="nf">unlikely</span><span class="p">(</span><span class="o">!</span><span class="n">pg_vec</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">                          <span class="k">goto</span> <span class="n">out</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                  <span class="k">switch</span> <span class="p">(</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">tp_version</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                  <span class="k">case</span> <span class="nl">TPACKET_V3</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">                          <span class="cm">/* Block transmit is not supported yet */</span>
-</span></span><span class="line"><span class="cl">                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">tx_ring</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                                  <span class="nf">init_prb_bdqc</span><span class="p">(</span><span class="n">po</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">pg_vec</span><span class="p">,</span> <span class="n">req_u</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                                  <span class="k">struct</span> <span class="n">tpacket_req3</span> <span class="o">*</span><span class="n">req3</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">req_u</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">                                  <span class="k">if</span> <span class="p">(</span><span class="n">req3</span><span class="o">-&gt;</span><span class="n">tp_retire_blk_tov</span> <span class="o">||</span>
-</span></span><span class="line"><span class="cl">                                      <span class="n">req3</span><span class="o">-&gt;</span><span class="n">tp_sizeof_priv</span> <span class="o">||</span>
-</span></span><span class="line"><span class="cl">                                      <span class="n">req3</span><span class="o">-&gt;</span><span class="n">tp_feature_req_word</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                                          <span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                                          <span class="k">goto</span> <span class="n">out_free_pg_vec</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                                  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">                          <span class="p">}</span>
-</span></span><span class="line"><span class="cl">                          <span class="k">break</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                  <span class="k">default</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">tx_ring</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                                  <span class="n">rx_owner_map</span> <span class="o">=</span> <span class="nf">bitmap_alloc</span><span class="p">(</span><span class="n">req</span><span class="o">-&gt;</span><span class="n">tp_frame_nr</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                                          <span class="n">GFP_KERNEL</span> <span class="o">|</span> <span class="n">__GFP_NOWARN</span> <span class="o">|</span> <span class="n">__GFP_ZERO</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                                  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">rx_owner_map</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">                                          <span class="k">goto</span> <span class="n">out_free_pg_vec</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                          <span class="p">}</span>
-</span></span><span class="line"><span class="cl">                          <span class="k">break</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">          <span class="p">}</span>
-</span></span><span class="line"><span class="cl">          <span class="cm">/* Done */</span>
-</span></span><span class="line"><span class="cl">          <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                  <span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                  <span class="k">if</span> <span class="p">(</span><span class="nf">unlikely</span><span class="p">(</span><span class="n">req</span><span class="o">-&gt;</span><span class="n">tp_frame_nr</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">                          <span class="k">goto</span> <span class="n">out</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">...</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">pg_vec_lock</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">closing</span> <span class="o">||</span> <span class="nf">atomic_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">mapped</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="n">err</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                <span class="nf">spin_lock_bh</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rb_queue</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                <span class="nf">swap</span><span class="p">(</span><span class="n">rb</span><span class="o">-&gt;</span><span class="n">pg_vec</span><span class="p">,</span> <span class="n">pg_vec</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">tp_version</span> <span class="o">&lt;=</span> <span class="n">TPACKET_V2</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">                        <span class="nf">swap</span><span class="p">(</span><span class="n">rb</span><span class="o">-&gt;</span><span class="n">rx_owner_map</span><span class="p">,</span> <span class="n">rx_owner_map</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">...</span>
-</span></span><span class="line"><span class="cl">		<span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">po</span><span class="o">-&gt;</span><span class="n">pg_vec_lock</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="nl">out_free_pg_vec</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">bitmap_free</span><span class="p">(</span><span class="n">rx_owner_map</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">pg_vec</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">			<span class="nf">free_pg_vec</span><span class="p">(</span><span class="n">pg_vec</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">req</span><span class="o">-&gt;</span><span class="n">tp_block_nr</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="nl">out</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">          <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>  <span style="color:#c6a0f6">static</span> <span style="color:#eed49f">int</span> <span style="color:#91d7e3">packet_set_ring</span><span style="color:#cad3f5">(</span><span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">sock</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">sk</span><span style="color:#cad3f5">,</span> <span style="color:#c6a0f6">union</span> <span style="color:#b7bdf8">tpacket_req_u</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">req_u</span><span style="color:#cad3f5">,</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#eed49f">int</span> <span style="color:#b7bdf8">closing</span><span style="color:#cad3f5">,</span> <span style="color:#eed49f">int</span> <span style="color:#b7bdf8">tx_ring</span><span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">pgv</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">pg_vec</span> <span style="color:#91d7e3">=</span> <span style="font-style:italic">NULL</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">packet_sock</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">po</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">pkt_sk</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">sk</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">long</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">rx_owner_map</span> <span style="color:#91d7e3">=</span> <span style="font-style:italic">NULL</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#eed49f">int</span> <span style="color:#b7bdf8">was_running</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">order</span> <span style="color:#91d7e3">=</span> 0<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">packet_ring_buffer</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">rb</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">sk_buff_head</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">rb_queue</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#b7bdf8">__be16</span> <span style="color:#b7bdf8">num</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#eed49f">int</span> <span style="color:#b7bdf8">err</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#5b6078;font-style:italic">/* Added to avoid minimal code churn */</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">tpacket_req</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">req</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">&amp;</span><span style="color:#b7bdf8">req_u</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#b7bdf8">req</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_block_nr</span><span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">...</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#b7bdf8">order</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">get_order</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">req</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_block_size</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#b7bdf8">pg_vec</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">alloc_pg_vec</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">req</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">order</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#91d7e3">unlikely</span><span style="color:#cad3f5">(</span><span style="color:#91d7e3">!</span><span style="color:#b7bdf8">pg_vec</span><span style="color:#cad3f5">))</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#c6a0f6">goto</span> <span style="color:#b7bdf8">out</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#c6a0f6">switch</span> <span style="color:#cad3f5">(</span><span style="color:#b7bdf8">po</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_version</span><span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#c6a0f6">case</span> <span style="color:#eed49f">TPACKET_V3</span><span style="color:#cad3f5">:</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#5b6078;font-style:italic">/* Block transmit is not supported yet */</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#91d7e3">!</span><span style="color:#b7bdf8">tx_ring</span><span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>                                  <span style="color:#91d7e3">init_prb_bdqc</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">po</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">rb</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">pg_vec</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">req_u</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cad3f5">}</span> <span style="color:#c6a0f6">else</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>                                  <span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">tpacket_req3</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">req3</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">&amp;</span><span style="color:#b7bdf8">req_u</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                                  <span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#b7bdf8">req3</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_retire_blk_tov</span> <span style="color:#91d7e3">||</span>
+</span></span><span style="display:flex;"><span>                                      <span style="color:#b7bdf8">req3</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_sizeof_priv</span> <span style="color:#91d7e3">||</span>
+</span></span><span style="display:flex;"><span>                                      <span style="color:#b7bdf8">req3</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_feature_req_word</span><span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>                                          <span style="color:#b7bdf8">err</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">-</span><span style="color:#b7bdf8">EINVAL</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>                                          <span style="color:#c6a0f6">goto</span> <span style="color:#b7bdf8">out_free_pg_vec</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>                                  <span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#c6a0f6">break</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#c6a0f6">default</span><span style="color:#91d7e3">:</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#91d7e3">!</span><span style="color:#b7bdf8">tx_ring</span><span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>                                  <span style="color:#b7bdf8">rx_owner_map</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">bitmap_alloc</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">req</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_frame_nr</span><span style="color:#cad3f5">,</span>
+</span></span><span style="display:flex;"><span>                                          <span style="color:#b7bdf8">GFP_KERNEL</span> <span style="color:#91d7e3">|</span> <span style="color:#b7bdf8">__GFP_NOWARN</span> <span style="color:#91d7e3">|</span> <span style="color:#b7bdf8">__GFP_ZERO</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>                                  <span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#91d7e3">!</span><span style="color:#b7bdf8">rx_owner_map</span><span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span>                                          <span style="color:#c6a0f6">goto</span> <span style="color:#b7bdf8">out_free_pg_vec</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#c6a0f6">break</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#5b6078;font-style:italic">/* Done */</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#c6a0f6">else</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#b7bdf8">err</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">-</span><span style="color:#b7bdf8">EINVAL</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#91d7e3">unlikely</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">req</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_frame_nr</span><span style="color:#cad3f5">))</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#c6a0f6">goto</span> <span style="color:#b7bdf8">out</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">...</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#91d7e3">mutex_lock</span><span style="color:#cad3f5">(</span><span style="color:#91d7e3">&amp;</span><span style="color:#b7bdf8">po</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">pg_vec_lock</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#b7bdf8">closing</span> <span style="color:#91d7e3">||</span> <span style="color:#91d7e3">atomic_read</span><span style="color:#cad3f5">(</span><span style="color:#91d7e3">&amp;</span><span style="color:#b7bdf8">po</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">mapped</span><span style="color:#cad3f5">)</span> <span style="color:#91d7e3">==</span> 0<span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#b7bdf8">err</span> <span style="color:#91d7e3">=</span> 0<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#91d7e3">spin_lock_bh</span><span style="color:#cad3f5">(</span><span style="color:#91d7e3">&amp;</span><span style="color:#b7bdf8">rb_queue</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">lock</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#91d7e3">swap</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">rb</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">pg_vec</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">pg_vec</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#b7bdf8">po</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_version</span> <span style="color:#91d7e3">&lt;=</span> <span style="color:#b7bdf8">TPACKET_V2</span><span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#91d7e3">swap</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">rb</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">rx_owner_map</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">rx_owner_map</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">...</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#91d7e3">mutex_unlock</span><span style="color:#cad3f5">(</span><span style="color:#91d7e3">&amp;</span><span style="color:#b7bdf8">po</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">pg_vec_lock</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#eed49f">out_free_pg_vec</span><span style="color:#cad3f5">:</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">bitmap_free</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">rx_owner_map</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#b7bdf8">pg_vec</span><span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#91d7e3">free_pg_vec</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">pg_vec</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">order</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">req</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">tp_block_nr</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#eed49f">out</span><span style="color:#cad3f5">:</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#c6a0f6">return</span> <span style="color:#b7bdf8">err</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#cad3f5">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><em>Note</em>: The code above doesn&rsquo;t contain the
 <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ec6af094ea28f0f2dda1a6a33b14cd57e36a9755">patch</a>
 that fixes the bug.</p>
 <p>Let&rsquo;s now check the struct where <strong>rx_owner_map</strong> exists:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">packet_ring_buffer</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">pgv</span>              <span class="o">*</span><span class="n">pg_vec</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span>            <span class="n">head</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span>            <span class="n">frames_per_block</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span>            <span class="n">frame_size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span>            <span class="n">frame_max</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span>            <span class="n">pg_vec_order</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span>            <span class="n">pg_vec_pages</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span>            <span class="n">pg_vec_len</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">__percpu</span>   <span class="o">*</span><span class="n">pending_refcnt</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="k">union</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="kt">unsigned</span> <span class="kt">long</span>                   <span class="o">*</span><span class="n">rx_owner_map</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                <span class="k">struct</span> <span class="n">tpacket_kbdq_core</span>        <span class="n">prb_bdqc</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">packet_ring_buffer</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">pgv</span>              <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">pg_vec</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">int</span>            <span style="color:#b7bdf8">head</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">int</span>            <span style="color:#b7bdf8">frames_per_block</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">int</span>            <span style="color:#b7bdf8">frame_size</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">int</span>            <span style="color:#b7bdf8">frame_max</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">int</span>            <span style="color:#b7bdf8">pg_vec_order</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">int</span>            <span style="color:#b7bdf8">pg_vec_pages</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">int</span>            <span style="color:#b7bdf8">pg_vec_len</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">int</span> <span style="color:#b7bdf8">__percpu</span>   <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">pending_refcnt</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c6a0f6">union</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#eed49f">unsigned</span> <span style="color:#eed49f">long</span>                   <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">rx_owner_map</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">tpacket_kbdq_core</span>        <span style="color:#b7bdf8">prb_bdqc</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cad3f5">};</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>As we can see <strong>rx_owner_map</strong> is part of a union. The patch commit message mentions a stale
@@ -459,210 +457,210 @@ directly to release the swapped <strong>rx_owner_map</strong> that was already r
 <li><em><strong>Double free</strong></em>.</li>
 </ul>
 <p>Using the test case as a starting point, I was able to create my own reproducer:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">  1
-</span><span class="lnt">  2
-</span><span class="lnt">  3
-</span><span class="lnt">  4
-</span><span class="lnt">  5
-</span><span class="lnt">  6
-</span><span class="lnt">  7
-</span><span class="lnt">  8
-</span><span class="lnt">  9
-</span><span class="lnt"> 10
-</span><span class="lnt"> 11
-</span><span class="lnt"> 12
-</span><span class="lnt"> 13
-</span><span class="lnt"> 14
-</span><span class="lnt"> 15
-</span><span class="lnt"> 16
-</span><span class="lnt"> 17
-</span><span class="lnt"> 18
-</span><span class="lnt"> 19
-</span><span class="lnt"> 20
-</span><span class="lnt"> 21
-</span><span class="lnt"> 22
-</span><span class="lnt"> 23
-</span><span class="lnt"> 24
-</span><span class="lnt"> 25
-</span><span class="lnt"> 26
-</span><span class="lnt"> 27
-</span><span class="lnt"> 28
-</span><span class="lnt"> 29
-</span><span class="lnt"> 30
-</span><span class="lnt"> 31
-</span><span class="lnt"> 32
-</span><span class="lnt"> 33
-</span><span class="lnt"> 34
-</span><span class="lnt"> 35
-</span><span class="lnt"> 36
-</span><span class="lnt"> 37
-</span><span class="lnt"> 38
-</span><span class="lnt"> 39
-</span><span class="lnt"> 40
-</span><span class="lnt"> 41
-</span><span class="lnt"> 42
-</span><span class="lnt"> 43
-</span><span class="lnt"> 44
-</span><span class="lnt"> 45
-</span><span class="lnt"> 46
-</span><span class="lnt"> 47
-</span><span class="lnt"> 48
-</span><span class="lnt"> 49
-</span><span class="lnt"> 50
-</span><span class="lnt"> 51
-</span><span class="lnt"> 52
-</span><span class="lnt"> 53
-</span><span class="lnt"> 54
-</span><span class="lnt"> 55
-</span><span class="lnt"> 56
-</span><span class="lnt"> 57
-</span><span class="lnt"> 58
-</span><span class="lnt"> 59
-</span><span class="lnt"> 60
-</span><span class="lnt"> 61
-</span><span class="lnt"> 62
-</span><span class="lnt"> 63
-</span><span class="lnt"> 64
-</span><span class="lnt"> 65
-</span><span class="lnt"> 66
-</span><span class="lnt"> 67
-</span><span class="lnt"> 68
-</span><span class="lnt"> 69
-</span><span class="lnt"> 70
-</span><span class="lnt"> 71
-</span><span class="lnt"> 72
-</span><span class="lnt"> 73
-</span><span class="lnt"> 74
-</span><span class="lnt"> 75
-</span><span class="lnt"> 76
-</span><span class="lnt"> 77
-</span><span class="lnt"> 78
-</span><span class="lnt"> 79
-</span><span class="lnt"> 80
-</span><span class="lnt"> 81
-</span><span class="lnt"> 82
-</span><span class="lnt"> 83
-</span><span class="lnt"> 84
-</span><span class="lnt"> 85
-</span><span class="lnt"> 86
-</span><span class="lnt"> 87
-</span><span class="lnt"> 88
-</span><span class="lnt"> 89
-</span><span class="lnt"> 90
-</span><span class="lnt"> 91
-</span><span class="lnt"> 92
-</span><span class="lnt"> 93
-</span><span class="lnt"> 94
-</span><span class="lnt"> 95
-</span><span class="lnt"> 96
-</span><span class="lnt"> 97
-</span><span class="lnt"> 98
-</span><span class="lnt"> 99
-</span><span class="lnt">100
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">  1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">  2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">  3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">  4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">  5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">  6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">  7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">  8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">  9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 47
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 48
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 49
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 50
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 51
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 52
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 53
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 54
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 55
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 56
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 57
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 58
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 59
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 60
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 61
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 62
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 63
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 64
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 65
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 66
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 67
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 68
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 69
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 70
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 71
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 72
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 73
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 74
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 75
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 76
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 77
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 78
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 79
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 80
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 81
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 82
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 83
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 84
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 85
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 86
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 87
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 88
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 89
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 90
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 91
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 92
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 93
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 94
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 95
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 96
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 97
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 98
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 99
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">100
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/if_packet.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sock</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ring</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">union</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="k">struct</span> <span class="n">tpacket_req</span>  <span class="n">req</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="k">struct</span> <span class="n">tpacket_req3</span> <span class="n">req3</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">set_ver</span><span class="p">(</span><span class="kt">int</span> <span class="n">ver</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="nf">setsockopt</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">SOL_PACKET</span><span class="p">,</span> <span class="n">PACKET_VERSION</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ver</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ver</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">perror</span><span class="p">(</span><span class="s">&#34;setsockopt&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Cannot set sock to ver %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ver</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">__v3_fill</span><span class="p">(</span><span class="k">struct</span> <span class="n">ring</span> <span class="o">*</span><span class="n">ring</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_retire_blk_tov</span> <span class="o">=</span> <span class="mi">64</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_sizeof_priv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_feature_req_word</span> <span class="o">=</span> <span class="n">TP_FT_REQ_FILL_RXHASH</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_block_size</span> <span class="o">=</span> <span class="nf">getpagesize</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_frame_size</span> <span class="o">=</span> <span class="n">TPACKET_ALIGNMENT</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_block_nr</span> <span class="o">=</span> <span class="mi">256</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_frame_nr</span> <span class="o">=</span> <span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_block_size</span> <span class="o">/</span>
-</span></span><span class="line"><span class="cl">				 <span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_frame_size</span> <span class="o">*</span>
-</span></span><span class="line"><span class="cl">				 <span class="n">ring</span><span class="o">-&gt;</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_block_nr</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">setup_ring</span><span class="p">(</span><span class="kt">int</span> <span class="n">mess</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">ring</span> <span class="n">ring</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="nf">__v3_fill</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ring</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * First time we call setup_ring, using TPACKET_V3, we send the req3
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * as populated by __v3_fill. In the next calls, we zero two members of
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * the struct, simulating a &#39;close&#39; of the socket. This makes afpacket
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * module to free pg_vec.
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 *
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * tpacket_v3 does not allocate rx_owner_map, but instead it sets
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * prb_bdqc, but both are define in a union.
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 */</span>
-</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">mess</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="n">ring</span><span class="p">.</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_block_nr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="n">ring</span><span class="p">.</span><span class="n">req3</span><span class="p">.</span><span class="n">tp_frame_nr</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="nf">setsockopt</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">SOL_PACKET</span><span class="p">,</span> <span class="n">PACKET_RX_RING</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ring</span><span class="p">.</span><span class="n">req3</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">			 <span class="k">sizeof</span><span class="p">(</span><span class="n">ring</span><span class="p">.</span><span class="n">req3</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">perror</span><span class="p">(</span><span class="s">&#34;setsockopt&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">sock</span> <span class="o">=</span> <span class="nf">socket</span><span class="p">(</span><span class="n">PF_PACKET</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">sock</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">perror</span><span class="p">(</span><span class="s">&#34;socket&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="nf">set_ver</span><span class="p">(</span><span class="n">TPACKET_V3</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="cm">/* Send complete req3 data */</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">setup_ring</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * Pass tp_block_nr and tp_frame_nr, releases pg_vec, and rb-&gt;rw_owner_map
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * is freed
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * */</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">setup_ring</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="cm">/* With pg_vec released, we can change the socket version to TPACKET_V2 */</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">set_ver</span><span class="p">(</span><span class="n">TPACKET_V2</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * With V2, we send again the tp_block_nr/tp_frame_nr zeroed, so
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * afpacket does not try to allocate a pg_vec of rx_owner_map and goes
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * directly to the cleaning part. For V1/V2, it swaps the current
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * allocated rw_owner_map (which wasn&#39;t allocated this time) with the
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * previously stored rw_owner_map (freed in the second setup_ring call
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * above).
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 *
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 * Now, double free on the way!
-</span></span></span><span class="line"><span class="cl"><span class="cm">	 */</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">setup_ring</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic">#include</span> <span style="color:#8aadf4;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#8aadf4;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic">#include</span> <span style="color:#8aadf4;font-style:italic">&lt;stdlib.h&gt;</span><span style="color:#8aadf4;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic">#include</span> <span style="color:#8aadf4;font-style:italic">&lt;unistd.h&gt;</span><span style="color:#8aadf4;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic">#include</span> <span style="color:#8aadf4;font-style:italic">&lt;sys/socket.h&gt;</span><span style="color:#8aadf4;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic">#include</span> <span style="color:#8aadf4;font-style:italic">&lt;linux/if_packet.h&gt;</span><span style="color:#8aadf4;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4;font-style:italic"></span>
+</span></span><span style="display:flex;"><span><span style="color:#eed49f">int</span> <span style="color:#b7bdf8">sock</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">ring</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">union</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">tpacket_req</span>  <span style="color:#b7bdf8">req</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">tpacket_req3</span> <span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cad3f5">};</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">};</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#c6a0f6">static</span> <span style="color:#eed49f">void</span> <span style="color:#91d7e3">set_ver</span><span style="color:#cad3f5">(</span><span style="color:#eed49f">int</span> <span style="color:#b7bdf8">ver</span><span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#91d7e3">setsockopt</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">sock</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">SOL_PACKET</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">PACKET_VERSION</span><span style="color:#cad3f5">,</span> <span style="color:#91d7e3">&amp;</span><span style="color:#b7bdf8">ver</span><span style="color:#cad3f5">,</span> <span style="color:#c6a0f6">sizeof</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">ver</span><span style="color:#cad3f5">))</span> <span style="color:#91d7e3">==</span> <span style="color:#91d7e3">-</span>1<span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">perror</span><span style="color:#cad3f5">(</span><span style="color:#a6da95">&#34;setsockopt&#34;</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">fprintf</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">stderr</span><span style="color:#cad3f5">,</span> <span style="color:#a6da95">&#34;Cannot set sock to ver %d</span><span style="color:#8aadf4">\n</span><span style="color:#a6da95">&#34;</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">ver</span> <span style="color:#91d7e3">+</span> 1<span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">exit</span><span style="color:#cad3f5">(</span>1<span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#c6a0f6">static</span> <span style="color:#eed49f">void</span> <span style="color:#91d7e3">__v3_fill</span><span style="color:#cad3f5">(</span><span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">ring</span> <span style="color:#91d7e3">*</span><span style="color:#b7bdf8">ring</span><span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_retire_blk_tov</span> <span style="color:#91d7e3">=</span> 64<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_sizeof_priv</span> <span style="color:#91d7e3">=</span> 0<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_feature_req_word</span> <span style="color:#91d7e3">=</span> <span style="color:#b7bdf8">TP_FT_REQ_FILL_RXHASH</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_block_size</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">getpagesize</span><span style="color:#cad3f5">()</span> <span style="color:#91d7e3">&lt;&lt;</span> 2<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_frame_size</span> <span style="color:#91d7e3">=</span> <span style="color:#b7bdf8">TPACKET_ALIGNMENT</span> <span style="color:#91d7e3">&lt;&lt;</span> 7<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_block_nr</span> <span style="color:#91d7e3">=</span> 256<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_frame_nr</span> <span style="color:#91d7e3">=</span> <span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_block_size</span> <span style="color:#91d7e3">/</span>
+</span></span><span style="display:flex;"><span>				 <span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_frame_size</span> <span style="color:#91d7e3">*</span>
+</span></span><span style="display:flex;"><span>				 <span style="color:#b7bdf8">ring</span><span style="color:#91d7e3">-&gt;</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_block_nr</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#c6a0f6">static</span> <span style="color:#eed49f">void</span> <span style="color:#91d7e3">setup_ring</span><span style="color:#cad3f5">(</span><span style="color:#eed49f">int</span> <span style="color:#b7bdf8">mess</span><span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">struct</span> <span style="color:#b7bdf8">ring</span> <span style="color:#b7bdf8">ring</span><span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#91d7e3">__v3_fill</span><span style="color:#cad3f5">(</span><span style="color:#91d7e3">&amp;</span><span style="color:#b7bdf8">ring</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5b6078;font-style:italic">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * First time we call setup_ring, using TPACKET_V3, we send the req3
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * as populated by __v3_fill. In the next calls, we zero two members of
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * the struct, simulating a &#39;close&#39; of the socket. This makes afpacket
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * module to free pg_vec.
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 *
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * tpacket_v3 does not allocate rx_owner_map, but instead it sets
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * prb_bdqc, but both are define in a union.
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#b7bdf8">mess</span><span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#b7bdf8">ring</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_block_nr</span> <span style="color:#91d7e3">=</span> 0<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#b7bdf8">ring</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">tp_frame_nr</span><span style="color:#91d7e3">=</span> 0<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#91d7e3">setsockopt</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">sock</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">SOL_PACKET</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">PACKET_RX_RING</span><span style="color:#cad3f5">,</span> <span style="color:#91d7e3">&amp;</span><span style="color:#b7bdf8">ring</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">,</span>
+</span></span><span style="display:flex;"><span>			 <span style="color:#c6a0f6">sizeof</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">ring</span><span style="color:#cad3f5">.</span><span style="color:#b7bdf8">req3</span><span style="color:#cad3f5">))</span> <span style="color:#91d7e3">==</span> <span style="color:#91d7e3">-</span>1<span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">perror</span><span style="color:#cad3f5">(</span><span style="color:#a6da95">&#34;setsockopt&#34;</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">exit</span><span style="color:#cad3f5">(</span>1<span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#eed49f">int</span> <span style="color:#91d7e3">main</span><span style="color:#cad3f5">(</span><span style="color:#eed49f">void</span><span style="color:#cad3f5">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#b7bdf8">sock</span> <span style="color:#91d7e3">=</span> <span style="color:#91d7e3">socket</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">PF_PACKET</span><span style="color:#cad3f5">,</span> <span style="color:#b7bdf8">SOCK_RAW</span><span style="color:#cad3f5">,</span> 0<span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">if</span> <span style="color:#cad3f5">(</span><span style="color:#b7bdf8">sock</span> <span style="color:#91d7e3">==</span> <span style="color:#91d7e3">-</span>1<span style="color:#cad3f5">)</span> <span style="color:#cad3f5">{</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">perror</span><span style="color:#cad3f5">(</span><span style="color:#a6da95">&#34;socket&#34;</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#91d7e3">exit</span><span style="color:#cad3f5">(</span>1<span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cad3f5">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#91d7e3">set_ver</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">TPACKET_V3</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5b6078;font-style:italic">/* Send complete req3 data */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#91d7e3">setup_ring</span><span style="color:#cad3f5">(</span>0<span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5b6078;font-style:italic">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * Pass tp_block_nr and tp_frame_nr, releases pg_vec, and rb-&gt;rw_owner_map
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * is freed
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#91d7e3">setup_ring</span><span style="color:#cad3f5">(</span>1<span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5b6078;font-style:italic">/* With pg_vec released, we can change the socket version to TPACKET_V2 */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#91d7e3">set_ver</span><span style="color:#cad3f5">(</span><span style="color:#b7bdf8">TPACKET_V2</span><span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5b6078;font-style:italic">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * With V2, we send again the tp_block_nr/tp_frame_nr zeroed, so
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * afpacket does not try to allocate a pg_vec of rx_owner_map and goes
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * directly to the cleaning part. For V1/V2, it swaps the current
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * allocated rw_owner_map (which wasn&#39;t allocated this time) with the
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * previously stored rw_owner_map (freed in the second setup_ring call
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * above).
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 *
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 * Now, double free on the way!
+</span></span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic">	 */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#91d7e3">setup_ring</span><span style="color:#cad3f5">(</span>1<span style="color:#cad3f5">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">return</span> 0<span style="color:#cad3f5">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#cad3f5">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>The comments in the code explains what exactly happens.</p>
