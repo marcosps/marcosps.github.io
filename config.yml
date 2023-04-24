@@ -22,13 +22,13 @@ params:
   copyright: 2020-{{ YEAR }}
 
   defaultTheme: auto
-  ShowReadingTime: true
+  showReadingTime: false
+  showWordCount: false
   displayFullLangName: true
   ShowPostNavLinks: true
   ShowBreadCrumbs: true
   ShowCodeCopyButtons: true
   ShowToc: false
-  ShowWordCount: true
   ShowRssButtonInSectionTermList: true
   comments: false
   disableShare: false
