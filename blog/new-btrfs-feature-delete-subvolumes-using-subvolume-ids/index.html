@@ -109,8 +109,8 @@ if (!doNotTrack) {
   "keywords": [
     
   ],
-  "articleBody": "Btrfs is a very versatile filesystem, and it has a lot of features that don’t exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes. A subvolume can be compared to a disk partition since each subvolume can contain it’s own filesystem tree and size limits. When created, subvolumes are shown as directories in the directory they were created.\nCreating a subvolume is as easy as creating a directory:\n1 $ btrfs subvolume create /volume_name The same can be said of deleting a subvolume:\n1 $ btrfs subvolume delete /volume_name As each subvolume can contain a different filesystem, you can even mount a subvolume as it was a partition:\n1 $ mount /dev/sdX -o subvol=volume_name / But, if it has sibling subvolumes, let’s say subvol1 and subvol2 created under , when mounting subvol2 especially the user can’t reach subvol1 in the same . Let’s see an example:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 # allocate a 1G file $ fallocate -l 1G btrfs_fs # create a btrfs filesystem on it $ mkfs.btrfs btrfs_fs # mount it on /mnt $ mount btrfs_fs /mnt # create two subvolumes $ btrfs subvolume create /mnt/subvol1 $ btrfs subvolume create /mnt/subvol1 # list the subvolumes $ btrfs subvolume list /mnt ID 256 gen 6 top level 5 path subvol1 ID 257 gen 7 top level 5 path subvol2 $ ls /mnt subvol1 subvol2 # create a file unders each subvol directory $ touch /mnt/subvol1/file1 $ touch /mnt/subvol2/file2 $ ls -R /mnt /mnt: subvol1 subvol2 /mnt/subvol1: file1 /mnt/subvol2: file2 As you can see, two files were created. But, if the user mounts a specific subvolume under /mnt it won’t be able to reach the other subvolume by the same mount point.\n1 2 3 4 5 6 7 8 9 $ umount /mntmount btrfs_fs -o subvol=subvol2 /mnt $ ls -R /mnt /mnt: file2 $ btrfs subvolume list /mnt ID 256 gen 6 top level 5 path subvol1 ID 257 gen 7 top level 5 path subvol2 By the code above, subvol1 can’t be reached anymore, but it’s listed by subvolume list. Up until now, to remove a subvolume, the user should be able to reach it from the mount point. With the given example, the only way to delete the subvolume is to mount the filesystem in another mount point and delete subvol1:\n1 2 3 4 5 6 7 $ mount btrfs_fs /tmp/test $ ls /tmp/test subvol1 subvol2 $ btrfs subvolume delete /tmp/test/subvol1 Delete subvolume (no-commit): '/tmp/test/subvol1' Recent commits in Linux kernel and btrfs-progs package changed this situation. By using the --subvolid argument a user can specify subvolume to be deleted:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 $ btrfs subvolume list /mnt ID 256 gen 6 top level 5 path subvol1 ID 258 gen 7 top level 5 path subvol2 $ ls -R /mnt /mnt: file2 $ btrfs subvolume delete --subvolid 256 /mnt Delete subvolume (no-commit): '/mnt/subvol1' $ btrfs subvolume list /mnt ID 256 gen 6 top level 5 path subvol1 ID 258 gen 7 top level 5 path subvol2 A new ioctl, BTRFS_IOC_SNAP_DESTROY_V2, was added in Linux kernel, and support for this ioctl was added in btrfs-progs and libbtrfsutil to make it possible. One possible user of this new feature is snapper, which has to deal with subvolume creation and deletion from time to time.\nIf you want to dig deeper into the details of this feature, take a look at the feature request and in the commits in Linux Kernel, btrfs-progs and a test at xfstests.\nThanks for reading!\n",
-  "wordCount" : "631",
+  "articleBody": "Btrfs is a very versatile filesystem, and it has a lot of features that don’t exist in any other mainline Linux filesystem. One of the key features of btrfs is the concept of subvolumes. A subvolume can be compared to a disk partition since each subvolume can contain it’s own filesystem tree and size limits. When created, subvolumes are shown as directories in the directory they were created.\nCreating a subvolume is as easy as creating a directory:\n1 $ btrfs subvolume create /volume_name The same can be said of deleting a subvolume:\n1 $ btrfs subvolume delete /volume_name As each subvolume can contain a different filesystem, you can even mount a subvolume as it was a partition:\n1 $ mount /dev/sdX -o subvol=volume_name / But, if it has sibling subvolumes, let’s say subvol1 and subvol2 created under , when mounting subvol2 especially the user can’t reach subvol1 in the same . Let’s see an example:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 # allocate a 1G file $ fallocate -l 1G btrfs_fs # create a btrfs filesystem on it $ mkfs.btrfs btrfs_fs # mount it on /mnt $ mount btrfs_fs /mnt # create two subvolumes $ btrfs subvolume create /mnt/subvol1 $ btrfs subvolume create /mnt/subvol2 # list the subvolumes $ btrfs subvolume list /mnt ID 256 gen 6 top level 5 path subvol1 ID 257 gen 7 top level 5 path subvol2 $ ls /mnt subvol1 subvol2 # create a file unders each subvol directory $ touch /mnt/subvol1/file1 $ touch /mnt/subvol2/file2 $ ls -R /mnt /mnt: subvol1 subvol2 /mnt/subvol1: file1 /mnt/subvol2: file2 As you can see, two files were created. But, if the user mounts a specific subvolume under /mnt it won’t be able to reach the other subvolume by the same mount point.\n1 2 3 4 5 6 7 8 9 10 $ umount /mnt $ mount btrfs_fs -o subvol=subvol2 /mnt $ ls -R /mnt /mnt: file2 $ btrfs subvolume list /mnt ID 256 gen 6 top level 5 path subvol1 ID 257 gen 7 top level 5 path subvol2 By the code above, subvol1 can’t be reached anymore, but it’s listed by subvolume list. Up until now, to remove a subvolume, the user should be able to reach it from the mount point. With the given example, the only way to delete the subvolume is to mount the filesystem in another mount point and delete subvol1:\n1 2 3 4 5 6 7 $ mount btrfs_fs /tmp/test $ ls /tmp/test subvol1 subvol2 $ btrfs subvolume delete /tmp/test/subvol1 Delete subvolume (no-commit): '/tmp/test/subvol1' Recent commits in Linux kernel and btrfs-progs package changed this situation. By using the --subvolid argument a user can specify subvolume to be deleted:\n1 2 3 4 5 6 7 8 9 10 11 12 13 $ btrfs subvolume list /mnt ID 256 gen 6 top level 5 path subvol1 ID 257 gen 7 top level 5 path subvol2 $ ls -R /mnt /mnt: file2 $ btrfs subvolume delete --subvolid 256 /mnt Delete subvolume (no-commit): '/mnt/subvol1' $ btrfs subvolume list /mnt ID 257 gen 7 top level 5 path subvol2 A new ioctl, BTRFS_IOC_SNAP_DESTROY_V2, was added in Linux kernel, and support for this ioctl was added in btrfs-progs and libbtrfsutil to make it possible. One possible user of this new feature is snapper, which has to deal with subvolume creation and deletion from time to time.\nIf you want to dig deeper into the details of this feature, take a look at the feature request and in the commits in Linux Kernel, btrfs-progs and a test at xfstests.\nThanks for reading!\n",
+  "wordCount" : "624",
   "inLanguage": "en",
   "image":"https://mpdesouza.com/images/delete.jpg","datePublished": "2020-01-23T00:00:00Z",
   "dateModified": "2020-01-23T00:00:00Z",
@@ -274,7 +274,7 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># create two subvolumes</span>
 </span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/subvol1
-</span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/subvol1
+</span></span><span style="display:flex;"><span>$ btrfs subvolume create /mnt/subvol2
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># list the subvolumes</span>
 </span></span><span style="display:flex;"><span>$ btrfs subvolume list /mnt
@@ -300,18 +300,20 @@ if (!doNotTrack) {
 </div><p>As you can see, two files were created. But, if the user mounts a specific subvolume under /mnt it won&rsquo;t be able to reach the other subvolume by the same mount point.</p>
 <div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">2
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">3
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">4
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">5
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">6
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">7
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">8
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">9
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ umount /mntmount btrfs_fs -o <span style="color:#b7bdf8">subvol</span><span style="color:#91d7e3">=</span>subvol2 /mnt
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ umount /mnt
+</span></span><span style="display:flex;"><span>$ mount btrfs_fs -o <span style="color:#b7bdf8">subvol</span><span style="color:#91d7e3">=</span>subvol2 /mnt
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>$ ls -R /mnt
 </span></span><span style="display:flex;"><span>/mnt:
@@ -359,12 +361,11 @@ if (!doNotTrack) {
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ btrfs subvolume list /mnt
 </span></span><span style="display:flex;"><span>ID 256 gen 6 top level 5 path subvol1
-</span></span><span style="display:flex;"><span>ID 258 gen 7 top level 5 path subvol2
+</span></span><span style="display:flex;"><span>ID 257 gen 7 top level 5 path subvol2
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>$ ls -R /mnt
 </span></span><span style="display:flex;"><span>/mnt:
@@ -374,8 +375,7 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>Delete subvolume <span style="color:#91d7e3">(</span>no-commit<span style="color:#91d7e3">)</span>: <span style="color:#a6da95">&#39;/mnt/subvol1&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>$ btrfs subvolume list /mnt
-</span></span><span style="display:flex;"><span>ID 256 gen 6 top level 5 path subvol1
-</span></span><span style="display:flex;"><span>ID 258 gen 7 top level 5 path subvol2
+</span></span><span style="display:flex;"><span>ID 257 gen 7 top level 5 path subvol2
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>A new ioctl, BTRFS_IOC_SNAP_DESTROY_V2, was added in Linux kernel, and support for this ioctl was added in <strong>btrfs-progs</strong> and <strong>libbtrfsutil</strong> to make it possible. One possible user of this new feature is snapper, which has to deal with subvolume creation and deletion from time to time.</p>
