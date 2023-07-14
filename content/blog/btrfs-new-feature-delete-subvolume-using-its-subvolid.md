@@ -42,7 +42,7 @@ $ mount btrfs_fs /mnt
 
 # create two subvolumes
 $ btrfs subvolume create /mnt/subvol1
-$ btrfs subvolume create /mnt/subvol1
+$ btrfs subvolume create /mnt/subvol2
 
 # list the subvolumes
 $ btrfs subvolume list /mnt
@@ -68,7 +68,8 @@ file2
 As you can see, two files were created. But, if the user mounts a specific subvolume under /mnt it won't be able to reach the other subvolume by the same mount point.
 
 ```sh
-$ umount /mntmount btrfs_fs -o subvol=subvol2 /mnt
+$ umount /mnt
+$ mount btrfs_fs -o subvol=subvol2 /mnt
 
 $ ls -R /mnt
 /mnt:
@@ -96,7 +97,7 @@ Recent commits in **Linux kernel** and **btrfs-progs** package changed this situ
 ```sh
 $ btrfs subvolume list /mnt
 ID 256 gen 6 top level 5 path subvol1
-ID 258 gen 7 top level 5 path subvol2
+ID 257 gen 7 top level 5 path subvol2
 
 $ ls -R /mnt
 /mnt:
@@ -106,8 +107,7 @@ $ btrfs subvolume delete --subvolid 256 /mnt
 Delete subvolume (no-commit): '/mnt/subvol1'
 
 $ btrfs subvolume list /mnt
-ID 256 gen 6 top level 5 path subvol1
-ID 258 gen 7 top level 5 path subvol2
+ID 257 gen 7 top level 5 path subvol2
 ```
 
 A new ioctl, BTRFS_IOC_SNAP_DESTROY_V2, was added in Linux kernel, and support for this ioctl was added in **btrfs-progs** and **libbtrfsutil** to make it possible. One possible user of this new feature is snapper, which has to deal with subvolume creation and deletion from time to time.
