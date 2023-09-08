@@ -46,10 +46,10 @@ params:
       url: "https://floss.social/@mpdesouza"
     - name: linkedin
       url: "https://www.linkedin.com/in/marcospsouza"
-    - name: RSS
-      url: "index.xml"
     - name: github
       url: "https://github.com/marcosps"
+    - name: RSS
+      url: "index.xml"
 
 menu:
   main:
