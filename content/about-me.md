@@ -13,10 +13,10 @@ Livepatch](https://www.kernel.org/doc/html/latest/livepatch/livepatch.html)
 developer at [SUSE](https://suse.com).
 
 I have contributed to interesting open source projects, like
-[Linux Kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=author&q=Marcos+Paulo+de+Souza),
-[Linux Testing Project](https://github.com/search?q=repo%3Alinux-test-project%2Fltp+Marcos+Paulo+de+Souza&type=code),
+[Linux Kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=grep&q=Marcos+Paulo+de+Souza),
+[Linux Testing Project](https://github.com/search?q=repo%3Alinux-test-project%2Fltp%20%22Marcos%20Paulo%20de%20Souza%22&type=code),
 [btrfs-progs](https://github.com/kdave/btrfs-progs/commits?author=marcosps),
-[virtme](https://github.com/arighi/virtme),
+[virtme-ng](https://github.com/arighi/virtme-ng/commits?author=marcosps),
 [libvirt](https://gitlab.com/search?group_id=130330&project_id=192693&repository_ref=master&scope=commits&search=Marcos+Paulo+de+Souza),
 [LXC](https://github.com/lxc/lxc/commits?author=marcosps),
 [bubblewrap](https://github.com/containers/bubblewrap/commits?author=marcosps),
