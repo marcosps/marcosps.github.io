@@ -10,7 +10,7 @@
 <meta name="description" content="Blog - Marcos&#39; Blog">
 <meta name="author" content="">
 <link rel="canonical" href="https://mpdesouza.com/blog/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.805a5e98a2e039f645139eb51fddd0e2660758dbeedfe5d98a952c07b13579a7.css" integrity="sha256-gFpemKLgOfZFE561H93Q4mYHWNvu3&#43;XZipUsB7E1eac=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.296fec78fff86e20531f33f7a3ad2a4f7e921f7482195143705d1691db50922b.css" integrity="sha256-KW/seP/4biBTHzP3o60qT36SH3SCGVFDcF0WkdtQkis=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://mpdesouza.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://mpdesouza.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://mpdesouza.com/favicon-32x32.png">
@@ -36,7 +36,7 @@
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -80,10 +80,10 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
     {
       "@type": "ListItem",
-      "position":  2 ,
+      "position":  1 ,
       "name": "Blog",
       "item": "https://mpdesouza.com/blog/"
     }
@@ -149,7 +149,7 @@ if (!doNotTrack) {
 <header class="page-header"><div class="breadcrumbs"><a href="https://mpdesouza.com">Home</a></div>
   <h1>
     Blog
-    <a href="index.xml" title="RSS" aria-label="RSS">
+    <a href="/blog/index.xml" title="RSS" aria-label="RSS">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round" height="23">
         <path d="M4 11a9 9 0 0 1 9 9" />
@@ -164,7 +164,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/boom.png" alt="">
 </figure>
   <header class="entry-header">
-    <h2>Five commands to crash the kernel
+    <h2 class="entry-hint-parent">Five commands to crash the kernel
     </h2>
   </header>
   <div class="entry-content">
@@ -178,7 +178,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/pow-1601674_960_720.png" alt="">
 </figure>
   <header class="entry-header">
-    <h2>From zero to double free: The process of creating a reproducer for a kernel vulnerability
+    <h2 class="entry-hint-parent">From zero to double free: The process of creating a reproducer for a kernel vulnerability
     </h2>
   </header>
   <div class="entry-content">
@@ -192,7 +192,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/archive.jpg" alt="">
 </figure>
   <header class="entry-header">
-    <h2>Btrfs for mere mortals: inode allocation
+    <h2 class="entry-hint-parent">Btrfs for mere mortals: inode allocation
     </h2>
   </header>
   <div class="entry-content">
@@ -206,7 +206,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/compass.jpg" alt="">
 </figure>
   <header class="entry-header">
-    <h2>Btrfs: Resolving the logical-resolve
+    <h2 class="entry-hint-parent">Btrfs: Resolving the logical-resolve
     </h2>
   </header>
   <div class="entry-content">
@@ -220,7 +220,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/btrfs-logo.png" alt="">
 </figure>
   <header class="entry-header">
-    <h2>btrfs: Differentiating bind mounts on subvolumes
+    <h2 class="entry-hint-parent">btrfs: Differentiating bind mounts on subvolumes
     </h2>
   </header>
   <div class="entry-content">
@@ -234,7 +234,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/mailbox.jpg" alt="">
 </figure>
   <header class="entry-header">
-    <h2>btrfs: making &#34;send&#34; more &#34;capable&#34;
+    <h2 class="entry-hint-parent">btrfs: making &#34;send&#34; more &#34;capable&#34;
     </h2>
   </header>
   <div class="entry-content">
@@ -248,7 +248,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/delete.jpg" alt="">
 </figure>
   <header class="entry-header">
-    <h2>New btrfs feature: Delete subvolumes using subvolume ids
+    <h2 class="entry-hint-parent">New btrfs feature: Delete subvolumes using subvolume ids
     </h2>
   </header>
   <div class="entry-content">
@@ -262,7 +262,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/usb-hd.jpg" alt="">
 </figure>
   <header class="entry-header">
-    <h2>Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs
+    <h2 class="entry-hint-parent">Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs
     </h2>
   </header>
   <div class="entry-content">
@@ -276,7 +276,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/usb-stick.png" alt="">
 </figure>
   <header class="entry-header">
-    <h2>Kernel Adventures: Are USB Sticks Rotational Devices?
+    <h2 class="entry-hint-parent">Kernel Adventures: Are USB Sticks Rotational Devices?
     </h2>
   </header>
   <div class="entry-content">
@@ -290,7 +290,7 @@ if (!doNotTrack) {
 <figure class="entry-cover"><img loading="lazy" src="https://mpdesouza.com/images/gandalf.jpg" alt="">
 </figure>
   <header class="entry-header">
-    <h2>NO_NEW_PRIVS: avoiding privilege escalation
+    <h2 class="entry-hint-parent">NO_NEW_PRIVS: avoiding privilege escalation
     </h2>
   </header>
   <div class="entry-content">

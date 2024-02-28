@@ -5,107 +5,87 @@
     <link>https://mpdesouza.com/</link>
     <description>Recent content on Marcos&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 22 Aug 2023 21:18:21 -0300</lastBuildDate><atom:link href="https://mpdesouza.com/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <lastBuildDate>Tue, 22 Aug 2023 21:18:21 -0300</lastBuildDate>
+    <atom:link href="https://mpdesouza.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Five commands to crash the kernel</title>
       <link>https://mpdesouza.com/blog/five-commands-to-crash-the-kernel/</link>
       <pubDate>Tue, 22 Aug 2023 21:18:21 -0300</pubDate>
-      
       <guid>https://mpdesouza.com/blog/five-commands-to-crash-the-kernel/</guid>
       <description>A tcindex tale</description>
     </item>
-    
     <item>
       <title>From zero to double free: The process of creating a reproducer for a kernel vulnerability</title>
       <link>https://mpdesouza.com/blog/from-zero-to-double-free/</link>
       <pubDate>Thu, 09 Mar 2023 23:21:25 -0300</pubDate>
-      
       <guid>https://mpdesouza.com/blog/from-zero-to-double-free/</guid>
       <description>&amp;hellip; or my personal journey of reading code and triggering behaviors.</description>
     </item>
-    
     <item>
       <title>Btrfs for mere mortals: inode allocation</title>
       <link>https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/</link>
       <pubDate>Mon, 25 Apr 2022 13:30:25 -0300</pubDate>
-      
       <guid>https://mpdesouza.com/blog/btrfs-for-mere-mortals-inode-allocation/</guid>
       <description>&amp;hellip; or how btrfs manages its inodes when compared to other Linux filesystems, from the inside.</description>
     </item>
-    
     <item>
       <title>Btrfs: Resolving the logical-resolve</title>
       <link>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</link>
       <pubDate>Sat, 27 Feb 2021 12:12:52 +0000</pubDate>
-      
       <guid>https://mpdesouza.com/blog/btrfs-resolving-the-logical-resolve/</guid>
       <description>logical-resolve inside out</description>
     </item>
-    
     <item>
       <title>btrfs: Differentiating bind mounts on subvolumes</title>
       <link>https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/</link>
       <pubDate>Tue, 16 Feb 2021 00:00:00 +0000</pubDate>
-      
       <guid>https://mpdesouza.com/blog/btrfs-differentiating-bind-mounts-on-subvolumes/</guid>
       <description>Explaining how to differentiate bind mounts on btrfs subvolumes</description>
     </item>
-    
     <item>
       <title>btrfs: making &#34;send&#34; more &#34;capable&#34;</title>
       <link>https://mpdesouza.com/blog/btrfs-making-send-more-capable/</link>
       <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
-      
       <guid>https://mpdesouza.com/blog/btrfs-making-send-more-capable/</guid>
       <description>The tale of fixing a problem of send/receive on btrfs.</description>
     </item>
-    
     <item>
       <title>About me</title>
       <link>https://mpdesouza.com/about-me/</link>
       <pubDate>Sun, 09 Feb 2020 00:00:00 +0000</pubDate>
-      
       <guid>https://mpdesouza.com/about-me/</guid>
       <description>I&amp;rsquo;m Marcos, a Kernel Livepatch developer at SUSE.
 I have contributed to interesting open source projects, like Linux Kernel, Linux Testing Project, btrfs-progs, virtme-ng, libvirt, LXC, bubblewrap, supportutils and others.
 Feel free to reach me out on Mastodon, LinkedIn or by email (me at mpdesouza.com).</description>
     </item>
-    
     <item>
       <title>New btrfs feature: Delete subvolumes using subvolume ids</title>
       <link>https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</link>
       <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
-      
       <guid>https://mpdesouza.com/blog/new-btrfs-feature-delete-subvolumes-using-subvolume-ids/</guid>
       <description>Literally, btrfs subvolume delete 2.0</description>
     </item>
-    
     <item>
       <title>Kernel Adventures: Enabling VPD Pages for USB Storage Devices in sysfs</title>
       <link>https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</link>
       <pubDate>Fri, 16 Aug 2019 00:00:00 +0000</pubDate>
-      
       <guid>https://mpdesouza.com/blog/kernel-adventures-enabling-vpd-pages-for-usb-storage-devices-in-sysfs/</guid>
       <description>USB with VPD on sysfs</description>
     </item>
-    
     <item>
       <title>Kernel Adventures: Are USB Sticks Rotational Devices?</title>
       <link>https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/</link>
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
-      
       <guid>https://mpdesouza.com/blog/kernel-adventures-are-usb-sticks-rotational-devices/</guid>
       <description>Understanding why USB devices are usually set as rotational devices on Linux</description>
     </item>
-    
     <item>
       <title>NO_NEW_PRIVS: avoiding privilege escalation</title>
       <link>https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
-      
       <guid>https://mpdesouza.com/blog/no_new_privs-avoiding-privilege-escalation/</guid>
       <description>&amp;hellip; or how to avoid turning your app into an exploit.</description>
     </item>
-    
   </channel>
 </rss>
