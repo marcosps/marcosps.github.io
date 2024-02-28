@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: "v0.112.4"
+      HUGO_VERSION: "0.112.4"
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
         # repo: you/you.github.io
         # Use if your site requires a specific version of Hugo.
         # Append "extended_" to the begining to use Hugo Extended.
-        # hugoVersion: extended_0.58.3
+        hugoVersion: 0.112.4
         # Use if you want to pass some custom arguments to Hugo.
         args: --gc --cleanDestinationDir
         # Use this if your site isn't in the root of your repo.
