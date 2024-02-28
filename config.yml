@@ -33,6 +33,7 @@ params:
   disableShare: false
   searchHidden: true
   hidemeta: false
+  comments: true
 
   assets:
     disableHLJS: true
