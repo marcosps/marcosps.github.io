@@ -5,6 +5,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: "v0.111.3+extended"
     steps:
     - name: Checkout
       uses: actions/checkout@v2
