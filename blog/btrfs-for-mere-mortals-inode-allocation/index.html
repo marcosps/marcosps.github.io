@@ -932,9 +932,9 @@ system call to show the information about inodes. The system call populates the
 statfs struct with the values related to the filesystem being checked, and the
 f_files field contains the maximum number of inodes.</p>
 <p>By looking at the kernel code, the function
-<a href="https://elixir.bootlin.com/linux/latest/source/fs/btrfs/super.c#L2256"><em>btrfs_statfs</em></a>
+<a href="https://elixir.bootlin.com/linux/v6.9.1/source/fs/btrfs/super.c#L1676"><em>btrfs_statfs</em></a>
 does not set buf-&gt;f_files, while in
-<a href="https://elixir.bootlin.com/linux/latest/source/fs/ext4/super.c#L6228"><em>ext4_statfs</em></a>
+<a href="https://elixir.bootlin.com/linux/v6.9.1/source/fs/ext4/super.c#L6803"><em>ext4_statfs</em></a>
 we can see the information being get from the superblock.</p>
 <h1 id="btrfs-inodes-and-subvolumes">Btrfs: Inodes and subvolumes<a hidden class="anchor" aria-hidden="true" href="#btrfs-inodes-and-subvolumes">#</a></h1>
 <p>In btrfs, subvolumes store user data, and act like different filesystems, as
