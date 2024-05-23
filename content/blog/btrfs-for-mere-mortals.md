@@ -528,9 +528,9 @@ statfs struct with the values related to the filesystem being checked, and the
 f_files field contains the maximum number of inodes.
 
 By looking at the kernel code, the function 
-[*btrfs_statfs*](https://elixir.bootlin.com/linux/latest/source/fs/btrfs/super.c#L2256)
+[*btrfs_statfs*](https://elixir.bootlin.com/linux/v6.9.1/source/fs/btrfs/super.c#L1676)
 does not set buf->f_files, while in
-[*ext4_statfs*](https://elixir.bootlin.com/linux/latest/source/fs/ext4/super.c#L6228)
+[*ext4_statfs*](https://elixir.bootlin.com/linux/v6.9.1/source/fs/ext4/super.c#L6803)
 we can see the information being get from the superblock.
 
 # Btrfs: Inodes and subvolumes
