@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Livepatch selftests: the journey to Kbuild and back | Marcos&#39; Blog</title>
+<meta name="keywords" content="kbuild, selftests, livepatch, kernel">
+<meta name="description" content="or how moving code around ended up on a Makefile graduation course">
+<meta name="author" content="">
+<link rel="canonical" href="https://mpdesouza.com/blog/kbuild-livepatch-selftests/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.296fec78fff86e20531f33f7a3ad2a4f7e921f7482195143705d1691db50922b.css" integrity="sha256-KW/seP/4biBTHzP3o60qT36SH3SCGVFDcF0WkdtQkis=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://mpdesouza.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://mpdesouza.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://mpdesouza.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://mpdesouza.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://mpdesouza.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LWD0KKCW2G"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-LWD0KKCW2G', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="Livepatch selftests: the journey to Kbuild and back" />
+<meta property="og:description" content="or how moving code around ended up on a Makefile graduation course" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mpdesouza.com/blog/kbuild-livepatch-selftests/" />
+<meta property="og:image" content="https://mpdesouza.com/images/understand-makefiles.jpg" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-07-10T23:18:00-03:00" />
+<meta property="article:modified_time" content="2024-07-10T23:18:00-03:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://mpdesouza.com/images/understand-makefiles.jpg" />
+<meta name="twitter:title" content="Livepatch selftests: the journey to Kbuild and back"/>
+<meta name="twitter:description" content="or how moving code around ended up on a Makefile graduation course"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blog",
+      "item": "https://mpdesouza.com/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Livepatch selftests: the journey to Kbuild and back",
+      "item": "https://mpdesouza.com/blog/kbuild-livepatch-selftests/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Livepatch selftests: the journey to Kbuild and back",
+  "name": "Livepatch selftests: the journey to Kbuild and back",
+  "description": "or how moving code around ended up on a Makefile graduation course",
+  "keywords": [
+    "kbuild", "selftests", "livepatch", "kernel"
+  ],
+  "articleBody": "One might think that in order to contribute to Linux kernel the developer should speak C and assembly. This is correct most of times, but not always.\nThere are cases where a simple code move between directories require changes on Kbuild, implying knowledge of Makefile. If you have dealt with Makefiles before, you know what lies ahead of you.\nThe problem The livepatching subsystem uses kselftests to ensure that the subsystem is working as expected. The livepatch tests are placed on tools/testing/selftests/livepatch directory, and they do a very simple job: load livepatch modules and observe if they behave like they should. The source code of the livepatch testing modules live on lib/livepatch and are compiled only if CONFIG_TEST_LIVEPATCH is set. These test modules need to be installed like normal modules to allow the tests to work. This requirement forbids reasonable use cases:\nRunning the tests on a kernel that wasn’t compiled CONFIG_TEST_LIVEPATCH Changing livepatch test modules code and simply recompiling them Running livepatch kselftests from upstream on older kernels Until now, to be able to execute livepatch kselftests one should enable CONFIG_TEST_LIVEPATCH, build the kernel and the modules, and create a package for the test modules. This allows Linux distributions to test their kernels before releasing a new update, excluding the test modules from the final image.\nThe Kernel Livepatch team at SUSE wanted to change this approach to something that could be easily ported to different systems, or to different versions of the same distribution. The idea was to move the livepatch testing modules from lib/livepatch to tools/testing/selftests/livepatch, compile the modules as out-of-tree and run the tests by loading the modules. This change would empower developers making possible to change the test modules and and simply running the tests.\nThe idea is pretty good, and seems very simple to implement. Just moving code from one directory into another. What could go wrong?\nKbuild and Makefiles in the way The Linux Kernel build system is called Kbuild and is composed by Makefiles. As you can image, things can get complex when dealing with multiple Makefiles that include other Makefiles. Kbuild’s complexity is such that it has its own mailing list to discuss changes and improvements. Things are documented as much as possible, but it doesn’t make the process of touching it easier.\nProblem 1: Recursive out-of-tree module building The very first issue was found while moving the code from lib/livepatch to tools/testing/selftests/livepatch/test-modules. Per the documentation, it should be easy to address since it’s simple to build an out-of-tree module. Our use case was a little different, since our modules are in-tree but are being compiled as out-of-tree.\nFollowing the documentation, the modules were moved from lib/livepatch to tools/testing/selftests/livepatch/test-modules. The Makefile below was created to compile them:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 TESTMODS_DIR := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST))))) KDIR ?= /lib/modules/$(shell uname -r)/build obj-m += test_klp_atomic_replace.o \\ test_klp_callbacks_busy.o \\ test_klp_callbacks_demo.o \\ test_klp_callbacks_demo2.o \\ test_klp_callbacks_mod.o \\ test_klp_livepatch.o \\ test_klp_state.o \\ test_klp_state2.o \\ test_klp_state3.o \\ test_klp_shadow_vars.o modules: $(Q)$(MAKE) -C $(KDIR) modules M=$(TESTMODS_DIR) clean: $(Q)$(MAKE) -C $(KDIR) clean M=$(TESTMODS_DIR) The file tools/testing/selftests/livepatch/Makefile was changed to set TEST_GEN_MODS_DIR := test_modules in order to enable building the modules that were moved into test_modules directory before running the tests that will load these modules.\nWith all preparations finished, it’s time to start kseltest to build and run the tests, but the build already failed:\n1 2 3 4 5 6 7 8 9 10 11 make kselftest KDIR=$(pwd) TARGETS=livepatch CC scripts/mod/empty.o MKELF scripts/mod/elfconfig.h HOSTCC scripts/mod/modpost.o CC scripts/mod/devicetable-offsets.s HOSTCC scripts/mod/file2alias.o HOSTCC scripts/mod/sumversion.o HOSTCC scripts/mod/symsearch.o HOSTLD scripts/mod/modpost m2c -o scripts/Makefile.build.o scripts/Makefile.build.mod make[6]: m2c: No such file or directory What? Per the Make documentation, m2c is the Modula to C compiler. What’s going on? I sent a message to Kbuild mailing list exposing my problem and even created a small reproducer of the problem. The Kbuild maintainer suggested changing M= to KBUILD_EXTMOD=, which solved the issue!\nThe only time the issue was being observed was when the build process started for the toplevel directory of the Linux Kernel. It made me look into the toplevel Makefile’s code discovering the problem: the M= argument is only parsed once for recursive Makefile rules, but it would work fine if the tests were executed like below:\n1 make -C tools/testing/selftests/livepatch run_tests Makefiles: from top to livepatch selftests Toplevel Makefile In order to understand problem, we should first understand the flow that Kbuild takes to build the modules and run the tests. The traverse starts from the toplevel Makefile when we execute the make invocation below:\n1 make kselftest KDIR=$(pwd) TARGETS=livepatch On the toplevel Makefile some specific variables as checked, like M= or V=, but in this case only KDIR and TARGETS is being passed, and these don’t affect the build procedure at this point. Before reaching the kselftest target it sets a variable called sub_make_done. This part is very important! Remember the name of this variable!\nThe kselftest target will execute the command below, jumping into tools/testing/selftests directory:\n1 $(Q)$(MAKE) -C $(srctree)/tools/testing/selftests run_tests tools/testing/selftests/Makefile This Makefile checks the TARGETS variable that was propagated from the toplevel Makefile, and then jumps into the directory specified by TARGETS to run the run_tests target:\n1 2 3 4 5 6 7 8 run_tests: all @for TARGET in $(TARGETS); do \\ BUILD_TARGET=$$BUILD/$$TARGET; \\ $(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET run_tests \\ SRC_PATH=$(shell readlink -e $$(pwd)) \\ OBJ_PATH=$(BUILD) \\ O=$(abs_objtree); \\ done; tools/testing/selftests/livepatch/Makefile This Makefile will set variables used by kselftests:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 TEST_GEN_FILES := test_klp-call_getpid TEST_GEN_MODS_DIR := test_modules TEST_PROGS_EXTENDED := functions.sh TEST_PROGS := \\ test-livepatch.sh \\ test-callbacks.sh \\ test-shadow-vars.sh \\ test-state.sh \\ test-ftrace.sh \\ test-sysfs.sh \\ test-syscall.sh TEST_FILES := settings include ../lib.mk The most important variable now is the TEST_GEN_MODS_DIR, which specifies the directory containing modules to be built. Also important is the inclusion of another makefile: lib.mk. This file contains general targets to run selftests, and uses the variables set above to work properly. Let’s see what lib.mk does when TEST_GEN_MODS_DIR is specified:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 ... all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) \\ $(if $(TEST_GEN_MODS_DIR),gen_mods_dir) ... run_tests: all ifdef building_out_of_srctree @if [ \"X$(TEST_PROGS)$(TEST_PROGS_EXTENDED)$(TEST_FILES)$(TEST_GEN_MODS_DIR)\" != \"X\" ]; then \\ rsync -aq --copy-unsafe-links $(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES) $(TEST_GEN_MODS_DIR) $(OUTPUT); \\ fi @$(INSTALL_INCLUDES) @if [ \"X$(TEST_PROGS)\" != \"X\" ]; then \\ $(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) \\ $(addprefix $(OUTPUT)/,$(TEST_PROGS))) ; \\ else \\ $(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS)); \\ fi else @$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_PROGS)) endif gen_mods_dir: $(Q)$(MAKE) -C $(TEST_GEN_MODS_DIR) clean_mods_dir: $(Q)$(MAKE) -C $(TEST_GEN_MODS_DIR) clean The run_tests depends on all target, which check some variables. If TEST_GEN_MODS_DIR is set lib.mk executed the target gen_mods_dir, which will jump into the directory specified by it to build the modules, before running the tests specified by TEST_PROGS.\ntools/testing/selftests/livepatch/test_modules/Makefile This Makefile (which was already shown before) is the responsible\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 TESTMODS_DIR := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST))))) KDIR ?= /lib/modules/$(shell uname -r)/build obj-m += test_klp_atomic_replace.o \\ test_klp_callbacks_busy.o \\ test_klp_callbacks_demo.o \\ test_klp_callbacks_demo2.o \\ test_klp_callbacks_mod.o \\ test_klp_livepatch.o \\ test_klp_state.o \\ test_klp_state2.o \\ test_klp_state3.o \\ test_klp_shadow_vars.o modules: $(Q)$(MAKE) -C $(KDIR) modules M=$(TESTMODS_DIR) clean: $(Q)$(MAKE) -C $(KDIR) clean M=$(TESTMODS_DIR) The code above follow the rule of building an out-of-tree module: it contains a couple of .o files that will result in different modules, a KDIR to jump into, and uses the modules target, along with the M= path being set to the current directory. At this point the KDIR already contains the value we passed when we started the process, pointing to the toplevel directory. Make will jump into KDIR.\nToplevel Makefile (again) We are back into the toplevel directory, but now with M= being set, meaning that we are about to build the modules pointed by it. Everything seems fine, but the error message appears:\n1 2 3 4 5 6 7 8 9 10 11 ... CC scripts/mod/empty.o MKELF scripts/mod/elfconfig.h HOSTCC scripts/mod/modpost.o CC scripts/mod/devicetable-offsets.s HOSTCC scripts/mod/file2alias.o HOSTCC scripts/mod/sumversion.o HOSTCC scripts/mod/symsearch.o HOSTLD scripts/mod/modpost m2c -o scripts/Makefile.build.o scripts/Makefile.build.mod make[6]: m2c: No such file or directory If we inspect the toplevel Makefile closer, the process of checking if M= was set is done only if sub_make_done isn’t set, meaning we only check M= on the first invocation of the recursive make calls.\nIn the end, the Kbuild maintainer suggested me to use KBUILD_EXTMOD= instead of M= and that did the trick! The entire flow of the recursive Makefile invocations can be see below:\nMakefile (toplevel) tools/testing/selftests/Makefile tools/testing/selftests/livepatch/Makefile tools/testing/selftests/livepatch/test-modules/Makefile Makefile (toplevel) The value of M= is used to set KBUILD_EXTMOD= either way, so using the later solved the problem, the modules are built and the tests were run as expected:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 $ sudo make kselftest KDIR=$(pwd) TARGETS=livepatch CC test_klp-call_getpid CC [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_atomic_replace.o CC [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_busy.o CC [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_demo.o ... MODPOST /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/Module.symvers CC [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_atomic_replace.mod.o LD [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_atomic_replace.tmp.ko KLP /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_atomic_replace.ko CC [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_busy.mod.o LD [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_busy.ko BTF [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_busy.ko CC [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_demo.mod.o LD [M] /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_demo.tmp.ko KLP /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_demo.ko ... TAP version 13 1..7 # timeout set to 0 # selftests: livepatch: test-livepatch.sh # TEST: basic function patching ... ok # TEST: multiple livepatches ... ok # TEST: atomic replace livepatch ... ok ok 1 selftests: livepatch: test-livepatch.sh ... # timeout set to 0 # selftests: livepatch: test-syscall.sh # TEST: patch getpid syscall while being heavily hammered ... ok ok 7 selftests: livepatch: test-syscall.sh Problem 2: Target recipes After the patches got merged, I sent another round of patches to simplify the handling of TEST_GEN_MODS_DIR, specially this one. The patch introduced a warning because of the all target on lib.mk (that is included by all selftests Makefiles), but somehow started to fail only with this patch alone. Fortunately a person from the mailing list reported the issue, making me scratch my head to discover what was wrong. Well, let’s check how Makefiles work with duplicated targets.\nAfter tons of experiments I found that you can have duplicated Makefile targets only if they don’t contain a recipe on each target. Otherwise a warning will be shown, and only the recipe of the last target will be executed, but the dependencies of both targets will be evaluated. Take for example the files below:\nall: dep @echo \"override.mk: running all target\" dep: @echo \"override.mk: running dep target\" .PHONY: all dep Let’s call this file override.mk. And now let’s look into another file on the same directory called main.mk:\ninclude override.mk all: local_dep @echo \"main.mk: running recipe of all target\" local_dep: @echo \"main.mk: running local_dep target\" .PHONY: all local_dep You can run them by:\nmake -f main.mk And the result would be:\nmain.mk:4: warning: overriding recipe for target 'all' override.mk:2: warning: ignoring old recipe for target 'all' main.mk: running local_dep target override.mk: running dep target main.mk: running recipe of all target As you can see, the dependencies all both all targets were evaluated/executed, but only the recipe of all target from main.mk executed. At this point, I asked the maintainer of kselftests to ignore that specific patch while the other cleanup patches of the series were accepted.\nClosing thoughts After the changes landed, I discussed with other kernel developers about the journey, and they agreed that touching Kbuild/Makefiles is challenging. I even created a git repository to exercise Makefile constructions that I faced on Kbuild to understand better how they behave. You might find this useful.\nIf you feel frustrated trying to understand Kbuild, consider that kernel developers in general avoid touching Kbuild, specially because they don’t understand all the intricate details of it.\nThanks for reading!\nReferences Official Kbuild documentation\nKbuild modules documentation\nMy Makefile examples repository\n",
+  "wordCount" : "1983",
+  "inLanguage": "en",
+  "image":"https://mpdesouza.com/images/understand-makefiles.jpg","datePublished": "2024-07-10T23:18:00-03:00",
+  "dateModified": "2024-07-10T23:18:00-03:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://mpdesouza.com/blog/kbuild-livepatch-selftests/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Marcos' Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://mpdesouza.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://mpdesouza.com" accesskey="h" title="Marcos&#39; Blog (Alt + H)">Marcos&#39; Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://mpdesouza.com/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://mpdesouza.com/about-me/" title="About Me">
+                    <span>About Me</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://mpdesouza.com">Home</a>&nbsp;»&nbsp;<a href="https://mpdesouza.com/blog/">Blog</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Livepatch selftests: the journey to Kbuild and back
+    </h1>
+    <div class="post-meta"><span title='2024-07-10 23:18:00 -0300 -0300'>July 10, 2024</span>
+
+</div>
+  </header> 
+<figure class="entry-cover"><img loading="eager" src="https://mpdesouza.com/images/understand-makefiles.jpg" alt="">
+        
+</figure>
+  <div class="post-content"><p>One might think that in order to contribute to Linux kernel the developer should <em>speak</em> C and assembly. This is correct most of times, but not always.</p>
+<p>There are cases where a simple code move between directories require changes on Kbuild, implying  knowledge of Makefile. If you have dealt with Makefiles before, you know what lies ahead of you.</p>
+<h1 id="the-problem">The problem<a hidden class="anchor" aria-hidden="true" href="#the-problem">#</a></h1>
+<p>The livepatching subsystem uses kselftests to ensure that the subsystem is working as expected. The livepatch tests are placed on <code>tools/testing/selftests/livepatch</code> directory, and they do a very simple job: load livepatch modules and observe if they behave like they should. The source code of the livepatch testing modules live on <code>lib/livepatch</code>  and are compiled only if <strong>CONFIG_TEST_LIVEPATCH</strong> is set. These test modules need to be installed like normal modules to allow the tests to work. This requirement forbids reasonable use cases:</p>
+<ul>
+<li>Running the tests on a kernel that wasn&rsquo;t compiled <strong>CONFIG_TEST_LIVEPATCH</strong></li>
+<li>Changing livepatch test modules code and simply recompiling them</li>
+<li>Running livepatch kselftests from upstream on older kernels</li>
+</ul>
+<p>Until now, to be able to execute livepatch kselftests one should enable <strong>CONFIG_TEST_LIVEPATCH</strong>, build the kernel and the modules, and create a package for the test modules. This allows Linux distributions to test their kernels before releasing a new update, excluding the test modules from the final image.</p>
+<p>The <em>Kernel Livepatch</em> team at <em>SUSE</em> wanted to change this approach to something that could be easily ported to different systems, or to different versions of the same distribution. The idea was to move the livepatch testing modules from <code>lib/livepatch</code> to <code>tools/testing/selftests/livepatch</code>, compile the modules as <em>out-of-tree</em> and run the tests by loading the modules. This change would empower developers making possible to change the test modules and and simply running the tests.</p>
+<p>The idea is pretty good, and seems very simple to implement. Just moving code from one directory into another. What could go wrong?</p>
+<h1 id="kbuild-and-makefiles-in-the-way">Kbuild and Makefiles in the way<a hidden class="anchor" aria-hidden="true" href="#kbuild-and-makefiles-in-the-way">#</a></h1>
+<p>The Linux Kernel build system is called <a href="https://docs.kernel.org/kbuild/index.html">Kbuild</a> and is composed by Makefiles. As you can image, things can get complex when dealing with multiple Makefiles that include other Makefiles. Kbuild&rsquo;s complexity is such that it has its own <a href="https://lore.kernel.org/linux-kbuild/">mailing list</a> to discuss changes and improvements. Things are documented as much as possible, but it doesn&rsquo;t make the process of touching it easier.</p>
+<h2 id="problem-1-recursive-out-of-tree-module-building">Problem 1: Recursive out-of-tree module building<a hidden class="anchor" aria-hidden="true" href="#problem-1-recursive-out-of-tree-module-building">#</a></h2>
+<p>The very first issue was found while moving the code from <code>lib/livepatch</code> to <code>tools/testing/selftests/livepatch/test-modules</code>. Per the <a href="https://docs.kernel.org/kbuild/modules.html">documentation</a>, it should be easy to address since it&rsquo;s simple to build an <em>out-of-tree</em> module. Our use case was a <em>little</em> different, since our modules are <em>in-tree</em> but are being compiled as <em>out-of-tree</em>.</p>
+<p>Following the documentation, the modules were moved from <code>lib/livepatch</code> to <code>tools/testing/selftests/livepatch/test-modules</code>. The  Makefile below was created to compile them:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span><span style="color:#b7bdf8">TESTMODS_DIR</span> <span style="color:#91d7e3">:=</span> <span style="color:#c6a0f6">$(</span>realpath <span style="color:#c6a0f6">$(</span>dir <span style="color:#c6a0f6">$(</span>abspath <span style="color:#c6a0f6">$(</span>lastword <span style="color:#c6a0f6">$(</span>MAKEFILE_LIST<span style="color:#c6a0f6">)))))</span>
+</span></span><span style="display:flex;"><span><span style="color:#b7bdf8">KDIR</span> <span style="color:#91d7e3">?=</span> /lib/modules/<span style="color:#c6a0f6">$(</span>shell uname -r<span style="color:#c6a0f6">)</span>/build
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#b7bdf8">obj-m</span> <span style="color:#91d7e3">+=</span> test_klp_atomic_replace.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_callbacks_busy.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_callbacks_demo.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_callbacks_demo2.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_callbacks_mod.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_livepatch.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_state.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_state2.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_state3.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_shadow_vars.o
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#91d7e3">modules</span><span style="color:#91d7e3">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">$(</span>Q<span style="color:#c6a0f6">)$(</span>MAKE<span style="color:#c6a0f6">)</span> -C <span style="color:#c6a0f6">$(</span>KDIR<span style="color:#c6a0f6">)</span> modules <span style="color:#b7bdf8">M</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span>TESTMODS_DIR<span style="color:#c6a0f6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#91d7e3">clean</span><span style="color:#91d7e3">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">$(</span>Q<span style="color:#c6a0f6">)$(</span>MAKE<span style="color:#c6a0f6">)</span> -C <span style="color:#c6a0f6">$(</span>KDIR<span style="color:#c6a0f6">)</span> clean <span style="color:#b7bdf8">M</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span>TESTMODS_DIR<span style="color:#c6a0f6">)</span>  
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The file <code>tools/testing/selftests/livepatch/Makefile</code> was changed to set <strong>TEST_GEN_MODS_DIR := test_modules</strong> in order to enable building the modules that were moved into <code>test_modules</code> directory before running the tests that will load these modules.</p>
+<p>With all preparations finished, it&rsquo;s time to start kseltest to build and run the tests, but the build already failed:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>make kselftest <span style="color:#b7bdf8">KDIR</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span><span style="font-style:italic">pwd</span><span style="color:#c6a0f6">)</span> <span style="color:#b7bdf8">TARGETS</span><span style="color:#91d7e3">=</span>livepatch
+</span></span><span style="display:flex;"><span>  CC      scripts/mod/empty.o
+</span></span><span style="display:flex;"><span>  MKELF   scripts/mod/elfconfig.h
+</span></span><span style="display:flex;"><span>  HOSTCC  scripts/mod/modpost.o
+</span></span><span style="display:flex;"><span>  CC      scripts/mod/devicetable-offsets.s
+</span></span><span style="display:flex;"><span>  HOSTCC  scripts/mod/file2alias.o
+</span></span><span style="display:flex;"><span>  HOSTCC  scripts/mod/sumversion.o
+</span></span><span style="display:flex;"><span>  HOSTCC  scripts/mod/symsearch.o
+</span></span><span style="display:flex;"><span>  HOSTLD  scripts/mod/modpost
+</span></span><span style="display:flex;"><span>m2c    -o scripts/Makefile.build.o scripts/Makefile.build.mod
+</span></span><span style="display:flex;"><span>make<span style="color:#91d7e3">[</span>6<span style="color:#91d7e3">]</span>: m2c: No such file or directory
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>What? Per the <a href="https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html#index-M2C">Make documentation</a>, m2c is the Modula to C compiler. What&rsquo;s going on?  I sent a message to <a href="https://lore.kernel.org/linux-kbuild/lp2gjgzwxvhluh7fpmmo2drhii7bxcrlvxacclfgsl4ycubjhc@jjq2jfvow4y2/">Kbuild mailing list</a> exposing my problem and even created a small reproducer of the problem. The Kbuild maintainer suggested changing <strong>M=</strong> to <strong>KBUILD_EXTMOD=</strong>, which <em>solved</em> the issue!</p>
+<p>The only time the issue was being observed was when the build process started for the toplevel directory of the Linux Kernel. It made me look into the toplevel Makefile&rsquo;s <a href="https://elixir.bootlin.com/linux/v6.9.1/source/Makefile#L141">code</a> discovering the problem: the <strong>M=</strong> argument is only parsed once for recursive Makefile rules, but it would work fine if the tests were executed like below:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>make -C tools/testing/selftests/livepatch run_tests
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="makefiles-from-top-to-livepatch-selftests">Makefiles: from top to livepatch selftests<a hidden class="anchor" aria-hidden="true" href="#makefiles-from-top-to-livepatch-selftests">#</a></h2>
+<h3 id="toplevel-makefile">Toplevel Makefile<a hidden class="anchor" aria-hidden="true" href="#toplevel-makefile">#</a></h3>
+<p>In order to understand problem, we should first understand the flow that Kbuild takes to build the modules and run the tests. The traverse starts from the toplevel Makefile when we execute the make invocation below:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>make kselftest <span style="color:#b7bdf8">KDIR</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span><span style="font-style:italic">pwd</span><span style="color:#c6a0f6">)</span> <span style="color:#b7bdf8">TARGETS</span><span style="color:#91d7e3">=</span>livepatch
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>On the toplevel Makefile some specific variables as checked, like <strong>M=</strong> or <strong>V=</strong>, but in this case only <strong>KDIR</strong> and <strong>TARGETS</strong> is being passed, and these don&rsquo;t affect the build procedure at this point. Before reaching the <strong>kselftest</strong> target it sets a variable called <strong>sub_make_done</strong>. <em>This part is very important! Remember the name of this variable!</em></p>
+<p>The <strong>kselftest</strong> target will execute the command below, jumping into <code>tools/testing/selftests</code> directory:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#c6a0f6">$(</span>Q<span style="color:#c6a0f6">)$(</span>MAKE<span style="color:#c6a0f6">)</span> -C <span style="color:#c6a0f6">$(</span>srctree<span style="color:#c6a0f6">)</span>/tools/testing/selftests run_tests
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="toolstestingselftestsmakefile">tools/testing/selftests/Makefile<a hidden class="anchor" aria-hidden="true" href="#toolstestingselftestsmakefile">#</a></h3>
+<p>This Makefile checks the <em>TARGETS</em> variable that was propagated from the toplevel Makefile, and then jumps into the directory specified by <em>TARGETS</em> to run the <em>run_tests</em> target:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span><span style="color:#91d7e3">run_tests</span><span style="color:#91d7e3">:</span> <span style="color:#b7bdf8">all</span>                                                                                                        
+</span></span><span style="display:flex;"><span>        @for TARGET in <span style="color:#c6a0f6">$(</span>TARGETS<span style="color:#c6a0f6">)</span><span style="color:#cad3f5">;</span> <span style="color:#c6a0f6">do</span> <span style="color:#8aadf4">\ </span>                                                                              
+</span></span><span style="display:flex;"><span>                <span style="color:#b7bdf8">BUILD_TARGET</span><span style="color:#91d7e3">=</span><span style="color:#b7bdf8">$$</span>BUILD/<span style="color:#b7bdf8">$$</span>TARGET<span style="color:#cad3f5">;</span>  <span style="color:#8aadf4">\ </span>                                                                    
+</span></span><span style="display:flex;"><span>                <span style="color:#c6a0f6">$(</span>MAKE<span style="color:#c6a0f6">)</span> <span style="color:#b7bdf8">OUTPUT</span><span style="color:#91d7e3">=</span><span style="color:#b7bdf8">$$</span>BUILD_TARGET -C <span style="color:#b7bdf8">$$</span>TARGET run_tests <span style="color:#8aadf4">\ </span>                                                
+</span></span><span style="display:flex;"><span>                                <span style="color:#b7bdf8">SRC_PATH</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span>shell readlink -e <span style="color:#b7bdf8">$$</span><span style="color:#91d7e3">(</span><span style="font-style:italic">pwd</span><span style="color:#c6a0f6">)</span><span style="color:#91d7e3">)</span> <span style="color:#8aadf4">\ </span>                                              
+</span></span><span style="display:flex;"><span>                                <span style="color:#b7bdf8">OBJ_PATH</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span>BUILD<span style="color:#c6a0f6">)</span>                   <span style="color:#8aadf4">\ </span>                                                
+</span></span><span style="display:flex;"><span>                                <span style="color:#b7bdf8">O</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span>abs_objtree<span style="color:#c6a0f6">)</span><span style="color:#cad3f5">;</span>                   <span style="color:#8aadf4">\ </span>                                                
+</span></span><span style="display:flex;"><span>        <span style="color:#c6a0f6">done</span><span style="color:#cad3f5">;</span> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="toolstestingselftestslivepatchmakefile">tools/testing/selftests/livepatch/Makefile<a hidden class="anchor" aria-hidden="true" href="#toolstestingselftestslivepatchmakefile">#</a></h3>
+<p>This Makefile will set variables used by kselftests:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span><span style="color:#b7bdf8">TEST_GEN_FILES</span> <span style="color:#91d7e3">:=</span> test_klp-call_getpid                                                                                
+</span></span><span style="display:flex;"><span><span style="color:#b7bdf8">TEST_GEN_MODS_DIR</span> <span style="color:#91d7e3">:=</span> test_modules                                                                                     
+</span></span><span style="display:flex;"><span><span style="color:#b7bdf8">TEST_PROGS_EXTENDED</span> <span style="color:#91d7e3">:=</span> functions.sh                                                                                   
+</span></span><span style="display:flex;"><span><span style="color:#b7bdf8">TEST_PROGS</span> <span style="color:#91d7e3">:=</span> <span style="color:#8aadf4">\ </span>                                                                                                      
+</span></span><span style="display:flex;"><span>        test-livepatch.sh <span style="color:#8aadf4">\ </span>                                                                                          
+</span></span><span style="display:flex;"><span>        test-callbacks.sh <span style="color:#8aadf4">\ </span>                                                                                          
+</span></span><span style="display:flex;"><span>        test-shadow-vars.sh <span style="color:#8aadf4">\ </span>                                                                                        
+</span></span><span style="display:flex;"><span>        test-state.sh <span style="color:#8aadf4">\ </span>                                                                                              
+</span></span><span style="display:flex;"><span>        test-ftrace.sh <span style="color:#8aadf4">\ </span>                                                                                             
+</span></span><span style="display:flex;"><span>        test-sysfs.sh <span style="color:#8aadf4">\ </span>                                                                                              
+</span></span><span style="display:flex;"><span>        test-syscall.sh                                                                                               
+</span></span><span style="display:flex;"><span>                                                                                                                      
+</span></span><span style="display:flex;"><span><span style="color:#b7bdf8">TEST_FILES</span> <span style="color:#91d7e3">:=</span> settings                                                                                                
+</span></span><span style="display:flex;"><span>                                                                                                                      
+</span></span><span style="display:flex;"><span><span style="color:#ed8796">include</span> <span style="color:#ed8796">../lib.mk</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The most important variable now is the <strong>TEST_GEN_MODS_DIR</strong>, which specifies the directory containing modules to be built. Also important is the inclusion of another makefile: <code>lib.mk</code>. This file contains general targets to run selftests, and uses the variables set above to work properly. Let&rsquo;s see what <code>lib.mk</code> does when <em>TEST_GEN_MODS_DIR</em> is specified:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span><span style="color:#ed8796">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#91d7e3">all</span><span style="color:#91d7e3">:</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_GEN_PROGS</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_GEN_PROGS_EXTENDED</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_GEN_FILES</span><span style="color:#c6a0f6">)</span> \                                                 
+</span></span><span style="display:flex;"><span>        <span style="color:#c6a0f6">$(if</span> <span style="color:#c6a0f6">$(</span>TEST_GEN_MODS_DIR<span style="color:#c6a0f6">)</span>,gen_mods_dir<span style="color:#c6a0f6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ed8796">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#91d7e3">run_tests</span><span style="color:#91d7e3">:</span> <span style="color:#b7bdf8">all</span>         
+</span></span><span style="display:flex;"><span><span style="color:#ed8796">ifdef</span> <span style="color:#ed8796">building_out_of_srctree</span>                    
+</span></span><span style="display:flex;"><span>    <span style="color:#ed8796">@if</span> <span style="color:#ed8796">[</span> <span style="color:#a6da95">&#34;X$(TEST_PROGS)$(TEST_PROGS_EXTENDED)$(TEST_FILES)$(TEST_GEN_MODS_DIR)&#34;</span> <span style="color:#ed8796">!=</span> <span style="color:#a6da95">&#34;X&#34;</span> <span style="color:#ed8796">];</span> <span style="color:#ed8796">then</span> <span style="color:#ed8796">\</span>            
+</span></span><span style="display:flex;"><span>                <span style="color:#ed8796">rsync</span> <span style="color:#ed8796">-aq</span> <span style="color:#ed8796">--copy-unsafe-links</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_PROGS</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_PROGS_EXTENDED</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_FILES</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_GEN_MODS_DIR</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">OUTPUT</span><span style="color:#c6a0f6">)</span><span style="color:#ed8796">;</span> <span style="color:#ed8796">\</span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#ed8796">fi</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ed8796">@</span><span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">INSTALL_INCLUDES</span><span style="color:#c6a0f6">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ed8796">@if</span> <span style="color:#ed8796">[</span> <span style="color:#a6da95">&#34;X$(TEST_PROGS)&#34;</span> <span style="color:#ed8796">!=</span> <span style="color:#a6da95">&#34;X&#34;</span> <span style="color:#ed8796">];</span> <span style="color:#ed8796">then</span> <span style="color:#ed8796">\</span>                
+</span></span><span style="display:flex;"><span>		<span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">call</span> <span style="color:#b7bdf8">RUN_TESTS</span>, <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_GEN_PROGS</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_CUSTOM_PROGS</span><span style="color:#c6a0f6">)</span> \
+</span></span><span style="display:flex;"><span>							<span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">addprefix</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">OUTPUT</span><span style="color:#c6a0f6">)</span>/,<span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_PROGS</span><span style="color:#c6a0f6">)))</span> <span style="color:#ed8796">;</span> <span style="color:#ed8796">\</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ed8796">else</span> <span style="color:#ed8796">\</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">call</span> <span style="color:#b7bdf8">RUN_TESTS</span>, <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_GEN_PROGS</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_CUSTOM_PROGS</span><span style="color:#c6a0f6">))</span><span style="color:#ed8796">;</span> <span style="color:#ed8796">\</span>                                                                
+</span></span><span style="display:flex;"><span>    <span style="color:#ed8796">fi</span>                
+</span></span><span style="display:flex;"><span><span style="color:#ed8796">else</span>                                                                                                                               
+</span></span><span style="display:flex;"><span>	<span style="color:#ed8796">@</span><span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">call</span> <span style="color:#b7bdf8">RUN_TESTS</span>, <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_GEN_PROGS</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_CUSTOM_PROGS</span><span style="color:#c6a0f6">)</span> <span style="color:#c6a0f6">$(</span><span style="color:#b7bdf8">TEST_PROGS</span><span style="color:#c6a0f6">))</span>                
+</span></span><span style="display:flex;"><span><span style="color:#ed8796">endif</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#91d7e3">gen_mods_dir</span><span style="color:#91d7e3">:</span>                                                                                                         
+</span></span><span style="display:flex;"><span>        <span style="color:#c6a0f6">$(</span>Q<span style="color:#c6a0f6">)$(</span>MAKE<span style="color:#c6a0f6">)</span> -C <span style="color:#c6a0f6">$(</span>TEST_GEN_MODS_DIR<span style="color:#c6a0f6">)</span>                                                                           
+</span></span><span style="display:flex;"><span>                                                                                                                      
+</span></span><span style="display:flex;"><span><span style="color:#91d7e3">clean_mods_dir</span><span style="color:#91d7e3">:</span>                                                                                                       
+</span></span><span style="display:flex;"><span>        <span style="color:#c6a0f6">$(</span>Q<span style="color:#c6a0f6">)$(</span>MAKE<span style="color:#c6a0f6">)</span> -C <span style="color:#c6a0f6">$(</span>TEST_GEN_MODS_DIR<span style="color:#c6a0f6">)</span> clean
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The <em>run_tests</em> depends on <em>all</em> target, which check some variables. If <em>TEST_GEN_MODS_DIR</em> is set <code>lib.mk</code> executed the target <code>gen_mods_dir</code>, which will jump into the directory specified by it to build the modules, before running the tests specified by <strong>TEST_PROGS</strong>.</p>
+<h3 id="toolstestingselftestslivepatchtest_modulesmakefile">tools/testing/selftests/livepatch/test_modules/Makefile<a hidden class="anchor" aria-hidden="true" href="#toolstestingselftestslivepatchtest_modulesmakefile">#</a></h3>
+<p>This Makefile (which was already shown before) is the responsible</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span><span style="color:#b7bdf8">TESTMODS_DIR</span> <span style="color:#91d7e3">:=</span> <span style="color:#c6a0f6">$(</span>realpath <span style="color:#c6a0f6">$(</span>dir <span style="color:#c6a0f6">$(</span>abspath <span style="color:#c6a0f6">$(</span>lastword <span style="color:#c6a0f6">$(</span>MAKEFILE_LIST<span style="color:#c6a0f6">)))))</span>
+</span></span><span style="display:flex;"><span><span style="color:#b7bdf8">KDIR</span> <span style="color:#91d7e3">?=</span> /lib/modules/<span style="color:#c6a0f6">$(</span>shell uname -r<span style="color:#c6a0f6">)</span>/build
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#b7bdf8">obj-m</span> <span style="color:#91d7e3">+=</span> test_klp_atomic_replace.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_callbacks_busy.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_callbacks_demo.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_callbacks_demo2.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_callbacks_mod.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_livepatch.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_state.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_state2.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_state3.o <span style="color:#8aadf4">\
+</span></span></span><span style="display:flex;"><span><span style="color:#8aadf4"></span>	test_klp_shadow_vars.o
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#91d7e3">modules</span><span style="color:#91d7e3">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">$(</span>Q<span style="color:#c6a0f6">)$(</span>MAKE<span style="color:#c6a0f6">)</span> -C <span style="color:#c6a0f6">$(</span>KDIR<span style="color:#c6a0f6">)</span> modules <span style="color:#b7bdf8">M</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span>TESTMODS_DIR<span style="color:#c6a0f6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#91d7e3">clean</span><span style="color:#91d7e3">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#c6a0f6">$(</span>Q<span style="color:#c6a0f6">)$(</span>MAKE<span style="color:#c6a0f6">)</span> -C <span style="color:#c6a0f6">$(</span>KDIR<span style="color:#c6a0f6">)</span> clean <span style="color:#b7bdf8">M</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span>TESTMODS_DIR<span style="color:#c6a0f6">)</span> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The code above follow the rule of building an <em>out-of-tree</em> module: it contains a couple of <em>.o</em> files that will result in different modules, a <strong>KDIR</strong> to jump into, and uses the modules target, along with the <strong>M=</strong> path being set to the current directory. At this point the <strong>KDIR</strong> already contains the value we passed when we started the process, pointing to the toplevel directory. Make will jump into <strong>KDIR</strong>.</p>
+<h3 id="toplevel-makefile-again">Toplevel Makefile (again)<a hidden class="anchor" aria-hidden="true" href="#toplevel-makefile-again">#</a></h3>
+<p>We are back into the toplevel directory, but now with <strong>M=</strong> being set, meaning that we are about to build the modules pointed by it. Everything seems fine, but the error message appears:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>  CC      scripts/mod/empty.o
+</span></span><span style="display:flex;"><span>  MKELF   scripts/mod/elfconfig.h
+</span></span><span style="display:flex;"><span>  HOSTCC  scripts/mod/modpost.o
+</span></span><span style="display:flex;"><span>  CC      scripts/mod/devicetable-offsets.s
+</span></span><span style="display:flex;"><span>  HOSTCC  scripts/mod/file2alias.o
+</span></span><span style="display:flex;"><span>  HOSTCC  scripts/mod/sumversion.o
+</span></span><span style="display:flex;"><span>  HOSTCC  scripts/mod/symsearch.o
+</span></span><span style="display:flex;"><span>  HOSTLD  scripts/mod/modpost
+</span></span><span style="display:flex;"><span>m2c    -o scripts/Makefile.build.o scripts/Makefile.build.mod
+</span></span><span style="display:flex;"><span>make<span style="color:#91d7e3">[</span>6<span style="color:#91d7e3">]</span>: m2c: No such file or directory
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If we inspect the toplevel Makefile closer, the process of checking if <strong>M=</strong> was set is done only if <strong>sub_make_done</strong> isn&rsquo;t set, meaning we only check <strong>M=</strong> on the first invocation of the recursive make calls.</p>
+<p>In the end, the Kbuild maintainer <a href="https://lore.kernel.org/linux-kbuild/CAK7LNATLv2KSWo0BnFGXi73GVdnvc1EX23TvTkKT1U-krgBnNQ@mail.gmail.com/">suggested</a> me to use <strong>KBUILD_EXTMOD=</strong>  instead of <strong>M=</strong> and that did the trick! The entire flow of the recursive Makefile invocations can be see below:</p>
+<pre tabindex="0"><code>Makefile (toplevel)
+tools/testing/selftests/Makefile
+tools/testing/selftests/livepatch/Makefile
+tools/testing/selftests/livepatch/test-modules/Makefile
+Makefile (toplevel)
+</code></pre><p>The value of <strong>M=</strong> is used to set <strong>KBUILD_EXTMOD=</strong> either way, so using the later solved the problem, the modules are built and the tests were run as expected:</p>
+<div class="highlight"><div style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7a543f">30
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f5a97f;background-color:#24273a;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$  sudo make kselftest <span style="color:#b7bdf8">KDIR</span><span style="color:#91d7e3">=</span><span style="color:#c6a0f6">$(</span><span style="font-style:italic">pwd</span><span style="color:#c6a0f6">)</span> <span style="color:#b7bdf8">TARGETS</span><span style="color:#91d7e3">=</span>livepatch
+</span></span><span style="display:flex;"><span>  CC       test_klp-call_getpid
+</span></span><span style="display:flex;"><span>  CC <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span>  /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_atomic_replace.o
+</span></span><span style="display:flex;"><span>  CC <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span>  /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_busy.o
+</span></span><span style="display:flex;"><span>  CC <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span>  /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_demo.o
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>  MODPOST /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/Module.symvers
+</span></span><span style="display:flex;"><span>  CC <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span>  /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_atomic_replace.mod.o
+</span></span><span style="display:flex;"><span>  LD <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span>  /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_atomic_replace.tmp.ko
+</span></span><span style="display:flex;"><span>  KLP     /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_atomic_replace.ko
+</span></span><span style="display:flex;"><span>  CC <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span>  /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_busy.mod.o
+</span></span><span style="display:flex;"><span>  LD <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span>  /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_busy.ko
+</span></span><span style="display:flex;"><span>  BTF <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span> /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_busy.ko
+</span></span><span style="display:flex;"><span>  CC <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span>  /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_demo.mod.o
+</span></span><span style="display:flex;"><span>  LD <span style="color:#91d7e3">[</span>M<span style="color:#91d7e3">]</span>  /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_demo.tmp.ko
+</span></span><span style="display:flex;"><span>  KLP     /home/mpdesouza/git/linux/tools/testing/selftests/livepatch/test_modules/test_klp_callbacks_demo.ko
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>TAP version 13
+</span></span><span style="display:flex;"><span>1..7
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># timeout set to 0</span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># selftests: livepatch: test-livepatch.sh</span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># TEST: basic function patching ... ok</span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># TEST: multiple livepatches ... ok</span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># TEST: atomic replace livepatch ... ok</span>
+</span></span><span style="display:flex;"><span>ok 1 selftests: livepatch: test-livepatch.sh
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># timeout set to 0</span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># selftests: livepatch: test-syscall.sh</span>
+</span></span><span style="display:flex;"><span><span style="color:#5b6078;font-style:italic"># TEST: patch getpid syscall while being heavily hammered ... ok</span>
+</span></span><span style="display:flex;"><span>ok 7 selftests: livepatch: test-syscall.sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="problem-2-target-recipes">Problem 2: Target recipes<a hidden class="anchor" aria-hidden="true" href="#problem-2-target-recipes">#</a></h2>
+<p>After the patches got <a href="https://lore.kernel.org/linux-kselftest/fc9ccbf3-6b7d-46d3-a8da-54d5dc78a81c@linuxfoundation.org/#t">merged</a>, I sent another round of patches to simplify the handling of <em>TEST_GEN_MODS_DIR</em>, specially <a href="https://lore.kernel.org/linux-kselftest/20240221-lp-selftests-fixes-v2-4-a19be1e029a7@suse.com/#t">this one</a>. The patch introduced a <em>warning</em> because of the <em>all</em> target on <code>lib.mk</code> (that is included by all selftests Makefiles), but somehow started to fail only with this patch alone. Fortunately a person from the mailing list reported the <a href="https://lore.kernel.org/linux-kselftest/ZdgTkKSSme5Evgwq@yujie-X299/">issue</a>, making me scratch my head to discover what was wrong. Well, let&rsquo;s check how Makefiles work with duplicated targets.</p>
+<p>After tons of experiments I found that you can have duplicated Makefile targets only if they don&rsquo;t contain a recipe on each target. Otherwise a warning will be shown, and only the recipe of the last target will be executed, but the dependencies of both targets will be evaluated. Take for example the files below:</p>
+<pre tabindex="0"><code>all: dep
+	@echo &#34;override.mk: running all target&#34;
+dep:
+	@echo &#34;override.mk: running dep target&#34;
+	
+.PHONY: all dep  
+</code></pre><p>Let&rsquo;s call this file <code>override.mk</code>. And now let&rsquo;s look into another file on the same directory called <code>main.mk</code>:</p>
+<pre tabindex="0"><code>include override.mk
+
+all: local_dep                                              
+	@echo &#34;main.mk: running recipe of all target&#34;                                          
+
+local_dep:
+	@echo &#34;main.mk: running local_dep target&#34;
+
+.PHONY: all local_dep 
+</code></pre><p>You can run them by:</p>
+<pre tabindex="0"><code>make -f main.mk
+</code></pre><p>And the result would be:</p>
+<pre tabindex="0"><code>main.mk:4: warning: overriding recipe for target &#39;all&#39;
+override.mk:2: warning: ignoring old recipe for target &#39;all&#39;
+main.mk: running local_dep target
+override.mk: running dep target
+main.mk: running recipe of all target
+</code></pre><p>As you can see, the dependencies all both <em>all</em> targets were evaluated/executed, but only the recipe of <em>all</em> target from <code>main.mk</code> executed. At this point, I asked the maintainer of kselftests to ignore that specific patch while the other cleanup patches of the series were accepted.</p>
+<h2 id="closing-thoughts">Closing thoughts<a hidden class="anchor" aria-hidden="true" href="#closing-thoughts">#</a></h2>
+<p>After the changes landed, I discussed with other kernel developers about the journey, and they agreed that touching Kbuild/Makefiles is challenging. I even created a <a href="https://github.com/marcosps/makefile-examples">git repository</a> to exercise Makefile constructions that I faced on Kbuild to understand better how they behave. You might find this useful.</p>
+<p>If you feel frustrated trying to understand Kbuild, consider that kernel developers in general avoid touching Kbuild, specially because they don&rsquo;t understand all the intricate details of it.</p>
+<p>Thanks for reading!</p>
+<h1 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p><a href="https://docs.kernel.org/kbuild/index.html">Official Kbuild documentation</a></p>
+<p><a href="https://docs.kernel.org/kbuild/modules.html">Kbuild modules documentation</a></p>
+<p><a href="https://github.com/marcosps/makefile-examples">My Makefile examples repository</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://mpdesouza.com/tags/kbuild/">kbuild</a></li>
+      <li><a href="https://mpdesouza.com/tags/selftests/">selftests</a></li>
+      <li><a href="https://mpdesouza.com/tags/livepatch/">livepatch</a></li>
+      <li><a href="https://mpdesouza.com/tags/kernel/">kernel</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://mpdesouza.com/blog/five-commands-to-crash-the-kernel/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Five commands to crash the kernel</span>
+  </a>
+</nav>
+
+  </footer><script src="https://giscus.app/client.js"
+        data-repo="marcosps/marcosps.github.io"
+        data-repo-id="MDEwOlJlcG9zaXRvcnkzMzYwMzkyNzM="
+        data-category="Announcements"
+        data-category-id="DIC_kwDOFAeNac4CWA_8"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://mpdesouza.com">Marcos&#39; Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

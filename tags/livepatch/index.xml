@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>livepatch on Marcos&#39; Blog</title>
+    <link>https://mpdesouza.com/tags/livepatch/</link>
+    <description>Recent content in livepatch on Marcos&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 10 Jul 2024 23:18:00 -0300</lastBuildDate>
+    <atom:link href="https://mpdesouza.com/tags/livepatch/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Livepatch selftests: the journey to Kbuild and back</title>
+      <link>https://mpdesouza.com/blog/kbuild-livepatch-selftests/</link>
+      <pubDate>Wed, 10 Jul 2024 23:18:00 -0300</pubDate>
+      <guid>https://mpdesouza.com/blog/kbuild-livepatch-selftests/</guid>
+      <description>or how moving code around ended up on a Makefile graduation course</description>
+    </item>
+  </channel>
+</rss>

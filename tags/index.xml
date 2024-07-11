@@ -6,6 +6,35 @@
     <description>Recent content in Tags on Marcos&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
+    <lastBuildDate>Wed, 10 Jul 2024 23:18:00 -0300</lastBuildDate>
     <atom:link href="https://mpdesouza.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>kbuild</title>
+      <link>https://mpdesouza.com/tags/kbuild/</link>
+      <pubDate>Wed, 10 Jul 2024 23:18:00 -0300</pubDate>
+      <guid>https://mpdesouza.com/tags/kbuild/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>kernel</title>
+      <link>https://mpdesouza.com/tags/kernel/</link>
+      <pubDate>Wed, 10 Jul 2024 23:18:00 -0300</pubDate>
+      <guid>https://mpdesouza.com/tags/kernel/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>livepatch</title>
+      <link>https://mpdesouza.com/tags/livepatch/</link>
+      <pubDate>Wed, 10 Jul 2024 23:18:00 -0300</pubDate>
+      <guid>https://mpdesouza.com/tags/livepatch/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>selftests</title>
+      <link>https://mpdesouza.com/tags/selftests/</link>
+      <pubDate>Wed, 10 Jul 2024 23:18:00 -0300</pubDate>
+      <guid>https://mpdesouza.com/tags/selftests/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

@@ -6,8 +6,15 @@
     <description>Recent content in Blog on Marcos&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 22 Aug 2023 21:18:21 -0300</lastBuildDate>
+    <lastBuildDate>Wed, 10 Jul 2024 23:18:00 -0300</lastBuildDate>
     <atom:link href="https://mpdesouza.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Livepatch selftests: the journey to Kbuild and back</title>
+      <link>https://mpdesouza.com/blog/kbuild-livepatch-selftests/</link>
+      <pubDate>Wed, 10 Jul 2024 23:18:00 -0300</pubDate>
+      <guid>https://mpdesouza.com/blog/kbuild-livepatch-selftests/</guid>
+      <description>or how moving code around ended up on a Makefile graduation course</description>
+    </item>
     <item>
       <title>Five commands to crash the kernel</title>
       <link>https://mpdesouza.com/blog/five-commands-to-crash-the-kernel/</link>
